@@ -1,7 +1,7 @@
 import atexit
 from pymongo import MongoClient
 from pymongo.errors import ConfigurationError, ConnectionFailure
-from db.DBError import DBError
+from DBError import DBError
 
 # Database Class
 # @Purpose: class is to handle ALL direct connections to the MongoDB database.
