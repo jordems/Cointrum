@@ -1,29 +1,19 @@
 import React from "react";
 import { Provider } from "react-redux";
-import "./App.css";
+import { Router } from "react-router-dom";
 
-import configureStore from "./store";
+import configureStore from "store";
+import Routes from "routes";
+import history from "services/history";
 
 const store = configureStore();
 
 function App() {
   return (
     <Provider store={store}>
-      <div className="App">
-        <header className="App-header">
-          <p>
-            Edit <code>src/App.tsx</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      <Router history={history}>
+        <Routes />
+      </Router>
     </Provider>
   );
 }
