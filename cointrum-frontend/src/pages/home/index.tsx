@@ -1,13 +1,18 @@
 import React from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { AppState } from "store";
 
 import { addMessagetoTest } from "store/learning/actions/test.action";
 
-interface HomePageProps {
-  addMessagetoTest: (message: string) => void;
-  test: AppState["learning"]["test"];
-}
+const mapStateToProps = (state: AppState) => ({
+  test: state.learning.test
+});
+
+const connector = connect(mapStateToProps, { addMessagetoTest });
+
+type HomePageProps = ConnectedProps<typeof connector> & {
+  // Insert Handin Props
+};
 
 class HomePage extends React.Component<HomePageProps> {
   handleTestClick = () => {
@@ -22,13 +27,10 @@ class HomePage extends React.Component<HomePageProps> {
         {this.props.test.messages.map((message, idx) => (
           <div key={idx}>{message}</div>
         ))}
+        <button onClick={this.handleTestClick}>Remove Message</button>
       </div>
     );
   }
 }
 
-const mapStateToProps = (state: AppState) => ({
-  test: state.learning.test
-});
-
-export default connect(mapStateToProps, { addMessagetoTest })(HomePage);
+export default connector(HomePage);
