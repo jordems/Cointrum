@@ -20,3 +20,15 @@ export const checkCreationHubParams = (
 ) => {
   next();
 };
+
+export const checkLearningHubParams = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (!req.params.tradingmapid) {
+    throw new HTTP400Error("Missing tradingmapid path parameter");
+  } else {
+    next();
+  }
+};

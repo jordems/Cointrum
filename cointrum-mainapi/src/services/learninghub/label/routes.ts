@@ -4,7 +4,7 @@ import { checkSearchParams } from "../../../middleware/checks";
 
 export default [
   {
-    path: "/api/v1/learninghub/{tradingmapid}/label/{labelid}/getseeds",
+    path: "/api/v1/learninghub/:tradingmapid/label/:labelid/getseeds",
     method: "get",
     handler: [
       checkSearchParams,
@@ -15,7 +15,7 @@ export default [
     ]
   },
   {
-    path: "/api/v1/learninghub/{tradingmapid}/label/{labelid}/createseed",
+    path: "/api/v1/learninghub/:tradingmapid/label/:labelid/createseed",
     method: "post",
     handler: [
       checkSearchParams,
@@ -26,7 +26,7 @@ export default [
     ]
   },
   {
-    path: "/api/v1/learninghub/{tradingmapid}/label/{labelid}/editseed",
+    path: "/api/v1/learninghub/:tradingmapid/label/:labelid/editseed",
     method: "post",
     handler: [
       checkSearchParams,
@@ -37,7 +37,7 @@ export default [
     ]
   },
   {
-    path: "/api/v1/learninghub/{tradingmapid}/label/{labelid}/removeseed",
+    path: "/api/v1/learninghub/:tradingmapid/label/:labelid/removeseed",
     method: "post",
     handler: [
       checkSearchParams,
