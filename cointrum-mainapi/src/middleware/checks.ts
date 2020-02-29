@@ -12,3 +12,11 @@ export const checkSearchParams = (
     next();
   }
 };
+
+export const checkCreationHubParams = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  next();
+};

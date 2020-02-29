@@ -33,6 +33,104 @@
           }
         ]
       }
+    },
+    "/creationhub/gettradingmaps": {
+      "get": {
+        "tags": ["Creation Hub"],
+        "summary": "Returns a user's trading maps",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "parameters": []
+      }
+    },
+    "/creationhub/createtradingmap": {
+      "get": {
+        "tags": ["Creation Hub"],
+        "summary": "Creates a trading map for current user",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "parameters": []
+      }
+    },
+    "/creationhub/edittradingmap": {
+      "get": {
+        "tags": ["Creation Hub"],
+        "summary": "Edits a trading map of a user",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "parameters": []
+      }
+    },
+    "/creationhub/removetradingmap": {
+      "get": {
+        "tags": ["Creation Hub"],
+        "summary": "Removes a trading map from a user, and deletes it",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "parameters": []
+      }
+    },
+    "/learninghub/{tradingmapid}/getlabels": {
+      "get": {
+        "tags": ["Learning Hub"],
+        "summary": "Gets all labels linked to trading map",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "parameters": [
+          {
+            "name": "tradingmapid",
+            "in": "path",
+            "description": "id of trading map",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ]
+      }
     }
   }
 }

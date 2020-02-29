@@ -2,12 +2,12 @@ import { Request, Response } from "express";
 // import { getPlacesByName } from "./SearchController";
 import { checkSearchParams } from "./../../middleware/checks";
 
-import labelroutes from "./label/routes";
+import classifierroutes from "./classifier/routes";
 
 export default [
-  ...labelroutes,
+  ...classifierroutes,
   {
-    path: "/api/v1/learninghub/{tradingmapid}/getlabels",
+    path: "/api/v1/tradinghub/{tradingmapid}/getclassifiers",
     method: "get",
     handler: [
       checkSearchParams,
@@ -18,7 +18,7 @@ export default [
     ]
   },
   {
-    path: "/api/v1/learninghub/{tradingmapid}/createlabel",
+    path: "/api/v1/tradinghub/{tradingmapid}/createclassifier",
     method: "post",
     handler: [
       checkSearchParams,
@@ -29,7 +29,7 @@ export default [
     ]
   },
   {
-    path: "/api/v1/learninghub/{tradingmapid}/editlabel",
+    path: "/api/v1/tradinghub/{tradingmapid}/editclassifier",
     method: "post",
     handler: [
       checkSearchParams,
@@ -40,7 +40,7 @@ export default [
     ]
   },
   {
-    path: "/api/v1/learninghub/{tradingmapid}/removelabel",
+    path: "/api/v1/tradinghub/{tradingmapid}/removeclassifier",
     method: "post",
     handler: [
       checkSearchParams,
