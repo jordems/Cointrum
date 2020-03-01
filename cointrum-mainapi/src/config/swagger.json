@@ -30,32 +30,6 @@
   "schemes": ["http"],
   "produces": ["application/json"],
   "paths": {
-    "/search": {
-      "get": {
-        "tags": ["Search Text"],
-        "summary": "Search by places using opencagedata service",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad request"
-          }
-        },
-        "content": {
-          "application/json": {}
-        },
-        "parameters": [
-          {
-            "name": "q",
-            "in": "query",
-            "description": "Specifies the query string",
-            "required": true,
-            "type": "string"
-          }
-        ]
-      }
-    },
     "/tradingmap": {
       "get": {
         "tags": ["Creation Hub"],
@@ -551,7 +525,7 @@
       }
     },
 
-    "/tradinghub/{tradingmapid}/classifier": {
+    "/tradingmap/{tradingmapid}/classifier": {
       "get": {
         "tags": ["Trading Hub"],
         "summary": "Gets all classifiers linked to trading map",
@@ -611,7 +585,7 @@
         ]
       }
     },
-    "/tradinghub/{tradingmapid}/classifier/{classifierid}": {
+    "/tradingmap/{tradingmapid}/classifier/{classifierid}": {
       "get": {
         "tags": ["Trading Hub"],
         "summary": "Get single classifiers linked to trading map",
@@ -717,7 +691,7 @@
       }
     },
 
-    "/tradinghub/{tradingmapid}/classifier/{classifierid}/confidencevalues": {
+    "/tradingmap/{tradingmapid}/classifier/{classifierid}/confidencevalues": {
       "get": {
         "tags": ["Trading Hub"],
         "summary": "Gets current conficence values for a classifier from a trading map",
@@ -826,6 +800,9 @@
         "name": {
           "type": "string"
         },
+        "desc": {
+          "type": "string"
+        },
         "colour": {
           "type": "string"
         }
@@ -842,9 +819,12 @@
     },
     "classifier": {
       "type": "object",
-      "required": ["name", "colour"],
+      "required": ["name", "colour", "type", "data"],
       "properties": {
         "name": {
+          "type": "string"
+        },
+        "desc": {
           "type": "string"
         },
         "colour": {
@@ -852,6 +832,9 @@
         },
         "type": {
           "type": "string"
+        },
+        "data": {
+          "type": "object"
         }
       }
     },

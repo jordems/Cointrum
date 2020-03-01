@@ -11,22 +11,22 @@ export interface ITradingMap extends Document {
 const TradingMapSchema = new Schema({
   name: {
     type: String,
-    required: "Enter a name for the Trading Map."
+    required: "You Must enter a name."
   },
   desc: {
     type: String
   },
   exchange: {
     type: String,
-    required: "You Must Select an Exchange"
+    required: "You Must select an Exchange"
   },
   basecurrency: {
     type: String,
-    required: "You Must Select a Base Currency"
+    required: "You Must select a Base Currency"
   },
   altcurrency: {
     type: String,
-    required: "You Must Select a Alternate Currency"
+    required: "You Must select a Alternate Currency"
   },
   created_date: {
     type: Date,

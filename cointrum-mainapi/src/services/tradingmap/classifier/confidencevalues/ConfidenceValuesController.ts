@@ -1,0 +1,25 @@
+import { IConfidenceValues } from "../../../../models/ConfidenceValues";
+import ConfidenceValues from "../../../../models/ConfidenceValues";
+import { Request, Response } from "express";
+
+export class ConfidenceValuesController {
+  public getConfidenceValues(req: Request, res: Response) {
+    ConfidenceValues.find({}, (err, confidenceValues) => {
+      if (err) {
+        res.status(400).send(err);
+      }
+      res.json(confidenceValues);
+    });
+  }
+
+  public setConfidenceValues({ body }: Request, res: Response) {
+    const newConfidenceValues: IConfidenceValues = new ConfidenceValues(body);
+
+    newConfidenceValues.save((err, confidenceValues) => {
+      if (err) {
+        res.status(400).send(err);
+      }
+      res.json(confidenceValues);
+    });
+  }
+}

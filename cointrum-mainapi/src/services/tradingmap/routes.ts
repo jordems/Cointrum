@@ -1,9 +1,14 @@
 import { TradingMapController } from "./TradingMapController";
 import { checkCreationHubParams } from "../../middleware/checks";
 
+import classifierRoutes from "./classifier/routes";
+import labelRoutes from "./label/routes";
+
 const tradingMapController = new TradingMapController();
 
 export default [
+  ...classifierRoutes,
+  ...labelRoutes,
   {
     path: "/api/v1/tradingmap",
     method: "get",

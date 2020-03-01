@@ -24,11 +24,11 @@ export class TradingMapController {
   }
 
   public getTradingMapbyID({ params }: Request, res: Response) {
-    TradingMap.findById(params.tradingmapid, (err, contact) => {
+    TradingMap.findById(params.tradingmapid, (err, tradingMap) => {
       if (err) {
         res.send(err);
       }
-      res.json(contact);
+      res.json(tradingMap);
     });
   }
   public editTradingMap({ params, body }: Request, res: Response) {
@@ -63,7 +63,7 @@ export class TradingMapController {
             message: "Didn't Find Document to Delete"
           });
         } else {
-          res.json({ removed: true, message: "Successfully deleted contact!" });
+          res.json({ removed: true, message: "Successfully deleted!" });
         }
       }
     );
