@@ -1,6 +1,7 @@
 import { Schema, Document, model, Model } from "mongoose";
 
 export interface IClassifier extends Document {
+  tradingmapid: string;
   name: string;
   desc: string;
   colour: string;
@@ -9,6 +10,7 @@ export interface IClassifier extends Document {
 }
 
 const ClassifierSchema = new Schema({
+  tradingmapid: { type: Schema.Types.ObjectId, ref: "TradingMap" },
   name: {
     type: String,
     required: "You Must enter a name."

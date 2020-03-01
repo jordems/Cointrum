@@ -1,12 +1,14 @@
 import { Schema, Document, model, Model } from "mongoose";
 
 export interface ILabel extends Document {
+  tradingmapid: string;
   name: string;
   desc: string;
   colour: string;
 }
 
 const LabelSchema = new Schema({
+  tradingmapid: { type: Schema.Types.ObjectId, ref: "TradingMap" },
   name: {
     type: String,
     required: "You Must enter a name."

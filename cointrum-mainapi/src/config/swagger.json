@@ -795,8 +795,11 @@
     },
     "label": {
       "type": "object",
-      "required": ["name", "colour"],
+      "required": ["tradingmapid", "name", "colour"],
       "properties": {
+        "tradingmapid": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
@@ -810,8 +813,11 @@
     },
     "seed": {
       "type": "object",
-      "required": ["data"],
+      "required": ["labelid", "data"],
       "properties": {
+        "labelid": {
+          "type": "string"
+        },
         "data": {
           "type": "object"
         }
@@ -819,8 +825,11 @@
     },
     "classifier": {
       "type": "object",
-      "required": ["name", "colour", "type", "data"],
+      "required": ["tradingmapid", "name", "colour", "type", "data"],
       "properties": {
+        "tradingmapid": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
@@ -840,8 +849,11 @@
     },
     "confidencevalues": {
       "type": "object",
-      "required": ["confvaluepairs"],
+      "required": ["classifierid", "confvaluepairs"],
       "properties": {
+        "classifierid": {
+          "type": "string"
+        },
         "confvaluepairs": {
           "type": "object"
         }
