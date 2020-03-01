@@ -1,52 +1,47 @@
 import { Request, Response } from "express";
-// import { getPlacesByName } from "./SearchController";
-import { checkSearchParams } from "./../../middleware/checks";
+import { checkTradingHubParams } from "./../../middleware/checks";
 
 import classifierroutes from "./classifier/routes";
 
 export default [
   ...classifierroutes,
   {
-    path: "/api/v1/tradinghub/{tradingmapid}/getclassifiers",
+    path: "/api/v1/tradinghub/:tradingmapid/getclassifiers",
     method: "get",
     handler: [
-      checkSearchParams,
-      async ({ query }: Request, res: Response) => {
-        //const result = await getPlacesByName(query.q);
-        res.status(200).send({});
+      checkTradingHubParams,
+      async ({ params, body }: Request, res: Response) => {
+        res.status(200).send(params);
       }
     ]
   },
   {
-    path: "/api/v1/tradinghub/{tradingmapid}/createclassifier",
+    path: "/api/v1/tradinghub/:tradingmapid/createclassifier",
     method: "post",
     handler: [
-      checkSearchParams,
-      async ({ query }: Request, res: Response) => {
-        //const result = await getPlacesByName(query.q);
-        res.status(200).send({});
+      checkTradingHubParams,
+      async ({ params, body }: Request, res: Response) => {
+        res.status(200).send(params);
       }
     ]
   },
   {
-    path: "/api/v1/tradinghub/{tradingmapid}/editclassifier",
-    method: "post",
+    path: "/api/v1/tradinghub/:tradingmapid/editclassifier",
+    method: "put",
     handler: [
-      checkSearchParams,
-      async ({ query }: Request, res: Response) => {
-        //const result = await getPlacesByName(query.q);
-        res.status(200).send({});
+      checkTradingHubParams,
+      async ({ params, body }: Request, res: Response) => {
+        res.status(200).send(params);
       }
     ]
   },
   {
-    path: "/api/v1/tradinghub/{tradingmapid}/removeclassifier",
-    method: "post",
+    path: "/api/v1/tradinghub/:tradingmapid/removeclassifier",
+    method: "delete",
     handler: [
-      checkSearchParams,
-      async ({ query }: Request, res: Response) => {
-        //const result = await getPlacesByName(query.q);
-        res.status(200).send({});
+      checkTradingHubParams,
+      async ({ params, body }: Request, res: Response) => {
+        res.status(200).send(JSON.stringify(params));
       }
     ]
   }

@@ -13,13 +13,19 @@
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "host": "localhost:3000",
-  "basePath": "/api/v1",
+  "servers": [
+    {
+      "url": "http://localhost:3000/api/v1",
+      "description": "Local Testing Server"
+    }
+  ],
   "tags": [
     {
       "name": "Creation Hub",
-      "description": "Calls made on Creation Hub"
-    }
+      "description": "API Calls made on Creation Hub"
+    },
+    { "name": "Learning Hub", "description": "API Calls made on Learning Hub" },
+    { "name": "Trading Hub", "description": "API Calls made on Trading Hub" }
   ],
   "schemes": ["http"],
   "produces": ["application/json"],
@@ -50,7 +56,7 @@
         ]
       }
     },
-    "/creationhub/gettradingmaps": {
+    "/tradingmap": {
       "get": {
         "tags": ["Creation Hub"],
         "summary": "Returns a user's trading maps",
@@ -66,9 +72,7 @@
           "application/json": {}
         },
         "parameters": []
-      }
-    },
-    "/creationhub/createtradingmap": {
+      },
       "post": {
         "tags": ["Creation Hub"],
         "summary": "Creates a trading map for current user",
@@ -81,7 +85,7 @@
           }
         },
         "requestBody": {
-          "description": "JSON object Containg Creation Map details",
+          "description": "JSON object Containing new Trading Map Details",
           "content": {
             "application/json": {
               "schema": {
@@ -96,7 +100,31 @@
         "parameters": []
       }
     },
-    "/creationhub/edittradingmap": {
+    "/tradingmap/{tradingmapid}": {
+      "get": {
+        "tags": ["Creation Hub"],
+        "summary": "Returns Trading Map of id",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "parameters": [
+          {
+            "name": "tradingmapid",
+            "in": "path",
+            "description": "id of trading map",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ]
+      },
       "put": {
         "tags": ["Creation Hub"],
         "summary": "Edits a trading map of a user",
@@ -111,10 +139,26 @@
         "content": {
           "application/json": {}
         },
-        "parameters": []
-      }
-    },
-    "/creationhub/removetradingmap": {
+        "requestBody": {
+          "description": "JSON object Containing Trading Map details to update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/tradingmap"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tradingmapid",
+            "in": "path",
+            "description": "id of trading map",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ]
+      },
       "delete": {
         "tags": ["Creation Hub"],
         "summary": "Removes a trading map from a user, and deletes it",
@@ -129,10 +173,19 @@
         "content": {
           "application/json": {}
         },
-        "parameters": []
+        "parameters": [
+          {
+            "name": "tradingmapid",
+            "in": "path",
+            "description": "id of trading map",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ]
       }
     },
-    "/learninghub/{tradingmapid}/getlabels": {
+
+    "/tradingmap/{tradingmapid}/label": {
       "get": {
         "tags": ["Learning Hub"],
         "summary": "Gets all labels linked to trading map",
@@ -156,9 +209,7 @@
             "schema": { "type": "string" }
           }
         ]
-      }
-    },
-    "/learninghub/{tradingmapid}/createlabel": {
+      },
       "post": {
         "tags": ["Learning Hub"],
         "summary": "Create a new label on trading map.",
@@ -173,6 +224,16 @@
         "content": {
           "application/json": {}
         },
+        "requestBody": {
+          "description": "JSON object Containing new Labels Details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/label"
+              }
+            }
+          }
+        },
         "parameters": [
           {
             "name": "tradingmapid",
@@ -184,10 +245,10 @@
         ]
       }
     },
-    "/learninghub/{tradingmapid}/editlabel": {
-      "put": {
+    "/tradingmap/{tradingmapid}/label/{labelid}": {
+      "get": {
         "tags": ["Learning Hub"],
-        "summary": "Edit details of label linked to trading map.",
+        "summary": "Gets single labels from tradingmap",
         "responses": {
           "200": {
             "description": "OK"
@@ -206,11 +267,57 @@
             "description": "id of trading map",
             "required": true,
             "schema": { "type": "string" }
+          },
+          {
+            "name": "labelid",
+            "in": "path",
+            "description": "id of label",
+            "required": true,
+            "schema": { "type": "string" }
           }
         ]
-      }
-    },
-    "/learninghub/{tradingmapid}/removelabels": {
+      },
+      "put": {
+        "tags": ["Learning Hub"],
+        "summary": "Edit details of label linked to trading map.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "requestBody": {
+          "description": "JSON object Containing new Labels Details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/label"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tradingmapid",
+            "in": "path",
+            "description": "id of trading map",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "labelid",
+            "in": "path",
+            "description": "id of label",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ]
+      },
       "delete": {
         "tags": ["Learning Hub"],
         "summary": "Remove label from trading map",
@@ -232,11 +339,18 @@
             "description": "id of trading map",
             "required": true,
             "schema": { "type": "string" }
+          },
+          {
+            "name": "labelid",
+            "in": "path",
+            "description": "id of label",
+            "required": true,
+            "schema": { "type": "string" }
           }
         ]
       }
     },
-    "/learninghub/{tradingmapid}/label/{labelid}/getseeds": {
+    "/tradingmap/{tradingmapid}/label/{labelid}/seed": {
       "get": {
         "tags": ["Learning Hub"],
         "summary": "Get all seeds linked to label and trading map",
@@ -267,9 +381,7 @@
             "schema": { "type": "string" }
           }
         ]
-      }
-    },
-    "/learninghub/{tradingmapid}/label/{labelid}/createseed": {
+      },
       "post": {
         "tags": ["Learning Hub"],
         "summary": "Add seed to label on trading map.",
@@ -284,6 +396,16 @@
         "content": {
           "application/json": {}
         },
+        "requestBody": {
+          "description": "JSON object Containing new Labels Details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/seed"
+              }
+            }
+          }
+        },
         "parameters": [
           {
             "name": "tradingmapid",
@@ -302,10 +424,10 @@
         ]
       }
     },
-    "/learninghub/{tradingmapid}/label/{labelid}/editseed": {
-      "put": {
+    "/tradingmap/{tradingmapid}/label/{labelid}/seed/{seedid}": {
+      "get": {
         "tags": ["Learning Hub"],
-        "summary": "Edit seed on label from trading map.",
+        "summary": "Get single seed linked to label and trading map",
         "responses": {
           "200": {
             "description": "OK"
@@ -331,11 +453,64 @@
             "description": "id of label",
             "required": true,
             "schema": { "type": "string" }
+          },
+          {
+            "name": "seedid",
+            "in": "path",
+            "description": "id of seed",
+            "required": true,
+            "schema": { "type": "string" }
           }
         ]
-      }
-    },
-    "/learninghub/{tradingmapid}/label/{labelid}/removeseed": {
+      },
+      "put": {
+        "tags": ["Learning Hub"],
+        "summary": "Edit seed on label from trading map.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "requestBody": {
+          "description": "JSON object Containing new Labels Details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/seed"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tradingmapid",
+            "in": "path",
+            "description": "id of trading map",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "labelid",
+            "in": "path",
+            "description": "id of label",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "seedid",
+            "in": "path",
+            "description": "id of seed",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ]
+      },
       "delete": {
         "tags": ["Learning Hub"],
         "summary": "Remove seed from label from trading map.",
@@ -362,6 +537,254 @@
             "name": "labelid",
             "in": "path",
             "description": "id of label",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "seedid",
+            "in": "path",
+            "description": "id of seed",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ]
+      }
+    },
+
+    "/tradinghub/{tradingmapid}/classifier": {
+      "get": {
+        "tags": ["Trading Hub"],
+        "summary": "Gets all classifiers linked to trading map",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "parameters": [
+          {
+            "name": "tradingmapid",
+            "in": "path",
+            "description": "id of trading map",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Trading Hub"],
+        "summary": "Create a classifier on a trading map",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "requestBody": {
+          "description": "JSON object Containing new Labels Details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/classifier"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tradingmapid",
+            "in": "path",
+            "description": "id of trading map",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ]
+      }
+    },
+    "/tradinghub/{tradingmapid}/classifier/{classifierid}": {
+      "get": {
+        "tags": ["Trading Hub"],
+        "summary": "Get single classifiers linked to trading map",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "parameters": [
+          {
+            "name": "tradingmapid",
+            "in": "path",
+            "description": "id of trading map",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "classifierid",
+            "in": "path",
+            "description": "id of classifier",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ]
+      },
+      "put": {
+        "tags": ["Trading Hub"],
+        "summary": "Edit a classifier on a trading map",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "requestBody": {
+          "description": "JSON object Containing new Labels Details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/classifier"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tradingmapid",
+            "in": "path",
+            "description": "id of trading map",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "classifierid",
+            "in": "path",
+            "description": "id of classifier",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Trading Hub"],
+        "summary": "Remove a classifier from a trading map",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "parameters": [
+          {
+            "name": "tradingmapid",
+            "in": "path",
+            "description": "id of trading map",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "classifierid",
+            "in": "path",
+            "description": "id of classifier",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ]
+      }
+    },
+
+    "/tradinghub/{tradingmapid}/classifier/{classifierid}/confidencevalues": {
+      "get": {
+        "tags": ["Trading Hub"],
+        "summary": "Gets current conficence values for a classifier from a trading map",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "parameters": [
+          {
+            "name": "tradingmapid",
+            "in": "path",
+            "description": "id of trading map",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "classifierid",
+            "in": "path",
+            "description": "id of classifier",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Trading Hub"],
+        "summary": "Sets current conficence values for a classifier from a trading map",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "requestBody": {
+          "description": "JSON object Containing new Labels Details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/confidencevalues"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tradingmapid",
+            "in": "path",
+            "description": "id of trading map",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "classifierid",
+            "in": "path",
+            "description": "id of classifier",
             "required": true,
             "schema": { "type": "string" }
           }
@@ -393,6 +816,51 @@
         "altcurrency": {
           "type": "string",
           "default": "BNB"
+        }
+      }
+    },
+    "label": {
+      "type": "object",
+      "required": ["name", "colour"],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "colour": {
+          "type": "string"
+        }
+      }
+    },
+    "seed": {
+      "type": "object",
+      "required": ["data"],
+      "properties": {
+        "data": {
+          "type": "object"
+        }
+      }
+    },
+    "classifier": {
+      "type": "object",
+      "required": ["name", "colour"],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "colour": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "confidencevalues": {
+      "type": "object",
+      "required": ["confvaluepairs"],
+      "properties": {
+        "confvaluepairs": {
+          "type": "object"
         }
       }
     }

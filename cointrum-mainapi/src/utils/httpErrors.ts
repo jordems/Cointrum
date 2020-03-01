@@ -44,3 +44,11 @@ export class HTTP404Error extends HTTPClientError {
     super(message);
   }
 }
+
+export class HTTP502Error extends HTTPClientError {
+  readonly statusCode = 502;
+
+  constructor(message: string | object = "Not found") {
+    super(message);
+  }
+}

@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-// import { getPlacesByName } from "./SearchController";
 import { checkLearningHubParams } from "./../../middleware/checks";
 
 import labelroutes from "./label/routes";
@@ -11,8 +10,7 @@ export default [
     method: "get",
     handler: [
       checkLearningHubParams,
-      async ({ params }: Request, res: Response) => {
-        //const result = await getPlacesByName(query.q);
+      async ({ params, body }: Request, res: Response) => {
         res.status(200).send(`Param: ${params.tradingmapid}`);
       }
     ]
@@ -22,31 +20,28 @@ export default [
     method: "post",
     handler: [
       checkLearningHubParams,
-      async ({ params }: Request, res: Response) => {
-        //const result = await getPlacesByName(query.q);
-        res.status(200).send({});
+      async ({ params, body }: Request, res: Response) => {
+        res.status(200).send(params);
       }
     ]
   },
   {
     path: "/api/v1/learninghub/:tradingmapid/editlabel",
-    method: "post",
+    method: "put",
     handler: [
       checkLearningHubParams,
-      async ({ params }: Request, res: Response) => {
-        //const result = await getPlacesByName(query.q);
-        res.status(200).send({});
+      async ({ params, body }: Request, res: Response) => {
+        res.status(200).send(params);
       }
     ]
   },
   {
     path: "/api/v1/learninghub/:tradingmapid/removelabel",
-    method: "post",
+    method: "delete",
     handler: [
       checkLearningHubParams,
-      async ({ params }: Request, res: Response) => {
-        //const result = await getPlacesByName(query.q);
-        res.status(200).send({});
+      async ({ params, body }: Request, res: Response) => {
+        res.status(200).send(params);
       }
     ]
   }
