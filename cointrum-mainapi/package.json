@@ -1,5 +1,5 @@
 {
-  "name": "node-rest-api-article",
+  "name": "cointrum-mainapi",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,12 +7,13 @@
     "postinstall": "npx tsc",
     "dev": "tsc-watch --onSuccess \"node ./dist/server.js\"",
     "start": "npx pm2 start pm2.yaml",
-    "test": "jest"
+    "test": "jest --runInBand"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "jest": {
+    "testEnvironment": "node",
     "verbose": true,
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
@@ -41,6 +42,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^5.0.0-alpha.7",
+    "mockingoose": "^2.13.2",
     "mongoose": "^5.9.2",
     "pm2": "^4.2.3",
     "request": "^2.88.2",

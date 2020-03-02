@@ -2,6 +2,10 @@ import { ITradingMap } from "../../models/TradingMap";
 import TradingMap from "../../models/TradingMap";
 import { Request, Response } from "express";
 
+/**
+ * @class TradingMapController
+ * Handles all Interactions with the TradingMap Collection in db
+ */
 export class TradingMapController {
   public getTradingMaps(req: Request, res: Response) {
     TradingMap.find({}, (err, tradingMaps) => {
@@ -26,7 +30,7 @@ export class TradingMapController {
   public getTradingMapbyID({ params }: Request, res: Response) {
     TradingMap.findById(params.tradingmapid, (err, tradingMap) => {
       if (err) {
-        res.send(err);
+        res.status(400).send(err);
       }
       res.json(tradingMap);
     });
@@ -38,7 +42,7 @@ export class TradingMapController {
       { new: true },
       (err, updatedTradingMap) => {
         if (err) {
-          res.send(err);
+          res.status(400).send(err);
         } else if (updatedTradingMap == null) {
           res.json({
             updated: false,
@@ -56,7 +60,7 @@ export class TradingMapController {
       params.tradingmapid,
       (err, removedTradingMap) => {
         if (err) {
-          res.send(err);
+          res.status(400).send(err);
         } else if (removedTradingMap == null) {
           res.json({
             removed: false,

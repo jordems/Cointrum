@@ -2,6 +2,10 @@ import { ILabel } from "../../../models/Label";
 import Label from "../../../models/Label";
 import { Request, Response } from "express";
 
+/**
+ * @class LabelController
+ * Handles all Interactions with the Label Collection in db
+ */
 export class LabelController {
   public getLabels(req: Request, res: Response) {
     Label.find({}, (err, labels) => {
@@ -26,7 +30,7 @@ export class LabelController {
   public getLabelbyID({ params }: Request, res: Response) {
     Label.findById(params.labelid, (err, label) => {
       if (err) {
-        res.send(err);
+        res.status(400).send(err);
       }
       res.json(label);
     });
@@ -38,7 +42,7 @@ export class LabelController {
       { new: true },
       (err, updatedLabel) => {
         if (err) {
-          res.send(err);
+          res.status(400).send(err);
         } else if (updatedLabel == null) {
           res.json({
             updated: false,
@@ -54,7 +58,7 @@ export class LabelController {
   public removeLabel({ params }: Request, res: Response) {
     Label.findByIdAndRemove(params.labelid, (err, removedLabel) => {
       if (err) {
-        res.send(err);
+        res.status(400).send(err);
       } else if (removedLabel == null) {
         res.json({
           removed: false,

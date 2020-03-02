@@ -2,6 +2,10 @@ import { IConfidenceValues } from "../../../../models/ConfidenceValues";
 import ConfidenceValues from "../../../../models/ConfidenceValues";
 import { Request, Response } from "express";
 
+/**
+ * @class ConfidenceValuesController
+ * Handles all Interactions with the ConfidenceValues Collection in db
+ */
 export class ConfidenceValuesController {
   public getConfidenceValues(req: Request, res: Response) {
     ConfidenceValues.find({}, (err, confidenceValues) => {

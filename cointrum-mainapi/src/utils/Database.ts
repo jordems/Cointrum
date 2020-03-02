@@ -15,7 +15,10 @@ export const connectDB = async () => {
       useUnifiedTopology: true
     };
     await connect(`mongodb+srv://${user}:${password}@${serverurl}`, options);
-    console.log("MongoDB Connected...");
+
+    require("mongoose").Promise = global.Promise;
+
+    // console.log("MongoDB Connected...");
   } catch (err) {
     console.error(err.message);
     // Exit process with failure

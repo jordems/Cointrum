@@ -2,6 +2,10 @@ import { ISeed } from "../../../../models/Seed";
 import Seed from "../../../../models/Seed";
 import { Request, Response } from "express";
 
+/**
+ * @class SeedController
+ * Handles all Interactions with the Seed Collection in db
+ */
 export class SeedController {
   public getSeeds(req: Request, res: Response) {
     Seed.find({}, (err, seeds) => {
@@ -26,7 +30,7 @@ export class SeedController {
   public getSeedbyID({ params }: Request, res: Response) {
     Seed.findById(params.seedid, (err, seed) => {
       if (err) {
-        res.send(err);
+        res.status(400).send(err);
       }
       res.json(seed);
     });
@@ -38,7 +42,7 @@ export class SeedController {
       { new: true },
       (err, updatedSeed) => {
         if (err) {
-          res.send(err);
+          res.status(400).send(err);
         } else if (updatedSeed == null) {
           res.json({
             updated: false,
@@ -54,7 +58,7 @@ export class SeedController {
   public removeSeed({ params }: Request, res: Response) {
     Seed.findByIdAndRemove(params.seedid, (err, removedSeed) => {
       if (err) {
-        res.send(err);
+        res.status(400).send(err);
       } else if (removedSeed == null) {
         res.json({
           removed: false,

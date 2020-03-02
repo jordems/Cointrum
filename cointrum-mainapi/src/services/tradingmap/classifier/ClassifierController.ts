@@ -2,6 +2,10 @@ import { IClassifier } from "../../../models/Classifier";
 import Classifier from "../../../models/Classifier";
 import { Request, Response } from "express";
 
+/**
+ * @class ClassifierController
+ * Handles all Interactions with the Classifier Collection in db
+ */
 export class ClassifierController {
   public getClassifiers(req: Request, res: Response) {
     Classifier.find({}, (err, classifiers) => {
@@ -26,7 +30,7 @@ export class ClassifierController {
   public getClassifierbyID({ params }: Request, res: Response) {
     Classifier.findById(params.classifierid, (err, classifier) => {
       if (err) {
-        res.send(err);
+        res.status(400).send(err);
       }
       res.json(classifier);
     });
@@ -38,7 +42,7 @@ export class ClassifierController {
       { new: true },
       (err, updatedClassifier) => {
         if (err) {
-          res.send(err);
+          res.status(400).send(err);
         } else if (updatedClassifier == null) {
           res.json({
             updated: false,
@@ -56,7 +60,7 @@ export class ClassifierController {
       params.classifierid,
       (err, removedClassifier) => {
         if (err) {
-          res.send(err);
+          res.status(400).send(err);
         } else if (removedClassifier == null) {
           res.json({
             removed: false,
