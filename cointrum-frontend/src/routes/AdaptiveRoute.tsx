@@ -1,8 +1,11 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
 
+import Layout from "shared-components/layout/Layout";
+
 interface AdaptiveRouteProps {
   requiresAuth?: boolean;
+  disableLayout?: boolean;
   path?: string | string[] | undefined;
   exact?: boolean;
   component?: any;
@@ -17,7 +20,7 @@ interface AdaptiveRouteProps {
  */
 class AdaptiveRoute extends React.Component<AdaptiveRouteProps> {
   render() {
-    const { requiresAuth, path, component, exact } = this.props;
+    const { requiresAuth, path, component, exact, disableLayout } = this.props;
 
     // TODO Check User Login State
     const userAuthed = false;
@@ -27,7 +30,15 @@ class AdaptiveRoute extends React.Component<AdaptiveRouteProps> {
       return <Redirect to="/" />;
     }
 
-    return <Route path={path} exact={exact} component={component} />;
+    if (disableLayout) {
+      return <Route path={path} exact={exact} component={component} />;
+    }
+
+    return (
+      <Layout>
+        <Route path={path} exact={exact} component={component} />
+      </Layout>
+    );
   }
 }
 

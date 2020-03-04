@@ -11,7 +11,7 @@ import page404 from "pages/404";
 export default function Routes() {
   return (
     <Switch>
-      <AdativeRoute path="/" exact component={home} />
+      <AdativeRoute path="/" exact component={home} disableLayout />
       <AdativeRoute path="/creation-hub" component={creationhub} />
       <AdativeRoute path="/profile" component={profile} requiresAuth />
       <AdativeRoute component={page404} />
