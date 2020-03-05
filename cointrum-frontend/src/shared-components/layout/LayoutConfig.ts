@@ -1,13 +1,13 @@
 const config = {
   toolbar: {
     items: [
-      {
-        id: "creation-hub-item",
-        type: "item",
-        name: "Creation Hub",
-        link: "/creation-hub",
-        icon: "Map"
-      },
+      // {
+      //   id: "creation-hub-item",
+      //   type: "item",
+      //   name: "Creation Hub",
+      //   link: "/creation-hub",
+      //   icon: "Map"
+      // },
       {
         id: "learning-hub-item",
         type: "item",

@@ -1,9 +1,14 @@
 import { createMuiTheme } from "@material-ui/core/styles";
 
+import deepPurple from "@material-ui/core/colors/deepPurple";
+import gray from "@material-ui/core/colors/grey";
+
 // A custom theme for this app
 const theme = createMuiTheme({
   palette: {
-    type: "dark"
+    type: "dark",
+    primary: deepPurple,
+    secondary: gray
   }
 });
 

@@ -3,7 +3,7 @@ import { WithStyles, Drawer, Divider, List } from "@material-ui/core";
 import { styles, wrapStyles } from "./styles";
 
 import ToolbarItem from "shared-components/layout/toolbar/lib/toolbaritem/ToolbarItem";
-
+import TradingMapCard from "shared-components/layout/toolbar/lib/tradingmapcard/TradingMapCard";
 import LayoutConfig from "shared-components/layout/LayoutConfig";
 import history from "services/history";
 
@@ -21,7 +21,9 @@ const Toolbar: React.FunctionComponent<ToolbarProps> = ({ classes }) => {
       }}
       anchor="left"
     >
-      <div className={classes.toolbar} />
+      <div className={classes.toolbar}>
+        <TradingMapCard />
+      </div>
       <Divider />
       <List>
         {LayoutConfig.toolbar.items.map((item, idx) => (

@@ -14,8 +14,8 @@ const Layout: React.FunctionComponent<LayoutProps> = ({
 }) => {
   return (
     <div className={classes.root}>
-      <Appbar />
       <Toolbar />
+      <Appbar />
       <div className={classes.content}>{children}</div>
     </div>
   );
