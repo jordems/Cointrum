@@ -1,12 +1,11 @@
-import { checkCreationHubParams } from "../../middleware/checks";
+import { Request, Response } from "express";
 
+import { checkCreationHubParams } from "../../middleware/checks";
 import classifierRoutes from "./classifier/routes";
 import labelRoutes from "./label/routes";
-
 import GenericController from "./../../utils/GenericController";
 import { ITradingMap } from "../../models/TradingMap";
 import TradingMap from "../../models/TradingMap";
-import { Request, Response } from "express";
 
 /**
  * @constant tradingMapController
@@ -109,7 +108,7 @@ export default [
           );
 
           if (removedTradingMap === null) {
-            res.json({
+            res.status(400).json({
               remove: false,
               message: "Didn't Find Document to Delete"
             });

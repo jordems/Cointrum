@@ -689,81 +689,6 @@
           }
         ]
       }
-    },
-
-    "/tradingmap/{tradingmapid}/classifier/{classifierid}/confidencevalues": {
-      "get": {
-        "tags": ["Trading Hub"],
-        "summary": "Gets current conficence values for a classifier from a trading map",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad request"
-          }
-        },
-        "content": {
-          "application/json": {}
-        },
-        "parameters": [
-          {
-            "name": "tradingmapid",
-            "in": "path",
-            "description": "id of trading map",
-            "required": true,
-            "schema": { "type": "string" }
-          },
-          {
-            "name": "classifierid",
-            "in": "path",
-            "description": "id of classifier",
-            "required": true,
-            "schema": { "type": "string" }
-          }
-        ]
-      },
-      "post": {
-        "tags": ["Trading Hub"],
-        "summary": "Sets current conficence values for a classifier from a trading map",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad request"
-          }
-        },
-        "content": {
-          "application/json": {}
-        },
-        "requestBody": {
-          "description": "JSON object Containing new Labels Details",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/definitions/confidencevalues"
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "tradingmapid",
-            "in": "path",
-            "description": "id of trading map",
-            "required": true,
-            "schema": { "type": "string" }
-          },
-          {
-            "name": "classifierid",
-            "in": "path",
-            "description": "id of classifier",
-            "required": true,
-            "schema": { "type": "string" }
-          }
-        ]
-      }
     }
   },
   "definitions": {
@@ -795,11 +720,8 @@
     },
     "label": {
       "type": "object",
-      "required": ["tradingmapid", "name", "colour"],
+      "required": ["name", "colour"],
       "properties": {
-        "tradingmapid": {
-          "type": "string"
-        },
         "name": {
           "type": "string"
         },
@@ -813,11 +735,8 @@
     },
     "seed": {
       "type": "object",
-      "required": ["labelid", "data"],
+      "required": ["data"],
       "properties": {
-        "labelid": {
-          "type": "string"
-        },
         "data": {
           "type": "object"
         }
@@ -825,11 +744,8 @@
     },
     "classifier": {
       "type": "object",
-      "required": ["tradingmapid", "name", "colour", "type", "data"],
+      "required": ["name", "colour", "type", "data", "confidencevalues"],
       "properties": {
-        "tradingmapid": {
-          "type": "string"
-        },
         "name": {
           "type": "string"
         },
@@ -844,17 +760,8 @@
         },
         "data": {
           "type": "object"
-        }
-      }
-    },
-    "confidencevalues": {
-      "type": "object",
-      "required": ["classifierid", "confvaluepairs"],
-      "properties": {
-        "classifierid": {
-          "type": "string"
         },
-        "confvaluepairs": {
+        "confidencevalues": {
           "type": "object"
         }
       }
