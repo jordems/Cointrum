@@ -1,35 +1,43 @@
 import { checkLearningHubParams } from "../../../middleware/checks";
-import { LabelController } from "./LabelController";
 
 import seedRoutes from "./seed/routes";
 
-const labelController = new LabelController();
+import GenericController from "./../../../utils/GenericController";
+import { ILabel } from "../../../models/Label";
+import Label from "../../../models/Label";
+
+/**
+ * @constant LabelController
+ * Handles all Interactions with the Label Collection in db
+ */
+
+const labelController = new GenericController<ILabel>(Label);
 
 export default [
   ...seedRoutes,
   {
     path: "/api/v1/tradingmap/:tradingmapid/label",
     method: "get",
-    handler: [checkLearningHubParams, labelController.getLabels]
+    handler: [checkLearningHubParams, labelController.getAllDocuments]
   },
   {
     path: "/api/v1/tradingmap/:tradingmapid/label",
     method: "post",
-    handler: [checkLearningHubParams, labelController.createLabel]
+    handler: [checkLearningHubParams, labelController.createDocument]
   },
   {
     path: "/api/v1/tradingmap/:tradingmapid/label/:labelid",
     method: "get",
-    handler: [checkLearningHubParams, labelController.getLabelbyID]
+    handler: [checkLearningHubParams, labelController.getDocumentbyId]
   },
   {
     path: "/api/v1/tradingmap/:tradingmapid/label/:labelid",
     method: "put",
-    handler: [checkLearningHubParams, labelController.editLabel]
+    handler: [checkLearningHubParams, labelController.editDocument]
   },
   {
     path: "/api/v1/tradingmap/:tradingmapid/label/:labelid",
     method: "delete",
-    handler: [checkLearningHubParams, labelController.removeLabel]
+    handler: [checkLearningHubParams, labelController.removeDocument]
   }
 ];
