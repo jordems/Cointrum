@@ -11,7 +11,9 @@ export const MAPLIBRARY_REMOVE_MAP = "MAPLIBRARY_REMOVE_MAP";
 
 interface MapLibraryFetchMaps {
   type: typeof MAPLIBRARY_FETCH_MAPS;
-  payload: Map<string, any>;
+  payload: {
+    [tradingmapid: number]: any; //TODO TradingMap Schema Client
+  };
 }
 interface MapLibraryAddMap {
   type: typeof MAPLIBRARY_ADD_MAP;

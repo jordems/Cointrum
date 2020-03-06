@@ -1,3 +1,5 @@
+import { omit } from "lodash";
+
 import * as MapLibraryTypes from "./../types/library.types";
 
 const initialState: MapLibraryTypes.State = {
@@ -24,10 +26,10 @@ export function mapLibraryReducer(
           [action.payload._id]: action.payload
         }
       };
-    case MapLibraryTypes.MAPLIBRARY_ADD_MAP:
+    case MapLibraryTypes.MAPLIBRARY_REMOVE_MAP:
       return {
         ...state,
-        maps: { c: { y, ...c } }
+        maps: { ...omit(state.maps, action.payload) }
       };
     default:
       return state;

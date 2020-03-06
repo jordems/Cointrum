@@ -1,24 +1,27 @@
-import {
-  TEST_ADD_MESSAGE,
-  TEST_REMOVE_MESSAGE,
-  TestActionTypes
-} from "./../types/test.types";
+import * as MapLibraryTypes from "./../types/library.types";
 
-export function fetchMapLibrary(): TestActionTypes {
+export function fetchMapLibrary(): MapLibraryTypes.Actions {
+  //TODO Fetch from Mongodb
+  const exampleMaps: {
+    [tradingmapid: number]: any; //TODO TradingMap Schema Client
+  } = {};
+
   return {
-    type: TEST_ADD_MESSAGE,
-    payload: message
+    type: MapLibraryTypes.MAPLIBRARY_FETCH_MAPS,
+    payload: exampleMaps
   };
 }
 
-export function addMaptoLibrary(): TestActionTypes {
+export function addMaptoLibrary(map: object): MapLibraryTypes.Actions {
   return {
-    type: TEST_REMOVE_MESSAGE
+    type: MapLibraryTypes.MAPLIBRARY_ADD_MAP,
+    payload: map
   };
 }
 
-export function removeMapfromLibrary(): TestActionTypes {
+export function removeMapfromLibrary(mapid: string): MapLibraryTypes.Actions {
   return {
-    type: TEST_REMOVE_MESSAGE
+    type: MapLibraryTypes.MAPLIBRARY_REMOVE_MAP,
+    payload: mapid
   };
 }
