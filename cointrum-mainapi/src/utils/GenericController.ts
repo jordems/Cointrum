@@ -1,4 +1,3 @@
-import { Request, Response } from "express";
 import { Model, Document } from "mongoose";
 /**
  * @class GenericController

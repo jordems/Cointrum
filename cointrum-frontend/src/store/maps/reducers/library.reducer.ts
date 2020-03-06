@@ -1,0 +1,35 @@
+import * as MapLibraryTypes from "./../types/library.types";
+
+const initialState: MapLibraryTypes.State = {
+  maps: {}, //TODO TradingMap Schema Client
+  loadingMaps: true
+};
+
+export function mapLibraryReducer(
+  state: MapLibraryTypes.State = initialState,
+  action: MapLibraryTypes.Actions
+) {
+  switch (action.type) {
+    case MapLibraryTypes.MAPLIBRARY_FETCH_MAPS:
+      return {
+        ...state,
+        maps: action.payload,
+        loadingMaps: false
+      };
+    case MapLibraryTypes.MAPLIBRARY_ADD_MAP:
+      return {
+        ...state,
+        maps: {
+          ...state.maps,
+          [action.payload._id]: action.payload
+        }
+      };
+    case MapLibraryTypes.MAPLIBRARY_ADD_MAP:
+      return {
+        ...state,
+        maps: { c: { y, ...c } }
+      };
+    default:
+      return state;
+  }
+}
