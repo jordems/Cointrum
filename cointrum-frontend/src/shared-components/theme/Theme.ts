@@ -9,6 +9,22 @@ const theme = createMuiTheme({
     type: "dark",
     primary: deepPurple,
     secondary: gray
+  },
+  overrides: {
+    MuiLink: {
+      root: {
+        "&:link": {
+          textDecoration: "inherit",
+          color: "inherit",
+          cursor: "auto"
+        },
+        "&:visited": {
+          textDecoration: "inherit",
+          color: "inherit",
+          cursor: "auto"
+        }
+      }
+    }
   }
 });
 

@@ -1,6 +1,8 @@
+import { ITradingMap } from "./ITradingMap";
+
 export interface State {
   maps: {
-    [tradingmapid: number]: any; //TODO TradingMap Schema Client
+    [tradingmapid: number]: ITradingMap; //TODO TradingMap Schema Client
   };
   loadingMaps: boolean;
 }
@@ -12,12 +14,12 @@ export const MAPLIBRARY_REMOVE_MAP = "MAPLIBRARY_REMOVE_MAP";
 interface MapLibraryFetchMaps {
   type: typeof MAPLIBRARY_FETCH_MAPS;
   payload: {
-    [tradingmapid: number]: any; //TODO TradingMap Schema Client
+    [tradingmapid: number]: ITradingMap; //TODO TradingMap Schema Client
   };
 }
 interface MapLibraryAddMap {
   type: typeof MAPLIBRARY_ADD_MAP;
-  payload: any;
+  payload: ITradingMap;
 }
 interface MapLibraryRemoveMap {
   type: typeof MAPLIBRARY_REMOVE_MAP;

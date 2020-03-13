@@ -1,9 +1,10 @@
 import * as MapLibraryTypes from "./../types/library.types";
+import { ITradingMap } from "./../types/ITradingMap";
 
 export function fetchMapLibrary(): MapLibraryTypes.Actions {
   //TODO Fetch from Mongodb
   const exampleMaps: {
-    [tradingmapid: number]: any; //TODO TradingMap Schema Client
+    [tradingmapid: number]: ITradingMap; //TODO TradingMap Schema Client
   } = {};
 
   return {
@@ -12,7 +13,7 @@ export function fetchMapLibrary(): MapLibraryTypes.Actions {
   };
 }
 
-export function addMaptoLibrary(map: object): MapLibraryTypes.Actions {
+export function addMaptoLibrary(map: ITradingMap): MapLibraryTypes.Actions {
   return {
     type: MapLibraryTypes.MAPLIBRARY_ADD_MAP,
     payload: map

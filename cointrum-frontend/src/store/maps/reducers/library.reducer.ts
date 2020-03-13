@@ -3,11 +3,11 @@ import { omit } from "lodash";
 import * as MapLibraryTypes from "./../types/library.types";
 
 const initialState: MapLibraryTypes.State = {
-  maps: {}, //TODO TradingMap Schema Client
+  maps: {},
   loadingMaps: true
 };
 
-export function mapLibraryReducer(
+export function libraryReducer(
   state: MapLibraryTypes.State = initialState,
   action: MapLibraryTypes.Actions
 ) {

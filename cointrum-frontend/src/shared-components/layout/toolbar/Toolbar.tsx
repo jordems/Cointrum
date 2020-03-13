@@ -1,15 +1,22 @@
 import React from "react";
 import { WithStyles, Drawer, Divider, List } from "@material-ui/core";
 import { styles, wrapStyles } from "./styles";
+import { ConnectedProps } from "react-redux";
 
 import ToolbarItem from "shared-components/layout/toolbar/lib/toolbaritem/ToolbarItem";
 import TradingMapCard from "shared-components/layout/toolbar/lib/tradingmapcard/TradingMapCard";
 import LayoutConfig from "shared-components/layout/LayoutConfig";
 import history from "services/history";
 
-type ToolbarProps = WithStyles<typeof styles>;
+import { connector } from "./redux";
 
-const Toolbar: React.FunctionComponent<ToolbarProps> = ({ classes }) => {
+type ToolbarProps = WithStyles<typeof styles> &
+  ConnectedProps<typeof connector>;
+
+const Toolbar: React.FunctionComponent<ToolbarProps> = ({
+  classes,
+  current
+}) => {
   const currentPath = history.location.pathname;
 
   return (
@@ -22,7 +29,7 @@ const Toolbar: React.FunctionComponent<ToolbarProps> = ({ classes }) => {
       anchor="left"
     >
       <div className={classes.toolbar}>
-        <TradingMapCard />
+        <TradingMapCard currentTradingMap={current.map} />
       </div>
       <Divider />
       <List>
@@ -34,4 +41,4 @@ const Toolbar: React.FunctionComponent<ToolbarProps> = ({ classes }) => {
   );
 };
 
-export default wrapStyles(Toolbar);
+export default connector(wrapStyles(Toolbar));

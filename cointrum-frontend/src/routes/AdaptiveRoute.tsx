@@ -23,7 +23,7 @@ class AdaptiveRoute extends React.Component<AdaptiveRouteProps> {
     const { requiresAuth, path, component, exact, disableLayout } = this.props;
 
     // TODO Check User Login State
-    const userAuthed = false;
+    const userAuthed = true;
 
     // User Attempting to Load Page that Reqires signin
     if (requiresAuth && !userAuthed) {
