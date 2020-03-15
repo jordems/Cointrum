@@ -6,7 +6,7 @@ export function fetchMapLibrary(): MapLibraryTypes.Actions {
   const exampleMaps: {
     [tradingmapid: string]: ITradingMap; //TODO TradingMap Schema Client
   } = {
-    a: {
+    Testid: {
       _id: "Testid",
       name: "My Test Map",
       exchange: "Binance",
@@ -23,6 +23,7 @@ export function fetchMapLibrary(): MapLibraryTypes.Actions {
 }
 
 export function addMaptoLibrary(map: ITradingMap): MapLibraryTypes.Actions {
+  //TODO Add to Mongodb
   return {
     type: MapLibraryTypes.MAPLIBRARY_ADD_MAP,
     payload: map
@@ -30,6 +31,7 @@ export function addMaptoLibrary(map: ITradingMap): MapLibraryTypes.Actions {
 }
 
 export function removeMapfromLibrary(mapid: string): MapLibraryTypes.Actions {
+  //TODO Delete from Mongodb
   return {
     type: MapLibraryTypes.MAPLIBRARY_REMOVE_MAP,
     payload: mapid

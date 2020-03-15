@@ -10,12 +10,14 @@ import {
   TableBody,
   Typography
 } from "@material-ui/core";
+
 import { ConnectedProps } from "react-redux";
 
 import { styles, wrapStyles } from "./styles";
 import { connector } from "./redux";
 
 import MapsTableBody from "./lib/MapsTableBody";
+import MapCreationDialog from "./lib/MapCreationDialog";
 
 type MapsPageProps = ConnectedProps<typeof connector> &
   WithStyles<typeof styles>;
@@ -38,9 +40,14 @@ class MapsPage extends React.Component<MapsPageProps> {
       <div>
         <Paper>
           <div className={classes.headerContainer}>
-            <Typography variant={"h4"} component={"h1"}>
-              Maps
-            </Typography>
+            <div className={classes.headerElement}>
+              <Typography variant={"h4"} component={"h1"}>
+                Maps
+              </Typography>
+            </div>
+            <div className={classes.headerElement}>
+              <MapCreationDialog />
+            </div>
           </div>
           <Table>
             <TableHead>
@@ -48,6 +55,7 @@ class MapsPage extends React.Component<MapsPageProps> {
                 <TableCell>Map Name</TableCell>
                 <TableCell>Exchange</TableCell>
                 <TableCell>Currency Pair</TableCell>
+                <TableCell></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
