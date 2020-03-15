@@ -1,10 +1,21 @@
 import React from "react";
 
-import { Button, TextField, WithStyles } from "@material-ui/core";
+import {
+  WithStyles,
+  Paper,
+  Table,
+  TableHead,
+  TableCell,
+  TableRow,
+  TableBody,
+  Typography
+} from "@material-ui/core";
 import { ConnectedProps } from "react-redux";
 
 import { styles, wrapStyles } from "./styles";
 import { connector } from "./redux";
+
+import MapsTableBody from "./lib/MapsTableBody";
 
 type MapsPageProps = ConnectedProps<typeof connector> &
   WithStyles<typeof styles>;
@@ -14,10 +25,36 @@ class MapsPage extends React.Component<MapsPageProps> {
     message: ""
   };
 
+  componentDidMount() {
+    // Fetch Library
+    this.props.fetchMapLibrary();
+  }
+
   render() {
+    const { classes } = this.props;
+    const { loadingMaps, maps } = this.props.library;
+
     return (
       <div>
-        <h1>Maps</h1>
+        <Paper>
+          <div className={classes.headerContainer}>
+            <Typography variant={"h4"} component={"h1"}>
+              Maps
+            </Typography>
+          </div>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Map Name</TableCell>
+                <TableCell>Exchange</TableCell>
+                <TableCell>Currency Pair</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <MapsTableBody loadingMaps={loadingMaps} maps={maps} />
+            </TableBody>
+          </Table>
+        </Paper>
       </div>
     );
   }

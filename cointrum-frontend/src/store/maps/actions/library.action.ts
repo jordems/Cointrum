@@ -4,8 +4,17 @@ import { ITradingMap } from "./../types/ITradingMap";
 export function fetchMapLibrary(): MapLibraryTypes.Actions {
   //TODO Fetch from Mongodb
   const exampleMaps: {
-    [tradingmapid: number]: ITradingMap; //TODO TradingMap Schema Client
-  } = {};
+    [tradingmapid: string]: ITradingMap; //TODO TradingMap Schema Client
+  } = {
+    a: {
+      _id: "Testid",
+      name: "My Test Map",
+      exchange: "Binance",
+      basecurrency: "BNB",
+      altcurrency: "BTC",
+      desc: "Desc"
+    }
+  };
 
   return {
     type: MapLibraryTypes.MAPLIBRARY_FETCH_MAPS,

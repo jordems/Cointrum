@@ -2,8 +2,18 @@ import { connect } from "react-redux";
 
 import { AppState } from "store";
 
+import {
+  addMaptoLibrary,
+  removeMapfromLibrary,
+  fetchMapLibrary
+} from "store/maps/actions/library.action";
+
 const mapStateToProps = (state: AppState) => ({
-  test: state.learning.test
+  library: state.maps.library
 });
 
-export const connector = connect(mapStateToProps, {});
+export const connector = connect(mapStateToProps, {
+  addMaptoLibrary,
+  removeMapfromLibrary,
+  fetchMapLibrary
+});

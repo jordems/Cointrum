@@ -5,6 +5,9 @@ export const styles = (theme: Theme) =>
     root: {
       margin: theme.spacing(6, 0, 3)
     },
+    headerContainer: {
+      margin: theme.spacing(2, 1, 0, 1.5)
+    },
     lightBulb: {
       verticalAlign: "middle",
       marginRight: theme.spacing(1)
