@@ -1,36 +1,45 @@
 import React from "react";
-import { connect, ConnectedProps } from "react-redux";
-import { AppState } from "store";
 
-import { addMessagetoTest } from "store/learning/actions/test.action";
+import { Button, TextField, WithStyles } from "@material-ui/core";
+import { ConnectedProps } from "react-redux";
 
-const mapStateToProps = (state: AppState) => ({
-  test: state.learning.test
-});
+import { styles, wrapStyles } from "./styles";
+import { connector } from "./redux";
 
-const connector = connect(mapStateToProps, { addMessagetoTest });
-
-type HomePageProps = ConnectedProps<typeof connector> & {
-  // Insert Handin Props
-};
+type HomePageProps = ConnectedProps<typeof connector> &
+  WithStyles<typeof styles> & {
+    // Insert Handin Props
+  };
 
 class HomePage extends React.Component<HomePageProps> {
-  handleTestClick = () => {
-    this.props.addMessagetoTest("TestingMessage");
+  readonly state: any = {
+    message: ""
+  };
+
+  handleAddMessage = () => {
+    this.props.addMessagetoTest(this.state.message);
+  };
+  handleRemoveMessage = () => {
+    this.props.removeMessagefromTest();
+  };
+
+  handleEditText = (e: any) => {
+    this.setState({ message: e.target.value });
   };
 
   render() {
     return (
       <div>
         <h1>Home</h1>
-        <button onClick={this.handleTestClick}>Add Message</button>
-        {this.props.test.messages.map((message, idx) => (
+        <Button onClick={this.handleAddMessage}>Add Message</Button>
+        <TextField onChange={this.handleEditText} />
+        {this.props.test.messages.map((message: any, idx: any) => (
           <div key={idx}>{message}</div>
         ))}
-        <button onClick={this.handleTestClick}>Remove Message</button>
+        <Button onClick={this.handleRemoveMessage}>Remove Message</Button>
       </div>
     );
   }
 }
 
-export default connector(HomePage);
+export default connector(wrapStyles(HomePage));

@@ -3,9 +3,11 @@ import thunkMiddleware from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
 
 import learningReducers from "./learning";
+import mapsReducers from "./maps";
 
 const rootReducer = combineReducers({
-  learning: learningReducers
+  learning: learningReducers,
+  maps: mapsReducers
 });
 
 export type AppState = ReturnType<typeof rootReducer>;

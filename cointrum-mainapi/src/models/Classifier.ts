@@ -7,6 +7,7 @@ export interface IClassifier extends Document {
   colour: string;
   type: string;
   data: object;
+  confidencevalues: object;
 }
 
 const ClassifierSchema = new Schema({
@@ -29,6 +30,10 @@ const ClassifierSchema = new Schema({
   data: {
     type: Object,
     required: "You Must give `data`"
+  },
+  confidencevalues: {
+    type: Object,
+    required: "You must give `confidencevalues`"
   },
   created_date: {
     type: Date,
