@@ -1,5 +1,5 @@
 import * as MapCurrentTypes from "./../types/current.types";
-import { ITradingMap } from "./../types/ITradingMap";
+import { ITradingMap } from "models";
 
 export function setCurrentMap(map: ITradingMap): MapCurrentTypes.Actions {
   // /TODO Update DB TO say current selected map is this map. So if they reload then it still shows. (Or use cookies)

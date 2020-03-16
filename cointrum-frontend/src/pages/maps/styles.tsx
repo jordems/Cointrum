@@ -13,6 +13,12 @@ export const styles = (theme: Theme) =>
       margin: theme.spacing(2, 1, 0, 1.5)
     },
     headerElement: {},
+    addIcon: {
+      color: "#424242",
+      backgroundColor: theme.palette.secondary.light,
+      borderRadius: 12,
+      margin: ".2em"
+    },
     lightBulb: {
       verticalAlign: "middle",
       marginRight: theme.spacing(1)

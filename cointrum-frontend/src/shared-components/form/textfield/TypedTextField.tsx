@@ -4,6 +4,9 @@ import { WithStyles, TextField } from "@material-ui/core";
 import { styles, wrapStyles } from "./styles";
 
 type TypedTextFieldProps = WithStyles<typeof styles> & {
+  label?: string;
+  value: string;
+  required?: boolean;
   onValueChange: (text: string) => void;
 };
 
@@ -17,11 +20,13 @@ class TypedTextField extends React.Component<TypedTextFieldProps> {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, label, value, required } = this.props;
     return (
       <TextField
         className={classes.root}
-        {...this.props}
+        label={label}
+        value={value}
+        required={required}
         onChange={this.handleonChange}
       />
     );

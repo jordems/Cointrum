@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 
 import { styles, wrapStyles } from "./styles";
-import { ITradingMap } from "store/maps/types/ITradingMap";
+import { ITradingMap } from "models";
 
 type TradingMapCardProps = WithStyles<typeof styles> & {
   currentTradingMap: ITradingMap | null;

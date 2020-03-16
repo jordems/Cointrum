@@ -4,6 +4,33 @@ import {
   IBaseCurrencies,
   IExchanges
 } from "shared-components/types";
+import { ITradingMap } from "models";
+
+export function openCreateMapDialog(): MapCreateTypes.Actions {
+  return {
+    type: MapCreateTypes.MAPCREATE_SET_DIALOG,
+    payload: {
+      create: true
+    }
+  };
+}
+
+export function openEditMapDialog(map: ITradingMap): MapCreateTypes.Actions {
+  return {
+    type: MapCreateTypes.MAPCREATE_SET_DIALOG,
+    payload: {
+      edit: true,
+      map: map
+    }
+  };
+}
+
+export function closeMapDialog(): MapCreateTypes.Actions {
+  return {
+    type: MapCreateTypes.MAPCREATE_SET_DIALOG,
+    payload: {}
+  };
+}
 
 export function updateMapName(name: string): MapCreateTypes.Actions {
   return {
@@ -58,5 +85,11 @@ export function updateMapAltCurrency(
       field: "altcurrency",
       value: altcurrency
     }
+  };
+}
+
+export function resetMapForm(): MapCreateTypes.Actions {
+  return {
+    type: MapCreateTypes.MAPCREATE_RESET_FORM
   };
 }

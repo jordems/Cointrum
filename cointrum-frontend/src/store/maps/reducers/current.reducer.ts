@@ -7,14 +7,16 @@ const initialState: MapCurrentTypes.State = {
     desc: "Desc of My Test Map",
     exchange: "Binance",
     basecurrency: "BNB",
-    altcurrency: "BTC"
+    altcurrency: "BTC",
+    created_date: new Date(),
+    __v: 0
   }
 };
 
 export function currentReducer(
   state: MapCurrentTypes.State = initialState,
   action: MapCurrentTypes.Actions
-) {
+): MapCurrentTypes.State {
   switch (action.type) {
     case MapCurrentTypes.MAPCURRENT_SET_MAP:
       return {

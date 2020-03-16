@@ -8,8 +8,11 @@ import {
   TableCell,
   TableRow,
   TableBody,
-  Typography
+  Typography,
+  IconButton
 } from "@material-ui/core";
+
+import AddIcon from "@material-ui/icons/Add";
 
 import { ConnectedProps } from "react-redux";
 
@@ -46,7 +49,9 @@ class MapsPage extends React.Component<MapsPageProps> {
               </Typography>
             </div>
             <div className={classes.headerElement}>
-              <MapCreationDialog />
+              <IconButton onClick={this.props.openCreateMapDialog}>
+                <AddIcon className={classes.addIcon} />
+              </IconButton>
             </div>
           </div>
           <Table>
@@ -63,6 +68,8 @@ class MapsPage extends React.Component<MapsPageProps> {
             </TableBody>
           </Table>
         </Paper>
+
+        <MapCreationDialog />
       </div>
     );
   }

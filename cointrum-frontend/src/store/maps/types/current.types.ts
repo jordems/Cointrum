@@ -1,4 +1,4 @@
-import { ITradingMap } from "./ITradingMap";
+import { ITradingMap } from "models";
 
 export interface State {
   map: ITradingMap | null;

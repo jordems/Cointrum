@@ -8,6 +8,8 @@ import {
   fetchMapLibrary
 } from "store/maps/actions/library.action";
 
+import { openCreateMapDialog } from "store/maps/actions/create.action";
+
 const mapStateToProps = (state: AppState) => ({
   library: state.maps.library
 });
@@ -15,5 +17,6 @@ const mapStateToProps = (state: AppState) => ({
 export const connector = connect(mapStateToProps, {
   addMaptoLibrary,
   removeMapfromLibrary,
-  fetchMapLibrary
+  fetchMapLibrary,
+  openCreateMapDialog
 });
