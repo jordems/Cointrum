@@ -36,7 +36,7 @@ class MapsPage extends React.Component<MapsPageProps> {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, current } = this.props;
     const { loadingMaps, maps } = this.props.library;
 
     return (
@@ -59,12 +59,17 @@ class MapsPage extends React.Component<MapsPageProps> {
               <TableRow>
                 <TableCell>Map Name</TableCell>
                 <TableCell>Exchange</TableCell>
-                <TableCell>Currency Pair</TableCell>
+                <TableCell>Pair (Base - Alt)</TableCell>
                 <TableCell></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              <MapsTableBody loadingMaps={loadingMaps} maps={maps} />
+              <MapsTableBody
+                loadingMaps={loadingMaps}
+                maps={maps}
+                currentMap={current.map}
+                setCurrentMap={this.props.setCurrentMap}
+              />
             </TableBody>
           </Table>
         </Paper>

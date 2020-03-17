@@ -34,7 +34,12 @@ const Toolbar: React.FunctionComponent<ToolbarProps> = ({
       <Divider />
       <List>
         {LayoutConfig.toolbar.items.map((item, idx) => (
-          <ToolbarItem key={item.id} item={item} currentPath={currentPath} />
+          <ToolbarItem
+            disabled={current.map === null}
+            key={item.id}
+            item={item}
+            currentPath={currentPath}
+          />
         ))}
       </List>
     </Drawer>

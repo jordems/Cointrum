@@ -7,9 +7,7 @@ import { styles, wrapStyles } from "./styles";
 import { connector } from "./redux";
 
 type HomePageProps = ConnectedProps<typeof connector> &
-  WithStyles<typeof styles> & {
-    // Insert Handin Props
-  };
+  WithStyles<typeof styles>;
 
 class HomePage extends React.Component<HomePageProps> {
   readonly state: any = {

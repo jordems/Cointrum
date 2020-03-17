@@ -23,19 +23,21 @@ type ToolbarItemProps = WithStyles<typeof styles> & {
     icon: string;
   };
   currentPath: string;
+  disabled?: boolean;
 };
 
 const ToolbarItem: React.FunctionComponent<ToolbarItemProps> = ({
   classes,
   item,
-  currentPath
+  currentPath,
+  disabled
 }) => {
   const itemSelected = item.link === currentPath;
   switch (item.type) {
     case "item":
       return (
-        <Link to={item.link} className={classes.link}>
-          <ListItem button selected={itemSelected}>
+        <Link to={disabled ? "/maps" : item.link} className={classes.link}>
+          <ListItem disabled={disabled} button selected={itemSelected}>
             <ListItemIcon>{getIcon(item.icon)}</ListItemIcon>
             <ListItemText primary={item.name} />
           </ListItem>

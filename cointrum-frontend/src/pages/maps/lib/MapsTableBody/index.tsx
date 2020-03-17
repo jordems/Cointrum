@@ -14,14 +14,22 @@ import MapTupleOptions from "./../MapTupleOptions";
 type MapsTableBodyProps = WithStyles<typeof styles> & {
   loadingMaps: boolean;
   maps: { [tradingmapid: string]: ITradingMap };
+  currentMap: ITradingMap | null;
+  setCurrentMap: (map: ITradingMap) => void;
 };
 
 const MapsTableBody: React.FunctionComponent<MapsTableBodyProps> = ({
   classes,
   loadingMaps,
-  maps
+  maps,
+  setCurrentMap
 }) => {
   const keyMaps = Object.keys(maps);
+
+  const handleSetCurrentMap = (mapid: string) => {
+    console.log(mapid);
+    setCurrentMap(maps[mapid]);
+  };
 
   if (loadingMaps) {
     return (
@@ -36,7 +44,12 @@ const MapsTableBody: React.FunctionComponent<MapsTableBodyProps> = ({
     <>
       {keyMaps.map((key: string, idx) => (
         <TableRow key={`TUP${key}`}>
-          <TableCell>{maps[key].name}</TableCell>
+          <TableCell
+            className={classes.mapSelectionTuple}
+            onClick={() => handleSetCurrentMap(key)}
+          >
+            {maps[key].name}
+          </TableCell>
           <TableCell>{maps[key].exchange}</TableCell>
           <TableCell>
             {maps[key].basecurrency} - {maps[key].altcurrency}

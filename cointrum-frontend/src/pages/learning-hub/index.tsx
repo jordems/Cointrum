@@ -6,18 +6,17 @@ import { ConnectedProps } from "react-redux";
 import { styles, wrapStyles } from "./styles";
 import { connector } from "./redux";
 
-type CreationHubPageProps = ConnectedProps<typeof connector> &
+type LearningHubPageProps = ConnectedProps<typeof connector> &
   WithStyles<typeof styles>;
 
-class CreationHubPage extends React.Component<CreationHubPageProps> {
+class LearningHubPage extends React.Component<LearningHubPageProps> {
   render() {
-    //const { classes } = this.props;
     return (
       <div>
-        <h1>Creation Hub</h1>
+        <h1>Learning Hub</h1>
       </div>
     );
   }
 }
 
-export default connector(wrapStyles(CreationHubPage));
+export default connector(wrapStyles(LearningHubPage));

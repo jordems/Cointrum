@@ -1,16 +1,7 @@
 import * as MapCurrentTypes from "./../types/current.types";
 
 const initialState: MapCurrentTypes.State = {
-  map: {
-    _id: "testid",
-    name: "My Test Map",
-    desc: "Desc of My Test Map",
-    exchange: "Binance",
-    basecurrency: "BNB",
-    altcurrency: "BTC",
-    created_date: new Date(),
-    __v: 0
-  }
+  map: null
 };
 
 export function currentReducer(
@@ -23,10 +14,11 @@ export function currentReducer(
         ...state,
         map: action.payload
       };
-    case MapCurrentTypes.MAPCURRENT_EDIT_MAP:
+
+    case MapCurrentTypes.MAPCURRENT_CLEAR_MAP:
       return {
         ...state,
-        map: action.payload
+        map: null
       };
 
     default:

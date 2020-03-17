@@ -15,7 +15,9 @@ import { connector } from "./redux";
 import {
   basecurrencies,
   altcurrencies,
-  exchanges
+  exchanges,
+  IBaseCurrencies,
+  IAltCurrencies
 } from "shared-components/types";
 
 import TypedTextField from "shared-components/form/textfield/TypedTextField";
@@ -62,6 +64,16 @@ const MapCreationForm: React.FunctionComponent<MapCreationFormProps> = ({
         .catch(err => {});
     }
   };
+
+  // To Diminish Possible X-X Currency Pairs
+  let basecurs: Array<IBaseCurrencies> = [];
+  let altcurs: Array<IAltCurrencies> = [];
+  basecurrencies.forEach(x => {
+    x !== form.altcurrency && basecurs.push(x);
+  });
+  altcurrencies.forEach(x => {
+    x !== form.basecurrency && altcurs.push(x);
+  });
   return (
     <>
       <DialogTitle id="create-trading-map-title">
@@ -101,7 +113,7 @@ const MapCreationForm: React.FunctionComponent<MapCreationFormProps> = ({
               <TypedSelect
                 label="Base Currency"
                 value={form.basecurrency}
-                options={basecurrencies}
+                options={basecurs}
                 onValueChange={updateMapBaseCurrency}
               />
             </Grid>
@@ -109,7 +121,7 @@ const MapCreationForm: React.FunctionComponent<MapCreationFormProps> = ({
               <TypedSelect
                 label="Alt Currency"
                 value={form.altcurrency}
-                options={altcurrencies}
+                options={altcurs}
                 onValueChange={updateMapAltCurrency}
               />
             </Grid>

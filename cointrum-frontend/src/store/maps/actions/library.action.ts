@@ -1,17 +1,14 @@
 import { ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 
+import { AppState } from "store";
 import RestfulAPIConsumer from "services/api/RestfulAPIConsumer";
 import * as MapLibraryTypes from "./../types/library.types";
 import * as MapCreateTypes from "./../types/create.types";
+import * as MapCurrentTypes from "./../types/current.types";
 import { ITradingMap, ICreateTradingMap } from "models";
 
-type MyThunkResult<R> = ThunkAction<
-  R,
-  MapLibraryTypes.State,
-  undefined,
-  Action
->;
+type MyThunkResult<R> = ThunkAction<R, AppState, undefined, Action>;
 
 const tradingMapConsumer = new RestfulAPIConsumer<
   ITradingMap,
@@ -113,8 +110,11 @@ export const editMapinLibrary = (
 export const removeMapfromLibrary = (
   mapid: string
 ): MyThunkResult<Promise<boolean>> => (
-  dispatch: (e: MapLibraryTypes.Actions) => void
+  dispatch: (e: MapLibraryTypes.Actions | MapCurrentTypes.Actions) => void,
+  getState
 ): Promise<boolean> => {
+  const currentMap = getState().maps.current.map;
+
   return new Promise((resolve, reject) => {
     tradingMapConsumer
       .removeDocument(mapid)
@@ -124,6 +124,13 @@ export const removeMapfromLibrary = (
           type: MapLibraryTypes.MAPLIBRARY_REMOVE_MAP,
           payload: mapid
         });
+
+        // If map being removed is current map, clear current map
+        if (currentMap && mapid === currentMap._id) {
+          dispatch({
+            type: MapCurrentTypes.MAPCURRENT_CLEAR_MAP
+          });
+        }
 
         //TODO Popup that confirms deletion, but allows undo for x seconds
 
