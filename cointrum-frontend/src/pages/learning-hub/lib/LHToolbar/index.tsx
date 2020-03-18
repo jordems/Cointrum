@@ -1,11 +1,9 @@
 import React from "react";
 import { WithStyles, Drawer, Divider } from "@material-ui/core";
-import { TreeItem, TreeView } from "@material-ui/lab";
-
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 
 import LHToolsCard from "./LHToolsCard";
+import LHLabelCard from "./LHLabelCard";
+import LHLabelDialog from "./LHLabelDialog";
 
 import { styles, wrapStyles } from "./styles";
 import { ConnectedProps } from "react-redux";
@@ -27,18 +25,9 @@ const LHToolbar: React.FunctionComponent<LHToolbarProps> = ({ classes }) => {
     >
       <LHToolsCard />
       <Divider />
-      <div>
-        List of Labels and seeds under label, removeable and add icon to create
-        label
-      </div>
-      <TreeView
-        defaultCollapseIcon={<ExpandMoreIcon />}
-        defaultExpandIcon={<ChevronRightIcon />}
-      >
-        <TreeItem nodeId={"1"} label="test">
-          <TreeItem nodeId={"2"} label="test1" />
-        </TreeItem>
-      </TreeView>
+      <LHLabelCard />
+
+      <LHLabelDialog />
     </Drawer>
   );
 };

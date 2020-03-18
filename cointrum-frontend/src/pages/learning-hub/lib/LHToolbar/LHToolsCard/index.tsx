@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  WithStyles,
-  Card,
-  CardActions,
-  CardContent,
-  Typography
-} from "@material-ui/core";
+import { WithStyles, Card, CardContent, Typography } from "@material-ui/core";
 import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 
 import SpaceBarIcon from "@material-ui/icons/SpaceBar";
@@ -13,27 +7,18 @@ import ColorizeOutlinedIcon from "@material-ui/icons/ColorizeOutlined";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 
 import { styles, wrapStyles } from "./styles";
-import { ITradingMap } from "models";
 
-type LHToolsCardProps = WithStyles<typeof styles> & {
-  currentTradingMap: ITradingMap | null;
-};
+type LHToolsCardProps = WithStyles<typeof styles> & {};
 
 const LHToolsCard: React.FunctionComponent<LHToolsCardProps> = ({
-  classes,
-  currentTradingMap
+  classes
 }) => {
   return (
-    <Card style={{ textAlign: "left" }}>
+    <Card style={{ textAlign: "center" }}>
       <CardContent>
-        <Typography component="h2" className={classes.mapTitle}>
-          Seed Selection
-        </Typography>
         <Typography color="textSecondary" className={classes.descTexts}>
-          Tools
+          Seed Selection Tools
         </Typography>
-      </CardContent>
-      <CardActions>
         <ToggleButtonGroup size="medium" value={"test1"} exclusive>
           <ToggleButton key={2} value="test2">
             <ColorizeOutlinedIcon />
@@ -45,7 +30,7 @@ const LHToolsCard: React.FunctionComponent<LHToolsCardProps> = ({
             <VisibilityIcon />
           </ToggleButton>
         </ToggleButtonGroup>
-      </CardActions>
+      </CardContent>
     </Card>
   );
 };
