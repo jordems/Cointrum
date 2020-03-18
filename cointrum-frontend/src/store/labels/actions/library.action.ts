@@ -11,12 +11,21 @@ import { ILabel, ICreateLabel } from "models";
 type MyThunkResult<R> = ThunkAction<R, AppState, undefined, Action>;
 
 const labelConsumer = new RestfulAPIConsumer<ILabel, ICreateLabel>(
-  `/tradinglabel/${"TODOCHANGE"}/label`
+  `/tradinglabel/$temp/label`
 );
 
 export const fetchLabelLibrary = (): MyThunkResult<Promise<boolean>> => (
-  dispatch: (e: LabelLibraryTypes.Actions) => void
+  dispatch: (e: LabelLibraryTypes.Actions) => void,
+  getState
 ): Promise<boolean> => {
+  const currentTradingMap = getState().maps.current.map;
+
+  if (currentTradingMap === null) {
+    return Promise.reject("Current map Not Selected");
+  }
+
+  labelConsumer.setPath(`/tradinglabel/${currentTradingMap._id}/label`);
+
   return new Promise((resolve, reject) => {
     labelConsumer
       .fetchAllDocuments()
@@ -55,6 +64,8 @@ export const addLabeltoLibrary = (
     return Promise.reject("Current map Not Selected");
   }
 
+  labelConsumer.setPath(`/tradinglabel/${currentTradingMap._id}/label`);
+
   return new Promise((resolve, reject) => {
     labelConsumer
       .createDocument({ tradingmapid: currentTradingMap._id, ...label })
@@ -85,8 +96,17 @@ export const editLabelinLibrary = (
   id: string,
   label: ICreateLabel
 ): MyThunkResult<Promise<boolean>> => (
-  dispatch: (e: LabelCreateTypes.Actions | LabelLibraryTypes.Actions) => void
+  dispatch: (e: LabelCreateTypes.Actions | LabelLibraryTypes.Actions) => void,
+  getState
 ): Promise<boolean> => {
+  const currentTradingMap = getState().maps.current.map;
+
+  if (currentTradingMap === null) {
+    return Promise.reject("Current map Not Selected");
+  }
+
+  labelConsumer.setPath(`/tradinglabel/${currentTradingMap._id}/label`);
+
   return new Promise((resolve, reject) => {
     labelConsumer
       .editDocument({ _id: id, ...label } as ILabel)
@@ -119,6 +139,14 @@ export const removeLabelfromLibrary = (
   dispatch: (e: LabelLibraryTypes.Actions | LabelCurrentTypes.Actions) => void,
   getState
 ): Promise<boolean> => {
+  const currentTradingMap = getState().maps.current.map;
+
+  if (currentTradingMap === null) {
+    return Promise.reject("Current map Not Selected");
+  }
+
+  labelConsumer.setPath(`/tradinglabel/${currentTradingMap._id}/label`);
+
   const currentLabel = getState().labels.current.label;
 
   return new Promise((resolve, reject) => {

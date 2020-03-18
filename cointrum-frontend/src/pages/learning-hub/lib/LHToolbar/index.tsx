@@ -5,6 +5,8 @@ import { TreeItem, TreeView } from "@material-ui/lab";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 
+import LHToolsCard from "./LHToolsCard";
+
 import { styles, wrapStyles } from "./styles";
 import { ConnectedProps } from "react-redux";
 
@@ -23,7 +25,7 @@ const LHToolbar: React.FunctionComponent<LHToolbarProps> = ({ classes }) => {
       }}
       anchor="right"
     >
-      <div>Tool Selection: Pick Seed, Estimator Tool ... tool</div>
+      <LHToolsCard />
       <Divider />
       <div>
         List of Labels and seeds under label, removeable and add icon to create

@@ -16,6 +16,10 @@ export default class RestfulAPIConsumer<
     this.path = config.url + path;
   }
 
+  public setPath(path: string) {
+    this.path = config.url + path;
+  }
+
   public fetchAllDocuments(): Promise<DocumentModel[]> {
     return new Promise((resolve, reject) => {
       axios
