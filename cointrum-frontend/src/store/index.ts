@@ -2,11 +2,11 @@ import { createStore, combineReducers, applyMiddleware } from "redux";
 import thunkMiddleware from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
 
-import learningReducers from "./learning";
+import labelsReducers from "./labels";
 import mapsReducers from "./maps";
 
 const rootReducer = combineReducers({
-  learning: learningReducers,
+  labels: labelsReducers,
   maps: mapsReducers
 });
 
