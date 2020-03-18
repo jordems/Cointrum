@@ -9,7 +9,7 @@ import {
 import { styles, wrapStyles } from "./styles";
 import { ITradingMap } from "models";
 
-import MapTupleOptions from "./../MapTupleOptions";
+import MapTupleOptions from "./MapTupleOptions";
 
 type MapsTableBodyProps = WithStyles<typeof styles> & {
   loadingMaps: boolean;
@@ -51,9 +51,11 @@ const MapsTableBody: React.FunctionComponent<MapsTableBodyProps> = ({
             {maps[key].name}
           </TableCell>
           <TableCell>{maps[key].exchange}</TableCell>
+          <TableCell>{maps[key].cycleduration}</TableCell>
           <TableCell>
             {maps[key].basecurrency} - {maps[key].altcurrency}
           </TableCell>
+          <TableCell>{maps[key].created_date}</TableCell>
 
           <TableCell className={classes.tupleOptions}>
             <MapTupleOptions map={maps[key]} />

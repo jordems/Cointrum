@@ -6,6 +6,7 @@ export interface ITradingMap extends Document {
   exchange: string;
   basecurrency: string;
   altcurrency: string;
+  cycleduration: string;
 }
 
 const TradingMapSchema = new Schema({
@@ -27,6 +28,10 @@ const TradingMapSchema = new Schema({
   altcurrency: {
     type: String,
     required: "You Must select a Alternate Currency"
+  },
+  cycleduration: {
+    type: String,
+    required: "You Must select a Cycle Duration"
   },
   created_date: {
     type: Date,

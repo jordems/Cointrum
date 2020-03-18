@@ -715,6 +715,10 @@
         "altcurrency": {
           "type": "string",
           "default": "BNB"
+        },
+        "cycleduration": {
+          "type": "string",
+          "default": "1m"
         }
       }
     },

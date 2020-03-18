@@ -5,7 +5,7 @@ import { ConnectedProps } from "react-redux";
 import { styles, wrapStyles } from "./styles";
 import { connector } from "./redux";
 
-import MapCreationForm from "./../MapCreationForm";
+import MapCreationForm from "./MapCreationForm";
 
 type MapCreationDialogProps = WithStyles<typeof styles> &
   ConnectedProps<typeof connector>;

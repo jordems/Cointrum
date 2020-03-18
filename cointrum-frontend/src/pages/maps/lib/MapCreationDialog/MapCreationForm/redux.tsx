@@ -5,7 +5,8 @@ import {
   updateMapDesc,
   updateMapExchange,
   updateMapBaseCurrency,
-  updateMapAltCurrency
+  updateMapAltCurrency,
+  updateMapCycleDuration
 } from "store/maps/actions/create.action";
 
 import {
@@ -27,6 +28,7 @@ export const connector = connect(mapStateToProps, {
   updateMapExchange,
   updateMapBaseCurrency,
   updateMapAltCurrency,
+  updateMapCycleDuration,
   addMaptoLibrary,
   editMapinLibrary
 });

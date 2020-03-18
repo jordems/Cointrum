@@ -1,19 +1,8 @@
-import {
-  IAltCurrencies,
-  IBaseCurrencies,
-  IExchanges
-} from "shared-components/types";
 import { IError } from "services/api/ErrorTypes";
-import { ITradingMap } from "models";
+import { ITradingMap, ICreateTradingMap } from "models";
 
 export interface State {
-  form: {
-    name: string;
-    desc: string;
-    exchange: IExchanges;
-    basecurrency: IBaseCurrencies;
-    altcurrency: IAltCurrencies;
-  };
+  form: ICreateTradingMap;
   dialogOpen: boolean;
   editing?: string; // TradingMapID
   error?: IError;
@@ -68,6 +57,13 @@ interface MapUpdateFieldAltCurrency {
     value: State["form"]["altcurrency"];
   };
 }
+interface MapUpdateFieldCycleDuration {
+  type: typeof MAPCREATE_UPDATE;
+  payload: {
+    field: "cycleduration";
+    value: State["form"]["cycleduration"];
+  };
+}
 interface MapResetForm {
   type: typeof MAPCREATE_RESET_FORM;
 }
@@ -92,6 +88,7 @@ export type Actions =
   | MapUpdateFieldExchange
   | MapUpdateFieldBaseCurrency
   | MapUpdateFieldAltCurrency
+  | MapUpdateFieldCycleDuration
   | MapResetForm
   | MapCreationFailForm
   | MapSetDialog;

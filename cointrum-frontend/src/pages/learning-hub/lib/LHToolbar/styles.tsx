@@ -9,7 +9,9 @@ export const styles = (theme: Theme) =>
       flexShrink: 0
     },
     drawerPaper: {
-      width: drawerWidth
+      width: drawerWidth,
+      zIndex: 0,
+      marginTop: 64
     },
     toolbar: theme.mixins.toolbar
   });

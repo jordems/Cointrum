@@ -17,7 +17,8 @@ import {
   altcurrencies,
   exchanges,
   IBaseCurrencies,
-  IAltCurrencies
+  IAltCurrencies,
+  cycledurations
 } from "shared-components/types";
 
 import TypedTextField from "shared-components/form/textfield/TypedTextField";
@@ -39,6 +40,7 @@ const MapCreationForm: React.FunctionComponent<MapCreationFormProps> = ({
   updateMapExchange,
   updateMapBaseCurrency,
   updateMapAltCurrency,
+  updateMapCycleDuration,
   handleDismissDialog,
   addMaptoLibrary,
   editMapinLibrary
@@ -98,15 +100,22 @@ const MapCreationForm: React.FunctionComponent<MapCreationFormProps> = ({
                 multiline
                 value={form.desc}
                 onValueChange={updateMapDesc}
-                required
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={6}>
               <TypedSelect
                 label="Exchange"
                 value={form.exchange}
                 options={exchanges}
                 onValueChange={updateMapExchange}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TypedSelect
+                label="CycleDuration"
+                value={form.cycleduration}
+                options={cycledurations}
+                onValueChange={updateMapCycleDuration}
               />
             </Grid>
             <Grid item xs={6}>

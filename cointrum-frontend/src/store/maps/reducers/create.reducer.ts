@@ -6,7 +6,8 @@ const initialState: MapCreateTypes.State = {
     desc: "",
     exchange: "Binance",
     basecurrency: "BNB",
-    altcurrency: "BTC"
+    altcurrency: "BTC",
+    cycleduration: "1m"
   },
   dialogOpen: false,
   editing: "",

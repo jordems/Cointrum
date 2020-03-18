@@ -2,7 +2,8 @@ import * as MapCreateTypes from "./../types/create.types";
 import {
   IAltCurrencies,
   IBaseCurrencies,
-  IExchanges
+  IExchanges,
+  ICycleDurations
 } from "shared-components/types";
 import { ITradingMap } from "models";
 
@@ -84,6 +85,17 @@ export function updateMapAltCurrency(
     payload: {
       field: "altcurrency",
       value: altcurrency
+    }
+  };
+}
+export function updateMapCycleDuration(
+  cycleduration: ICycleDurations
+): MapCreateTypes.Actions {
+  return {
+    type: MapCreateTypes.MAPCREATE_UPDATE,
+    payload: {
+      field: "cycleduration",
+      value: cycleduration
     }
   };
 }

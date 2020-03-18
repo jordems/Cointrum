@@ -59,7 +59,9 @@ class MapsPage extends React.Component<MapsPageProps> {
               <TableRow>
                 <TableCell>Map Name</TableCell>
                 <TableCell>Exchange</TableCell>
+                <TableCell>Cycle Duration</TableCell>
                 <TableCell>Pair (Base - Alt)</TableCell>
+                <TableCell>Date Created</TableCell>
                 <TableCell></TableCell>
               </TableRow>
             </TableHead>
