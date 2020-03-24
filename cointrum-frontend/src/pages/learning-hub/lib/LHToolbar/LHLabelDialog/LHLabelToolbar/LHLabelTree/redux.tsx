@@ -2,12 +2,13 @@ import { connect } from "react-redux";
 
 import { AppState } from "store";
 
-import { closeMapDialog } from "store/maps/actions/create.action";
+import { openEditLabelDialog } from "store/labels/actions/create.action";
 
 const mapStateToProps = (state: AppState) => ({
-  dialogOpen: state.maps.create.dialogOpen
+  labels: state.labels.library.labels,
+  seedsbyLabel: state.seeds.library.seedsbyLabel
 });
 
 export const connector = connect(mapStateToProps, {
-  closeMapDialog
+  openEditLabelDialog
 });

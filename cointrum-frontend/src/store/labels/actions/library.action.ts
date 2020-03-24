@@ -105,7 +105,7 @@ export const editLabelinLibrary = (
     return Promise.reject("Current map Not Selected");
   }
 
-  labelConsumer.setPath(`/tradingmap/${currentTradingMap._id}/label/${id}`);
+  labelConsumer.setPath(`/tradingmap/${currentTradingMap._id}/label`);
 
   return new Promise((resolve, reject) => {
     labelConsumer
@@ -145,9 +145,7 @@ export const removeLabelfromLibrary = (
     return Promise.reject("Current map Not Selected");
   }
 
-  labelConsumer.setPath(
-    `/tradingmap/${currentTradingMap._id}/label/${labelid}`
-  );
+  labelConsumer.setPath(`/tradingmap/${currentTradingMap._id}/label`);
 
   const currentLabel = getState().labels.current.label;
 

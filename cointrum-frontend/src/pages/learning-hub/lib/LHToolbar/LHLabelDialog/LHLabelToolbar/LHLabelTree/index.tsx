@@ -7,63 +7,66 @@ import { styles, wrapStyles } from "./styles";
 import { connector } from "./redux";
 
 import CustomTreeItem from "shared-components/tree/customtreeitem/CustomTreeItem";
+import { ILabel } from "models";
 
 type LHLabelTreeProps = WithStyles<typeof styles> &
   ConnectedProps<typeof connector>;
 
 const LHLabelTree: React.FunctionComponent<LHLabelTreeProps> = ({
-  classes
+  classes,
+  labels,
+  seedsbyLabel,
+  openEditLabelDialog
 }) => {
+  const onEditClick = (label: ILabel) => {
+    openEditLabelDialog(label);
+  };
+
   return (
     <TreeView classes={{ root: classes.treeRoot }}>
-      <CustomTreeItem
-        nodeId="1"
-        label="Label 1"
-        labelCount="90"
-        colour="#1a73e8"
-        backgroundcolour="#e8f0fe"
-      >
-        <TreeItem
-          nodeId="2"
-          label={
-            <Typography color="textSecondary" className={classes.seedText}>
-              Seed1
-            </Typography>
-          }
-        />
-      </CustomTreeItem>
-      <CustomTreeItem
-        nodeId="3"
-        label="Label 2"
-        labelCount="90"
-        colour="#1a73e8"
-        backgroundcolour="#e8f0fe"
-      >
-        <TreeItem
-          nodeId="4"
-          label={
-            <Typography color="textSecondary" className={classes.seedText}>
-              Seed1
-            </Typography>
-          }
-        />
-      </CustomTreeItem>
-      <CustomTreeItem
-        nodeId="5"
-        label="Label 3"
-        labelCount="90"
-        colour="#1a73e8"
-        backgroundcolour="#e8f0fe"
-      >
-        <TreeItem
-          nodeId="6"
-          label={
-            <Typography color="textSecondary" className={classes.seedText}>
-              Seed1
-            </Typography>
-          }
-        />
-      </CustomTreeItem>
+      {Object.keys(labels).map(labelID => {
+        const label = labels[labelID];
+
+        const seedIDs =
+          seedsbyLabel[labelID] && Object.keys(seedsbyLabel[labelID]);
+
+        return (
+          <CustomTreeItem
+            key={labelID}
+            nodeId={labelID}
+            label={label.name}
+            labelCount={seedIDs ? seedIDs.length : 0}
+            labelData={label}
+            colour="#1a73e8"
+            backgroundcolour="#e8f0fe"
+            onEditClick={onEditClick}
+          >
+            {seedIDs &&
+              seedIDs.map(seedID => {
+                const seed =
+                  seedsbyLabel[labelID] && seedsbyLabel[labelID][seedID];
+                if (!seed) {
+                  return null;
+                }
+
+                return (
+                  <TreeItem
+                    key={seedID}
+                    nodeId={seedID}
+                    label={
+                      <Typography
+                        color="textSecondary"
+                        className={classes.seedText}
+                      >
+                        {seed.date_created.toDateString()}
+                      </Typography>
+                    }
+                  />
+                );
+              })}
+          </CustomTreeItem>
+        );
+      })}
     </TreeView>
   );
 };

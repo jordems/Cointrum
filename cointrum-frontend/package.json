@@ -32,7 +32,8 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
     "typeface-roboto": "0.0.75",
-    "typescript": "^3.8.2"
+    "typescript": "^3.8.2",
+    "uuidv4": "^6.0.6"
   },
   "scripts": {
     "start": "react-scripts start",
