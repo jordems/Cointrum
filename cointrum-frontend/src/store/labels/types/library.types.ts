@@ -3,7 +3,7 @@ import { IError } from "services/api/ErrorTypes";
 
 export interface State {
   labels: {
-    [labelid: number]: ILabel;
+    [labelid: string]: ILabel;
   };
   error?: IError;
   loadingLabels: boolean;

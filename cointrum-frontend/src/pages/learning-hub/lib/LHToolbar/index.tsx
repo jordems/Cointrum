@@ -2,8 +2,9 @@ import React from "react";
 import { WithStyles, Drawer, Divider } from "@material-ui/core";
 
 import LHToolsCard from "./LHToolsCard";
-import LHLabelCard from "./LHLabelCard";
+import LHLabelsCard from "./LHLabelsCard";
 import LHLabelDialog from "./LHLabelDialog";
+import LHLabelNew from "./LHLabelNew";
 
 import { styles, wrapStyles } from "./styles";
 import { ConnectedProps } from "react-redux";
@@ -25,9 +26,10 @@ const LHToolbar: React.FunctionComponent<LHToolbarProps> = ({ classes }) => {
     >
       <LHToolsCard />
       <Divider />
-      <LHLabelCard />
+      <LHLabelsCard />
 
       <LHLabelDialog />
+      <LHLabelNew />
     </Drawer>
   );
 };

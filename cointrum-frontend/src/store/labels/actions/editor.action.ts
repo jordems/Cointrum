@@ -1,4 +1,4 @@
-import * as LabelEditorTypes from "./../types/editor.types";
+import * as LabelEditorTypes from "../types/editor.types";
 
 export function openEditorLabelDialog(): LabelEditorTypes.Actions {
   return {

@@ -20,7 +20,7 @@ const MapCreationDialog: React.FunctionComponent<MapCreationDialogProps> = ({
       <Dialog
         open={dialogOpen}
         onClose={closeMapDialog}
-        aria-labelledby="create-trading-map-title"
+        aria-labelledby="create-trading-map"
       >
         <MapCreationForm handleDismissDialog={closeMapDialog} />
       </Dialog>

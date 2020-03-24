@@ -3,7 +3,7 @@ import { IError } from "services/api/ErrorTypes";
 
 export interface State {
   maps: {
-    [tradingmapid: number]: ITradingMap; //TODO TradingMap Schema Client
+    [tradingmapid: string]: ITradingMap;
   };
   error?: IError;
   loadingMaps: boolean;
@@ -19,7 +19,7 @@ export const MAPLIBRARY_REMOVE_MAP = "MAPLIBRARY_REMOVE_MAP";
 interface MapLibraryFetchMapsSuccess {
   type: typeof MAPLIBRARY_FETCH_MAPS_SUCCESS;
   payload: {
-    [tradingmapid: string]: ITradingMap; //TODO TradingMap Schema Client
+    [tradingmapid: string]: ITradingMap;
   };
 }
 

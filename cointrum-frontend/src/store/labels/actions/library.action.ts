@@ -11,7 +11,7 @@ import { ILabel, ICreateLabel } from "models";
 type MyThunkResult<R> = ThunkAction<R, AppState, undefined, Action>;
 
 const labelConsumer = new RestfulAPIConsumer<ILabel, ICreateLabel>(
-  `/tradinglabel/$temp/label`
+  `/tradingmap/$temp/label`
 );
 
 export const fetchLabelLibrary = (): MyThunkResult<Promise<boolean>> => (
@@ -24,7 +24,7 @@ export const fetchLabelLibrary = (): MyThunkResult<Promise<boolean>> => (
     return Promise.reject("Current map Not Selected");
   }
 
-  labelConsumer.setPath(`/tradinglabel/${currentTradingMap._id}/label`);
+  labelConsumer.setPath(`/tradingmap/${currentTradingMap._id}/label`);
 
   return new Promise((resolve, reject) => {
     labelConsumer
@@ -64,7 +64,7 @@ export const addLabeltoLibrary = (
     return Promise.reject("Current map Not Selected");
   }
 
-  labelConsumer.setPath(`/tradinglabel/${currentTradingMap._id}/label`);
+  labelConsumer.setPath(`/tradingmap/${currentTradingMap._id}/label`);
 
   return new Promise((resolve, reject) => {
     labelConsumer
@@ -105,7 +105,7 @@ export const editLabelinLibrary = (
     return Promise.reject("Current map Not Selected");
   }
 
-  labelConsumer.setPath(`/tradinglabel/${currentTradingMap._id}/label`);
+  labelConsumer.setPath(`/tradingmap/${currentTradingMap._id}/label/${id}`);
 
   return new Promise((resolve, reject) => {
     labelConsumer
@@ -145,7 +145,9 @@ export const removeLabelfromLibrary = (
     return Promise.reject("Current map Not Selected");
   }
 
-  labelConsumer.setPath(`/tradinglabel/${currentTradingMap._id}/label`);
+  labelConsumer.setPath(
+    `/tradingmap/${currentTradingMap._id}/label/${labelid}`
+  );
 
   const currentLabel = getState().labels.current.label;
 
