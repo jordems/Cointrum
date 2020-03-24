@@ -4,7 +4,7 @@ export const styles = (theme: Theme) =>
   createStyles({
     swatch: {
       padding: "5px",
-      background: "#fff",
+      background: theme.palette.grey[700],
       borderRadius: "2px",
       boxShadow: "0 0 0 1px rgba(0,0,0,.1)",
       display: "inline-block",
@@ -18,7 +18,7 @@ export const styles = (theme: Theme) =>
     popover: {
       position: "absolute",
       zIndex: 2,
-      right: 90
+      right: 48
     },
     cover: {
       position: "fixed",

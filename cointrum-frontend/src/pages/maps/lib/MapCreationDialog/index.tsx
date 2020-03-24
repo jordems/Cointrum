@@ -1,9 +1,11 @@
 import React from "react";
-import { WithStyles, Dialog } from "@material-ui/core";
+import { WithStyles } from "@material-ui/core";
 import { ConnectedProps } from "react-redux";
 
 import { styles, wrapStyles } from "./styles";
 import { connector } from "./redux";
+
+import TypedDialog from "shared-components/dialog/TypedDialog";
 
 import MapCreationForm from "./MapCreationForm";
 
@@ -17,13 +19,13 @@ const MapCreationDialog: React.FunctionComponent<MapCreationDialogProps> = ({
 }) => {
   return (
     <>
-      <Dialog
+      <TypedDialog
         open={dialogOpen}
         onClose={closeMapDialog}
         aria-labelledby="create-trading-map"
       >
         <MapCreationForm handleDismissDialog={closeMapDialog} />
-      </Dialog>
+      </TypedDialog>
     </>
   );
 };

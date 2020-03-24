@@ -2,18 +2,23 @@ import { Theme, createStyles, withStyles } from "@material-ui/core";
 
 export const styles = (theme: Theme) =>
   createStyles({
+    button: {
+      fontWeight: "normal",
+      textTransform: "none",
+      minWidth: 125
+    },
     selected: {
-      background: theme.palette.grey[200],
-      border: 2,
+      fontWeight: "bold",
+      color: theme.palette.common.white,
+      background: theme.palette.grey[700],
+      borderWidth: 2,
       "&:hover": {
-        background: theme.palette.grey[200]
-      },
-      color: "#424242"
+        background: theme.palette.grey[700]
+      }
     },
     default: {
-      color: theme.palette.primary.contrastText,
-      background: theme.palette.grey[700],
-      border: 1
+      borderWidth: 1,
+      background: theme.palette.grey[800]
     }
   });
 

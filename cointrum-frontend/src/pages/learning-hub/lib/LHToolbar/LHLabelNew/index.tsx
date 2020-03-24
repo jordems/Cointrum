@@ -1,9 +1,11 @@
 import React from "react";
-import { WithStyles, Dialog } from "@material-ui/core";
+import { WithStyles } from "@material-ui/core";
 import { ConnectedProps } from "react-redux";
 
 import { styles, wrapStyles } from "./styles";
 import { connector } from "./redux";
+
+import TypedDialog from "shared-components/dialog/TypedDialog";
 
 import LHLabelForm from "./LHLabelForm";
 
@@ -17,13 +19,13 @@ const LHLabelNew: React.FunctionComponent<LHLabelNewProps> = ({
 }) => {
   return (
     <>
-      <Dialog
+      <TypedDialog
         open={dialogOpen}
         onClose={closeLabelDialog}
         aria-labelledby="create-label"
       >
         <LHLabelForm />
-      </Dialog>
+      </TypedDialog>
     </>
   );
 };

@@ -1,9 +1,11 @@
 import React from "react";
-import { WithStyles, Dialog, Grid } from "@material-ui/core";
+import { WithStyles, Grid } from "@material-ui/core";
 import { ConnectedProps } from "react-redux";
 
 import { styles, wrapStyles } from "./styles";
 import { connector } from "./redux";
+
+import TypedDialog from "shared-components/dialog/TypedDialog";
 
 import LHLabelToolbar from "./LHLabelToolbar";
 
@@ -17,12 +19,12 @@ const LHLabelDialog: React.FunctionComponent<LHLabelDialogProps> = ({
 }) => {
   return (
     <>
-      <Dialog
+      <TypedDialog
         open={dialogOpen}
         fullWidth
         maxWidth="lg"
         onClose={closeLabelDialog}
-        aria-labelledby="create-trading-map-title"
+        aria-labelledby="view-label-options"
       >
         <Grid
           container
@@ -33,9 +35,9 @@ const LHLabelDialog: React.FunctionComponent<LHLabelDialogProps> = ({
           <Grid item>
             <LHLabelToolbar />
           </Grid>
-          <Grid item>MapView</Grid>
+          <Grid item>MapView OR LabelDetails</Grid>
         </Grid>
-      </Dialog>
+      </TypedDialog>
     </>
   );
 };

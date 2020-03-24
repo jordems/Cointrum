@@ -1,4 +1,5 @@
 import React from "react";
+import cx from "classnames";
 import { WithStyles, Button, ButtonGroup } from "@material-ui/core";
 
 import { styles, wrapStyles } from "./styles";
@@ -25,27 +26,38 @@ class LHLabelSelection extends React.Component<LHLabelSelectionProps> {
 
     return (
       <ButtonGroup orientation="vertical">
-        {Object.keys(labels).map(labelKey => (
-          <Button
-            key={`labelS${labelKey}`}
-            className={
-              current?._id === labels[labelKey]._id
-                ? classes.selected
-                : classes.default
-            }
-            style={
-              current?._id === labels[labelKey]._id
-                ? undefined
-                : {
-                    color: labels[labelKey].colour
-                  }
-            }
-            value={labels[labelKey]._id}
-            onClick={this.handleClick}
-          >
-            {labels[labelKey].name}
-          </Button>
-        ))}
+        {Object.keys(labels).map(labelKey => {
+          const selected: boolean = current?._id === labels[labelKey]._id;
+
+          if (selected) {
+            return (
+              <Button
+                key={`labelS${labelKey}`}
+                className={cx(classes.button, classes.selected)}
+                style={{ borderColor: labels[labelKey].colour }}
+                value={labels[labelKey]._id}
+                onClick={this.handleClick}
+              >
+                {labels[labelKey].name}
+              </Button>
+            );
+          } else {
+            return (
+              <Button
+                key={`labelS${labelKey}`}
+                className={cx(classes.button, classes.default)}
+                style={{
+                  color: labels[labelKey].colour,
+                  borderColor: labels[labelKey].colour
+                }}
+                value={labels[labelKey]._id}
+                onClick={this.handleClick}
+              >
+                {labels[labelKey].name}
+              </Button>
+            );
+          }
+        })}
       </ButtonGroup>
     );
   }
