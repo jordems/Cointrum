@@ -1,19 +1,12 @@
 import { Theme, createStyles, withStyles } from "@material-ui/core";
 
-const drawerWidth = 225;
-
 export const styles = (theme: Theme) =>
   createStyles({
-    drawer: {
-      width: drawerWidth,
-      flexShrink: 0
-    },
-    drawerPaper: {
-      width: drawerWidth,
-      zIndex: 0,
-      marginTop: 64
-    },
-    toolbar: theme.mixins.toolbar
+    closeIconContainer: {
+      position: "absolute",
+      top: 0,
+      right: 0
+    }
   });
 
 export function wrapStyles(component: any) {

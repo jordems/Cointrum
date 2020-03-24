@@ -78,7 +78,7 @@ const MapCreationForm: React.FunctionComponent<MapCreationFormProps> = ({
   });
   return (
     <>
-      <DialogTitle id="create-trading-map-title">
+      <DialogTitle id="create-trading-map">
         {editingMap !== undefined
           ? "Editing Trading Map"
           : "Create a new Trading Map"}

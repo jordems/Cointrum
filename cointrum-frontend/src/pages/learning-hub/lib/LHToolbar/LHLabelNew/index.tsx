@@ -7,27 +7,27 @@ import { connector } from "./redux";
 
 import TypedDialog from "shared-components/dialog/TypedDialog";
 
-import MapCreationForm from "./MapCreationForm";
+import LHLabelForm from "./LHLabelForm";
 
-type MapCreationDialogProps = WithStyles<typeof styles> &
+type LHLabelNewProps = WithStyles<typeof styles> &
   ConnectedProps<typeof connector>;
 
-const MapCreationDialog: React.FunctionComponent<MapCreationDialogProps> = ({
+const LHLabelNew: React.FunctionComponent<LHLabelNewProps> = ({
   classes,
   dialogOpen,
-  closeMapDialog
+  closeLabelDialog
 }) => {
   return (
     <>
       <TypedDialog
         open={dialogOpen}
-        onClose={closeMapDialog}
-        aria-labelledby="create-trading-map"
+        onClose={closeLabelDialog}
+        aria-labelledby="create-label"
       >
-        <MapCreationForm handleDismissDialog={closeMapDialog} />
+        <LHLabelForm />
       </TypedDialog>
     </>
   );
 };
 
-export default connector(wrapStyles(MapCreationDialog));
+export default connector(wrapStyles(LHLabelNew));
