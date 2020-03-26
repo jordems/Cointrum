@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 
-import SpaceBarIcon from "@material-ui/icons/SpaceBar";
+import PanToolIcon from "@material-ui/icons/PanTool";
 import ColorizeOutlinedIcon from "@material-ui/icons/ColorizeOutlined";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 
@@ -46,7 +46,7 @@ const LHToolsCard: React.FunctionComponent<LHToolsCardProps> = ({
             <ColorizeOutlinedIcon />
           </ToggleButton>
           <ToggleButton key={1} value="test2">
-            <SpaceBarIcon />
+            <PanToolIcon />
           </ToggleButton>
           <ToggleButton key={3} value="test3">
             <VisibilityIcon />

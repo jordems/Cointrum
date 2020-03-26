@@ -10,7 +10,7 @@ export const styles = (theme: Theme) =>
     },
     drawerPaper: {
       width: drawerWidth,
-      zIndex: 0,
+      zIndex: 2,
       marginTop: 64
     },
     toolbar: theme.mixins.toolbar
