@@ -5,7 +5,8 @@ import {
   CardContent,
   Typography,
   Button,
-  Divider
+  Divider,
+  CircularProgress
 } from "@material-ui/core";
 import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 
@@ -14,6 +15,7 @@ import ColorizeOutlinedIcon from "@material-ui/icons/ColorizeOutlined";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 
 import { ConnectedProps } from "react-redux";
+import { size } from "lodash";
 
 import { connector } from "./redux";
 
@@ -24,9 +26,14 @@ type LHToolsCardProps = WithStyles<typeof styles> &
 
 const LHToolsCard: React.FunctionComponent<LHToolsCardProps> = ({
   classes,
-  ulseedsbyLabel
+  ulseedsbyLabel,
+  learning,
+  learnSeeds
 }) => {
-  const selectedSeeds = Object.keys(ulseedsbyLabel).length;
+  let selectedSeeds = 0;
+  Object.keys(ulseedsbyLabel).forEach(labelID => {
+    selectedSeeds += Object.keys(ulseedsbyLabel[labelID]).length;
+  });
 
   return (
     <Card style={{ textAlign: "center" }}>
@@ -50,11 +57,18 @@ const LHToolsCard: React.FunctionComponent<LHToolsCardProps> = ({
           variant="contained"
           color={"primary"}
           disabled={selectedSeeds === 0}
+          onClick={learnSeeds}
         >
-          Learn
-          <Typography variant="caption">
-            ({selectedSeeds && selectedSeeds} seeds)
-          </Typography>
+          {learning ? (
+            <CircularProgress />
+          ) : (
+            <>
+              Learn
+              <Typography variant="caption">
+                ({selectedSeeds && selectedSeeds} seeds)
+              </Typography>
+            </>
+          )}
         </Button>
       </CardContent>
     </Card>

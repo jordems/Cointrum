@@ -3,6 +3,6 @@ export interface ISeed {
   tradingmapid: string;
   labelid: string;
   data: any;
-  date_created: Date;
+  created_date: Date;
   __v: number;
 }

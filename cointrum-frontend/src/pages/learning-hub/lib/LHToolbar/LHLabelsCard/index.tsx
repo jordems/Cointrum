@@ -21,7 +21,11 @@ type LHLabelsCardProps = WithStyles<typeof styles> &
 
 class LHLabelsCard extends React.Component<LHLabelsCardProps> {
   componentDidMount() {
-    this.props.fetchLabelLibrary();
+    this.props.fetchLabelLibrary().then(labels => {
+      labels.forEach(label => {
+        this.props.fetchSeedsByLabel(label);
+      });
+    });
   }
 
   render() {

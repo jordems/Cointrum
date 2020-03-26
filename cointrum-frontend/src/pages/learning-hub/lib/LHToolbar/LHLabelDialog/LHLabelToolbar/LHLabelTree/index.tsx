@@ -42,7 +42,7 @@ const LHLabelTree: React.FunctionComponent<LHLabelTreeProps> = ({
             onEditClick={onEditClick}
           >
             {seedIDs &&
-              seedIDs.map(seedID => {
+              seedIDs.map((seedID, idx) => {
                 const seed =
                   seedsbyLabel[labelID] && seedsbyLabel[labelID][seedID];
                 if (!seed) {
@@ -58,7 +58,7 @@ const LHLabelTree: React.FunctionComponent<LHLabelTreeProps> = ({
                         color="textSecondary"
                         className={classes.seedText}
                       >
-                        {seed.date_created.toDateString()}
+                        {idx + 1} {seed.created_date}
                       </Typography>
                     }
                   />

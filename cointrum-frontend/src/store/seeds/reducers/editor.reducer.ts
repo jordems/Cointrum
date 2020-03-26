@@ -3,7 +3,9 @@ import { omit } from "lodash";
 import * as SeedEditorTypes from "./../types/editor.types";
 
 const initialState: SeedEditorTypes.State = {
-  ulseedsbyLabel: {}
+  ulseedsbyLabel: {},
+  learning: false,
+  error: undefined
 };
 
 export function editorReducer(
@@ -45,6 +47,23 @@ export function editorReducer(
             )
           }
         }
+      };
+    case SeedEditorTypes.SEEDEDITOR_LEARN_ATTEMPT:
+      return {
+        ...state,
+        learning: true
+      };
+    case SeedEditorTypes.SEEDEDITOR_LEARN_SUCCESS:
+      return {
+        ...state,
+        ulseedsbyLabel: {},
+        learning: false
+      };
+    case SeedEditorTypes.SEEDEDITOR_LEARN_FAIL:
+      return {
+        ...state,
+        learning: false,
+        error: action.payload
       };
 
     default:

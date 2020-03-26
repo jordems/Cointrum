@@ -14,10 +14,10 @@ const labelConsumer = new RestfulAPIConsumer<ILabel, ICreateLabel>(
   `/tradingmap/$temp/label`
 );
 
-export const fetchLabelLibrary = (): MyThunkResult<Promise<boolean>> => (
+export const fetchLabelLibrary = (): MyThunkResult<Promise<ILabel[]>> => (
   dispatch: (e: LabelLibraryTypes.Actions) => void,
   getState
-): Promise<boolean> => {
+): Promise<ILabel[]> => {
   const currentTradingMap = getState().maps.current.map;
 
   if (currentTradingMap === null) {
@@ -40,7 +40,7 @@ export const fetchLabelLibrary = (): MyThunkResult<Promise<boolean>> => (
           type: LabelLibraryTypes.LABELLIBRARY_FETCH_LABELS_SUCCESS,
           payload: fetchLabel
         });
-        resolve();
+        resolve(labels);
       })
       .catch(err => {
         dispatch({
