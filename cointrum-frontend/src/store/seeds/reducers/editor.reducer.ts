@@ -5,7 +5,8 @@ import * as SeedEditorTypes from "./../types/editor.types";
 const initialState: SeedEditorTypes.State = {
   ulseedsbyLabel: {},
   learning: false,
-  error: undefined
+  error: undefined,
+  seedtool: "VIEW"
 };
 
 export function editorReducer(
@@ -65,7 +66,11 @@ export function editorReducer(
         learning: false,
         error: action.payload
       };
-
+    case SeedEditorTypes.SEEDEDITOR_CHANGE_SEEDTOOL:
+      return {
+        ...state,
+        seedtool: action.payload
+      };
     default:
       return state;
   }

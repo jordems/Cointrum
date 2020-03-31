@@ -28,12 +28,24 @@ const LHToolsCard: React.FunctionComponent<LHToolsCardProps> = ({
   classes,
   ulseedsbyLabel,
   learning,
-  learnSeeds
+  seedtool,
+  learnSeeds,
+  changeSeedTool
 }) => {
   let selectedSeeds = 0;
   Object.keys(ulseedsbyLabel).forEach(labelID => {
     selectedSeeds += Object.keys(ulseedsbyLabel[labelID]).length;
   });
+
+  const handleToolChange = (
+    _e: React.MouseEvent<HTMLElement, MouseEvent>,
+    value: "SEEDSELECT" | "VIEW" | "TEST"
+  ) => {
+    console.log(value);
+    if (value) {
+      changeSeedTool(value);
+    }
+  };
 
   return (
     <Card style={{ textAlign: "center" }}>
@@ -41,14 +53,19 @@ const LHToolsCard: React.FunctionComponent<LHToolsCardProps> = ({
         <Typography color="textSecondary" className={classes.descTexts}>
           Seed Selection Tools
         </Typography>
-        <ToggleButtonGroup size="medium" value={"test1"} exclusive>
-          <ToggleButton key={2} value="test1">
+        <ToggleButtonGroup
+          size="medium"
+          value={seedtool}
+          onChange={handleToolChange}
+          exclusive
+        >
+          <ToggleButton key={1} value="SEEDSELECT">
             <ColorizeOutlinedIcon />
           </ToggleButton>
-          <ToggleButton key={1} value="test2">
+          <ToggleButton key={2} value="VIEW">
             <PanToolIcon />
           </ToggleButton>
-          <ToggleButton key={3} value="test3">
+          <ToggleButton key={3} value="TEST">
             <VisibilityIcon />
           </ToggleButton>
         </ToggleButtonGroup>

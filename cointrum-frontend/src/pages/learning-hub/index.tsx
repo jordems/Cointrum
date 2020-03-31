@@ -4,7 +4,7 @@ import { WithStyles } from "@material-ui/core";
 import { ConnectedProps } from "react-redux";
 
 import LHToolbar from "./lib/LHToolbar";
-import TEMPSeedGenerator from "./lib/LHMapView/TEMPSeedGenerator";
+import LHMapView from "./lib/LHMapView";
 
 import { styles, wrapStyles } from "./styles";
 import { connector } from "./redux";
@@ -18,7 +18,7 @@ class LearningHubPage extends React.Component<LearningHubPageProps> {
       <div>
         <LHToolbar />
         <h1>Learning Hub</h1>
-        <TEMPSeedGenerator />
+        <LHMapView />
       </div>
     );
   }

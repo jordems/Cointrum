@@ -103,3 +103,12 @@ export const learnSeeds = (): MyThunkResult<Promise<boolean>> => (
     //TODO Place all editor seeds in db, then add seeds to redux Library
   });
 };
+
+export const changeSeedTool = (seedtool: "SEEDSELECT" | "VIEW" | "TEST") => (
+  dispatch: (e: SeedEditorTypes.Actions) => void
+): void => {
+  dispatch({
+    type: SeedEditorTypes.SEEDEDITOR_CHANGE_SEEDTOOL,
+    payload: seedtool
+  });
+};
