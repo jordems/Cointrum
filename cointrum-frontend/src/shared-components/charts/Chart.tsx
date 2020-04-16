@@ -7,7 +7,6 @@ import {
   createChart,
   IChartApi,
   MouseEventParams,
-  BarPrices,
   ISeriesApi,
   Nominal,
 } from "lightweight-charts";
@@ -26,13 +25,19 @@ type ChartProps = ConnectedProps<typeof connector> &
 
 interface State {
   chartState?: IChartApi;
-  currentHover: MouseEventParams;
-  currentSeedSelection: {
-    start: {
-      timestamp: Date;
+  candleSeries?: ISeriesApi<"Candlestick">;
+  currentStart?: {
+    timestamp: Date;
+    price: {
+      high: number;
+      low: number;
     };
-    end: {
-      timestamp: Date;
+  };
+  currentEnd?: {
+    timestamp: Date;
+    price: {
+      high: number;
+      low: number;
     };
   };
 }
@@ -40,24 +45,9 @@ interface State {
 class Chart extends React.Component<ChartProps> {
   readonly state: State = {
     chartState: undefined,
-    currentHover: {
-      time: undefined,
-      point: undefined,
-      hoveredSeries: undefined,
-      hoveredMarkerId: undefined,
-      seriesPrices: new Map<
-        ISeriesApi<"Bar" | "Candlestick" | "Area" | "Line" | "Histogram">,
-        Nominal<number, "BarPrice"> | BarPrices
-      >(),
-    },
-    currentSeedSelection: {
-      start: {
-        timestamp: new Date(),
-      },
-      end: {
-        timestamp: new Date(),
-      },
-    },
+    candleSeries: undefined,
+    currentStart: undefined,
+    currentEnd: undefined,
   };
 
   componentDidMount() {
@@ -72,13 +62,6 @@ class Chart extends React.Component<ChartProps> {
   componentDidUpdate(prevProps: ChartProps) {
     if (prevProps.mode !== this.props.mode) {
       this.applyMode();
-    }
-
-    if (
-      Object.keys(prevProps.ulseedsbyLabel).length !==
-      Object.keys(this.props.ulseedsbyLabel).length
-    ) {
-      this.applyULSeeds();
     }
   }
 
@@ -116,7 +99,7 @@ class Chart extends React.Component<ChartProps> {
         },
       });
 
-      chart.subscribeCrosshairMove(this.handleUpdateCurrentHover);
+      chart.subscribeClick(this.onMouseClick); //For Testing Tool
 
       var candleSeries = chart.addCandlestickSeries({
         upColor: "#81c784",
@@ -126,12 +109,14 @@ class Chart extends React.Component<ChartProps> {
         wickDownColor: "#d32f2f",
         wickUpColor: "#81c784",
       });
+
       this.applyMode(chart);
-      this.applyULSeeds(chart);
 
       candleSeries.setData(phds);
 
-      this.setState({ chartState: chart });
+      this.applyULSeeds(chart);
+
+      this.setState({ chartState: chart, candleSeries: candleSeries });
     }
   };
 
@@ -166,99 +151,108 @@ class Chart extends React.Component<ChartProps> {
     }
 
     if (chartState) {
-      const { ulseedsbyLabel, labels } = this.props;
+      const { currentLabel } = this.props;
+      const { currentStart, currentEnd } = this.state;
 
-      for (const labelid of Object.keys(ulseedsbyLabel)) {
-        for (const tseedid of Object.keys(ulseedsbyLabel[labelid])) {
-          const ulseed = ulseedsbyLabel[labelid][tseedid];
-          const label = labels[labelid];
-          console.log(label.colour.substr(1));
-          const seed = chartState.addAreaSeries({
-            title: label.name,
-            bottomColor: "#00" + label.colour.substr(1),
-            lineColor: label.colour,
-            topColor: label.colour,
-          });
-          seed.setData([
-            { time: ulseed.data.start.timestamp, value: 220 },
-            { time: ulseed.data.end.timestamp, value: 220 },
-          ]);
-        }
+      if (currentEnd && currentLabel) {
+        const endlabelonChart = chartState.addHistogramSeries({
+          title: "End Point",
+          base: currentEnd.price.low,
+        });
+
+        let data: any[] = [];
+
+        endlabelonChart.applyOptions({
+          base: currentEnd.price.low - 0.02 * currentEnd.price.low,
+        });
+        data.push({
+          time: currentEnd.timestamp,
+          value: currentEnd.price.high + 0.02 * currentEnd.price.low,
+          color: currentLabel.colour,
+        });
+
+        endlabelonChart.setData(data);
+      } else if (currentStart && currentLabel) {
+        const startlabelonChart = chartState.addHistogramSeries({
+          title: "Start Point",
+          base: currentStart.price.low,
+        });
+
+        let data: any[] = [];
+
+        startlabelonChart.applyOptions({
+          base: currentStart.price.low - 0.02 * currentStart.price.low,
+        });
+        data.push({
+          time: currentStart.timestamp,
+          value: currentStart.price.high + 0.02 * currentStart.price.low,
+          color: currentLabel.colour,
+        });
+
+        startlabelonChart.setData(data);
       }
+
       if (!chart) {
         this.setState({ chartState: chartState });
       }
     }
   };
 
-  handleUpdateCurrentHover = (e: MouseEventParams) => {
-    this.setState({ currentHover: e });
-  };
-
   onResize = () => {
     this.buildChart();
   };
 
-  onMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  onMouseClick = (e: MouseEventParams) => {
     if (this.props.mode === "SEEDSELECT") {
-      const { currentHover, currentSeedSelection } = this.state;
-      console.log({
-        start: {
-          timestamp: currentHover.time,
-        },
-      });
-      this.setState({
-        currentSeedSelection: {
-          ...currentSeedSelection,
-          start: {
-            timestamp: currentHover.time,
+      const time = e.time;
+      const price = e.seriesPrices.entries().next();
+
+      const { currentStart, currentEnd } = this.state;
+      if (!currentStart && price && price.value) {
+        this.setState({
+          currentStart: {
+            timestamp: time,
+            price: price.value[1],
           },
-        },
-      });
-    }
-  };
-
-  onMouseUp = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (this.props.mode === "SEEDSELECT") {
-      const { currentHover, currentSeedSelection } = this.state;
-      this.setState({
-        currentSeedSelection: {
-          ...currentSeedSelection,
-          end: {
-            timestamp: currentHover.time,
-            point: currentHover.point,
+        });
+        console.log("Set Start Point", time, price.value[1]);
+        this.applyULSeeds();
+      } else if (!currentEnd && currentStart && price && price.value) {
+        this.setState({
+          currentEnd: {
+            timestamp: time,
+            price: price.value[1],
           },
-        },
-      });
+        });
+        console.log("Set End Point", time, price.value[1]);
+        this.applyULSeeds();
 
-      // TODO Get max value within seed bounds and set to `max`
-
-      const newSeed: ICreateSeed = {
-        tempid: uuid(),
-        data: {
-          ...currentSeedSelection,
-          end: {
-            timestamp: currentHover.time,
+        const newSeed: ICreateSeed = {
+          tempid: uuid(),
+          data: {
+            start: {
+              timestamp: currentStart.timestamp,
+            },
+            end: {
+              timestamp: time,
+            },
+            max: 120,
           },
-          max: 120,
-        },
-      };
+        };
+        this.props.addSeedtoLabelUL(newSeed);
 
-      this.props.addSeedtoLabelUL(newSeed);
+        this.setState({ currentStart: undefined, currentEnd: undefined });
+      }
+
+      console.log(e);
+      //window.addEventListener("mouseup", )
     }
   };
 
   render() {
     const { classes, chartID } = this.props;
 
-    return (
-      <div
-        id={`Chart-${chartID}`}
-        className={classes.root}
-        onMouseDown={this.onMouseDown}
-        onMouseUp={this.onMouseUp}
-      ></div>
-    );
+    return <div id={`Chart-${chartID}`} className={classes.root}></div>;
   }
 }
 

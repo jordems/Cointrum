@@ -6,9 +6,8 @@ import { addSeedtoLabelUL } from "store/seeds/actions/editor.action";
 import { testCandles } from "./TESTDATA";
 
 const mapStateToProps = (state: AppState) => ({
-  ulseedsbyLabel: state.seeds.editor.ulseedsbyLabel,
   mode: state.seeds.editor.seedtool,
-  labels: state.labels.library.labels,
+  currentLabel: state.labels.current.label,
   phds: testCandles,
 });
 
