@@ -1,38 +1,98 @@
 import React from "react";
-import { WithStyles, Card, CardContent, Typography } from "@material-ui/core";
+import {
+  WithStyles,
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Divider,
+  CircularProgress,
+  CardActions,
+} from "@material-ui/core";
 import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 
-import SpaceBarIcon from "@material-ui/icons/SpaceBar";
+import PanToolIcon from "@material-ui/icons/PanTool";
 import ColorizeOutlinedIcon from "@material-ui/icons/ColorizeOutlined";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 
+import { ConnectedProps } from "react-redux";
+import { size } from "lodash";
+
+import { connector } from "./redux";
+
 import { styles, wrapStyles } from "./styles";
 
-type LHToolsCardProps = WithStyles<typeof styles> & {};
+type LHToolsCardProps = WithStyles<typeof styles> &
+  ConnectedProps<typeof connector>;
 
 const LHToolsCard: React.FunctionComponent<LHToolsCardProps> = ({
-  classes
+  classes,
+  ulseedsbyLabel,
+  learning,
+  seedtool,
+  learnSeeds,
+  changeSeedTool,
 }) => {
+  let selectedSeeds = 0;
+  Object.keys(ulseedsbyLabel).forEach((labelID) => {
+    selectedSeeds += Object.keys(ulseedsbyLabel[labelID]).length;
+  });
+
+  const handleToolChange = (
+    _e: React.MouseEvent<HTMLElement, MouseEvent>,
+    value: "SEEDSELECT" | "VIEW" | "TEST"
+  ) => {
+    console.log(value);
+    if (value) {
+      changeSeedTool(value);
+    }
+  };
+
   return (
-    <Card style={{ textAlign: "center" }}>
-      <CardContent>
+    <Card className={classes.root}>
+      <CardContent className={classes.cardContent}>
         <Typography color="textSecondary" className={classes.descTexts}>
           Seed Selection Tools
         </Typography>
-        <ToggleButtonGroup size="medium" value={"test1"} exclusive>
-          <ToggleButton key={2} value="test2">
+        <ToggleButtonGroup
+          size="medium"
+          value={seedtool}
+          onChange={handleToolChange}
+          exclusive
+        >
+          <ToggleButton key={1} value="SEEDSELECT">
             <ColorizeOutlinedIcon />
           </ToggleButton>
-          <ToggleButton key={1} value="test1">
-            <SpaceBarIcon />
-          </ToggleButton>
-          <ToggleButton key={3} value="test3">
+          {/* <ToggleButton key={2} value="VIEW">
+            <PanToolIcon />
+          </ToggleButton> */}
+          <ToggleButton key={3} value="TEST">
             <VisibilityIcon />
           </ToggleButton>
         </ToggleButtonGroup>
       </CardContent>
+      <CardActions>
+        <Button
+          variant="contained"
+          color={"primary"}
+          disabled={selectedSeeds === 0}
+          onClick={learnSeeds}
+          className={classes.learnButton}
+        >
+          {learning ? (
+            <CircularProgress />
+          ) : (
+            <>
+              Learn
+              <Typography variant="caption">
+                ({selectedSeeds && selectedSeeds} seeds)
+              </Typography>
+            </>
+          )}
+        </Button>
+      </CardActions>
     </Card>
   );
 };
 
-export default wrapStyles(LHToolsCard);
+export default connector(wrapStyles(LHToolsCard));

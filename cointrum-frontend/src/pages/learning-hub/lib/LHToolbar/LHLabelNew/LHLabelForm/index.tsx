@@ -55,9 +55,7 @@ const LHLabelForm: React.FunctionComponent<LHLabelFormProps> = ({
   return (
     <>
       <DialogTitle id="create-label">
-        {editingLabel !== undefined
-          ? "Editing Trading Map"
-          : "Create a new Trading Map"}
+        {editingLabel !== undefined ? "Editing Label" : "Create a new Label"}
       </DialogTitle>
       <DialogContent>
         <form onSubmit={onSubmit}>

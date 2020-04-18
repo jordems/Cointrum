@@ -2,13 +2,17 @@ import { connect } from "react-redux";
 
 import { AppState } from "store";
 
-import { openEditLabelDialog } from "store/labels/actions/create.action";
+import {
+  clearSeedsUL,
+  removeSeedfromlabelUL,
+} from "store/seeds/actions/editor.action";
 
 const mapStateToProps = (state: AppState) => ({
+  ulseedsbyLabel: state.seeds.editor.ulseedsbyLabel,
   labels: state.labels.library.labels,
-  seedsbyLabel: state.seeds.library.seedsbyLabel
 });
 
 export const connector = connect(mapStateToProps, {
-  openEditLabelDialog
+  clearSeedsUL,
+  removeSeedfromlabelUL,
 });

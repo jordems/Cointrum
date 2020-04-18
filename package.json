@@ -1,0 +1,11 @@
+{
+  "name": "cointrum",
+  "scripts": {
+    "installdeps": "concurrently --kill-others \"cd cointrum-frontend && npm i\" \"cd cointrum-mainapi && npm i\"",
+    "dev": "concurrently --kill-others \"cd cointrum-frontend && npm start\" \"cd cointrum-mainapi && npm run dev\""
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^5.1.0"
+  }
+}

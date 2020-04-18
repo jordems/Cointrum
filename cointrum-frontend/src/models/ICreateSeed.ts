@@ -1,4 +1,8 @@
 export interface ICreateSeed {
   tempid: string;
-  data: any;
+  data: {
+    start: { timestamp: any };
+    end: { timestamp: any };
+    max: number;
+  };
 }

@@ -1,6 +1,7 @@
-import { omit } from "lodash";
+import { omit, cloneDeep } from "lodash";
 
 import * as SeedLibraryTypes from "./../types/library.types";
+import { ISeed } from "models";
 
 const initialState: SeedLibraryTypes.State = {
   seedsbyLabel: {},
@@ -16,13 +17,7 @@ export function libraryReducer(
     case SeedLibraryTypes.SEEDLIBRARY_FETCH_SEEDS_FOR_LABEL_SUCCESS:
       return {
         ...state,
-        seedsbyLabel: {
-          ...state.seedsbyLabel,
-          [action.payload.labelid]: {
-            ...state.seedsbyLabel[action.payload.labelid],
-            ...action.payload.seeds
-          }
-        },
+        seedsbyLabel: addSeeds(action.payload, state.seedsbyLabel),
         error: undefined,
         loading: false
       };
@@ -32,16 +27,10 @@ export function libraryReducer(
         error: action.payload,
         loading: false
       };
-    case SeedLibraryTypes.SEEDLIBRARY_ADD_SEEDS_TO_LABEL:
+    case SeedLibraryTypes.SEEDLIBRARY_ADD_SEEDS:
       return {
         ...state,
-        seedsbyLabel: {
-          ...state.seedsbyLabel,
-          [action.payload.labelid]: {
-            ...state.seedsbyLabel[action.payload.labelid],
-            ...action.payload.seeds
-          }
-        }
+        seedsbyLabel: addSeeds(action.payload, state.seedsbyLabel)
       };
     case SeedLibraryTypes.SEEDLIBRARY_EDIT_SEED:
       return {
@@ -70,4 +59,23 @@ export function libraryReducer(
     default:
       return state;
   }
+}
+
+function addSeeds(
+  seeds: ISeed[],
+  seedsbyLabel: {
+    [labelid: string]: { [seedid: string]: ISeed };
+  }
+): {
+  [labelid: string]: { [seedid: string]: ISeed };
+} {
+  const newSeedsbyLabel = cloneDeep(seedsbyLabel);
+
+  seeds.forEach(seed => {
+    if (!(seed.labelid in newSeedsbyLabel)) {
+      newSeedsbyLabel[seed.labelid] = {};
+    }
+    newSeedsbyLabel[seed.labelid][seed._id] = seed;
+  });
+  return newSeedsbyLabel;
 }

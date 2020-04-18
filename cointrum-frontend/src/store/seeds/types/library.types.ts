@@ -14,19 +14,14 @@ export const SEEDLIBRARY_FETCH_SEEDS_FOR_LABEL_SUCCESS =
 export const SEEDLIBRARY_FETCH_SEEDS_FOR_LABEL_FAIL =
   "SEEDLIBRARY_FETCH_SEEDS_FOR_LABEL_FAIL";
 
-export const SEEDLIBRARY_ADD_SEEDS_TO_LABEL = "SEEDLIBRARY_ADD_SEEDS_TO_LABEL";
+export const SEEDLIBRARY_ADD_SEEDS = "SEEDLIBRARY_ADD_SEEDS";
 export const SEEDLIBRARY_EDIT_SEED = "SEEDLIBRARY_EDIT_SEED";
 export const SEEDLIBRARY_REMOVE_SEED_FROM_LABEL =
   "SEEDLIBRARY_REMOVE_SEED_FROM_LABEL";
 
 interface SeedLibraryFetchSeedsForLabelSuccess {
   type: typeof SEEDLIBRARY_FETCH_SEEDS_FOR_LABEL_SUCCESS;
-  payload: {
-    labelid: string;
-    seeds: {
-      [seedid: string]: ISeed;
-    };
-  };
+  payload: ISeed[];
 }
 
 interface SeedLibraryFetchSeedsForLabelFail {
@@ -34,14 +29,9 @@ interface SeedLibraryFetchSeedsForLabelFail {
   payload: IError;
 }
 
-interface SeedLibraryAddSeedstoLabel {
-  type: typeof SEEDLIBRARY_ADD_SEEDS_TO_LABEL;
-  payload: {
-    labelid: string;
-    seeds: {
-      [seedid: string]: ISeed;
-    };
-  };
+interface SeedLibraryAddSeeds {
+  type: typeof SEEDLIBRARY_ADD_SEEDS;
+  payload: ISeed[];
 }
 interface SeedLibraryEditSeed {
   type: typeof SEEDLIBRARY_EDIT_SEED;
@@ -61,6 +51,6 @@ interface SeedLibraryRemoveSeedFromLabel {
 export type Actions =
   | SeedLibraryFetchSeedsForLabelSuccess
   | SeedLibraryFetchSeedsForLabelFail
-  | SeedLibraryAddSeedstoLabel
+  | SeedLibraryAddSeeds
   | SeedLibraryEditSeed
   | SeedLibraryRemoveSeedFromLabel;

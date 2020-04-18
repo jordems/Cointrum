@@ -1,5 +1,5 @@
 import React from "react";
-import { WithStyles, Paper, Grid } from "@material-ui/core";
+import { WithStyles, Paper, Grid, Typography } from "@material-ui/core";
 import { ConnectedProps } from "react-redux";
 
 import { styles, wrapStyles } from "./styles";
@@ -22,9 +22,13 @@ const LHLabelToolbar: React.FunctionComponent<LHLabelToolbarProps> = ({
         alignItems="center"
       >
         <Grid item>
+          <Typography color="textSecondary" className={classes.descTexts}>
+            Labels
+          </Typography>
+        </Grid>
+        <Grid item>
           <LHLabelTree />
         </Grid>
-        <Grid item>LabelToolsCard(may not need)</Grid>
       </Grid>
     </Paper>
   );

@@ -5,6 +5,7 @@ import { TreeItem, TreeItemProps } from "@material-ui/lab";
 import EditIcon from "@material-ui/icons/Edit";
 
 import { styles, wrapStyles } from "./styles";
+import { ILabel } from "models";
 
 declare module "csstype" {
   interface Properties {
@@ -17,11 +18,17 @@ type CustomTreeItemProps = WithStyles<typeof styles> &
   TreeItemProps & {
     label: string;
     labelCount: number;
+    labelData: ILabel;
     colour: string;
     backgroundcolour: string;
+    onEditClick: (label: ILabel) => void;
   };
 
 class CustomTreeItem extends React.Component<CustomTreeItemProps> {
+  handleEditClick = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+    this.props.onEditClick(this.props.labelData);
+  };
+
   render() {
     const {
       classes,
@@ -30,6 +37,8 @@ class CustomTreeItem extends React.Component<CustomTreeItemProps> {
       labelCount,
       colour,
       backgroundcolour,
+      onEditClick,
+      labelData,
       ...other
     } = this.props;
     return (
@@ -39,10 +48,7 @@ class CustomTreeItem extends React.Component<CustomTreeItemProps> {
           <EditIcon
             style={{ marginLeft: 6 }}
             color="inherit"
-            onClick={e => {
-              e.preventDefault();
-              console.log("Edit");
-            }}
+            onClick={this.handleEditClick}
           />
         }
         label={
