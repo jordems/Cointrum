@@ -20,12 +20,12 @@ const LHToolbar: React.FunctionComponent<LHToolbarProps> = ({ classes }) => {
       className={classes.drawer}
       variant="permanent"
       classes={{
-        paper: classes.drawerPaper
+        paper: classes.drawerPaper,
       }}
       anchor="right"
     >
       <LHToolsCard />
-      <Divider />
+
       <LHLabelsCard />
 
       <LHLabelDialog />

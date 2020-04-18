@@ -6,7 +6,7 @@ const initialState: SeedEditorTypes.State = {
   ulseedsbyLabel: {},
   learning: false,
   error: undefined,
-  seedtool: "VIEW",
+  seedtool: "SEEDSELECT",
 };
 
 export function editorReducer(

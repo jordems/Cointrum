@@ -6,7 +6,8 @@ import {
   Typography,
   Button,
   Divider,
-  CircularProgress
+  CircularProgress,
+  CardActions,
 } from "@material-ui/core";
 import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 
@@ -30,10 +31,10 @@ const LHToolsCard: React.FunctionComponent<LHToolsCardProps> = ({
   learning,
   seedtool,
   learnSeeds,
-  changeSeedTool
+  changeSeedTool,
 }) => {
   let selectedSeeds = 0;
-  Object.keys(ulseedsbyLabel).forEach(labelID => {
+  Object.keys(ulseedsbyLabel).forEach((labelID) => {
     selectedSeeds += Object.keys(ulseedsbyLabel[labelID]).length;
   });
 
@@ -48,8 +49,8 @@ const LHToolsCard: React.FunctionComponent<LHToolsCardProps> = ({
   };
 
   return (
-    <Card style={{ textAlign: "center" }}>
-      <CardContent>
+    <Card className={classes.root}>
+      <CardContent className={classes.cardContent}>
         <Typography color="textSecondary" className={classes.descTexts}>
           Seed Selection Tools
         </Typography>
@@ -62,19 +63,21 @@ const LHToolsCard: React.FunctionComponent<LHToolsCardProps> = ({
           <ToggleButton key={1} value="SEEDSELECT">
             <ColorizeOutlinedIcon />
           </ToggleButton>
-          <ToggleButton key={2} value="VIEW">
+          {/* <ToggleButton key={2} value="VIEW">
             <PanToolIcon />
-          </ToggleButton>
+          </ToggleButton> */}
           <ToggleButton key={3} value="TEST">
             <VisibilityIcon />
           </ToggleButton>
         </ToggleButtonGroup>
-        <Divider />
+      </CardContent>
+      <CardActions>
         <Button
           variant="contained"
           color={"primary"}
           disabled={selectedSeeds === 0}
           onClick={learnSeeds}
+          className={classes.learnButton}
         >
           {learning ? (
             <CircularProgress />
@@ -87,7 +90,7 @@ const LHToolsCard: React.FunctionComponent<LHToolsCardProps> = ({
             </>
           )}
         </Button>
-      </CardContent>
+      </CardActions>
     </Card>
   );
 };

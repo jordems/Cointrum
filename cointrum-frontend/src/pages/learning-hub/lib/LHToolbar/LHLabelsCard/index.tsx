@@ -6,7 +6,7 @@ import {
   Typography,
   Button,
   CardActions,
-  CircularProgress
+  CircularProgress,
 } from "@material-ui/core";
 
 import LHLabelSelection from "./LHLabelSelection";
@@ -21,8 +21,8 @@ type LHLabelsCardProps = WithStyles<typeof styles> &
 
 class LHLabelsCard extends React.Component<LHLabelsCardProps> {
   componentDidMount() {
-    this.props.fetchLabelLibrary().then(labels => {
-      labels.forEach(label => {
+    this.props.fetchLabelLibrary().then((labels) => {
+      labels.forEach((label) => {
         this.props.fetchSeedsByLabel(label);
       });
     });
@@ -35,12 +35,12 @@ class LHLabelsCard extends React.Component<LHLabelsCardProps> {
       loading,
       error,
       openCreateLabelDialog,
-      openEditorLabelDialog
+      openEditorLabelDialog,
     } = this.props;
 
     return (
-      <Card style={{ textAlign: "center" }}>
-        <CardContent>
+      <Card className={classes.root}>
+        <CardContent className={classes.cardContent}>
           <Typography color="textSecondary" className={classes.descTexts}>
             Labels
           </Typography>

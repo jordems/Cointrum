@@ -129,17 +129,17 @@ class Chart extends React.Component<ChartProps> {
     if (!chart) {
       chartState = this.state.chartState;
     }
-    if (this.props.mode === "SEEDSELECT") {
-      chartState?.applyOptions({
-        handleScroll: false,
-        handleScale: false,
-      });
-    } else {
-      chartState?.applyOptions({
-        handleScroll: true,
-        handleScale: true,
-      });
-    }
+    // if (this.props.mode === "SEEDSELECT") {
+    //   chartState?.applyOptions({
+    //     handleScroll: false,
+    //     handleScale: false,
+    //   });
+    // } else {
+    chartState?.applyOptions({
+      handleScroll: true,
+      handleScale: true,
+    });
+    // }
 
     if (!chart) {
       this.setState({ chartState: chartState });
@@ -222,6 +222,11 @@ class Chart extends React.Component<ChartProps> {
 
   onMouseClick = (e: MouseEventParams) => {
     if (this.props.mode === "SEEDSELECT") {
+      if (!this.props.currentLabel) {
+        alert("Select a label before adding seeds!");
+        return;
+      }
+
       const time = e.time;
       const price = e.seriesPrices.entries().next();
 
