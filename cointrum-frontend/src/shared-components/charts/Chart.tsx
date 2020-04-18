@@ -42,6 +42,9 @@ interface State {
   };
 }
 
+let startSeries: ISeriesApi<"Histogram"> | undefined;
+let endSeries: ISeriesApi<"Histogram"> | undefined;
+
 class Chart extends React.Component<ChartProps> {
   readonly state: State = {
     chartState: undefined,
@@ -155,14 +158,14 @@ class Chart extends React.Component<ChartProps> {
       const { currentStart, currentEnd } = this.state;
 
       if (currentEnd && currentLabel) {
-        const endlabelonChart = chartState.addHistogramSeries({
+        endSeries = chartState.addHistogramSeries({
           title: "End Point",
           base: currentEnd.price.low,
         });
 
         let data: any[] = [];
 
-        endlabelonChart.applyOptions({
+        endSeries.applyOptions({
           base: currentEnd.price.low - 0.02 * currentEnd.price.low,
         });
         data.push({
@@ -171,16 +174,16 @@ class Chart extends React.Component<ChartProps> {
           color: currentLabel.colour,
         });
 
-        endlabelonChart.setData(data);
+        endSeries.setData(data);
       } else if (currentStart && currentLabel) {
-        const startlabelonChart = chartState.addHistogramSeries({
+        startSeries = chartState.addHistogramSeries({
           title: "Start Point",
           base: currentStart.price.low,
         });
 
         let data: any[] = [];
 
-        startlabelonChart.applyOptions({
+        startSeries.applyOptions({
           base: currentStart.price.low - 0.02 * currentStart.price.low,
         });
         data.push({
@@ -189,13 +192,28 @@ class Chart extends React.Component<ChartProps> {
           color: currentLabel.colour,
         });
 
-        startlabelonChart.setData(data);
+        startSeries.setData(data);
       }
 
       if (!chart) {
         this.setState({ chartState: chartState });
       }
     }
+  };
+
+  resetChartExtras = (chart?: IChartApi) => {
+    let chartState = chart;
+
+    if (!chart) {
+      chartState = this.state.chartState;
+    }
+
+    if (chartState) {
+      if (startSeries) chartState.removeSeries(startSeries);
+
+      if (endSeries) chartState.removeSeries(endSeries);
+    }
+    this.setState({ chartState: chartState });
   };
 
   onResize = () => {
@@ -240,6 +258,10 @@ class Chart extends React.Component<ChartProps> {
           },
         };
         this.props.addSeedtoLabelUL(newSeed);
+
+        setTimeout(() => {
+          this.resetChartExtras();
+        }, 50);
 
         this.setState({ currentStart: undefined, currentEnd: undefined });
       }

@@ -28,6 +28,8 @@ const LHSeedsSelectedCard: React.FunctionComponent<LHSeedsSelectedProps> = ({
   classes,
   ulseedsbyLabel,
   labels,
+  clearSeedsUL,
+  removeSeedfromlabelUL,
 }) => {
   if (Object.keys(ulseedsbyLabel).length < 1) {
     return null;
@@ -83,6 +85,9 @@ const LHSeedsSelectedCard: React.FunctionComponent<LHSeedsSelectedProps> = ({
                           <ListItemIcon>
                             <IconButton
                               className={classes.nestedListDeleteIconButton}
+                              onClick={() =>
+                                removeSeedfromlabelUL(labelID, seedID)
+                              }
                             >
                               <DeleteIcon
                                 className={classes.nestedListDeleteIcon}
@@ -101,7 +106,7 @@ const LHSeedsSelectedCard: React.FunctionComponent<LHSeedsSelectedProps> = ({
           <Button
             size="small"
             style={{ marginLeft: "auto" }}
-            // onClick={openEditorLabelDialog}
+            onClick={clearSeedsUL}
           >
             Clear
           </Button>

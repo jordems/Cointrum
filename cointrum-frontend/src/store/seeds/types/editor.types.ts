@@ -16,6 +16,7 @@ export const SEEDEDITOR_ADD_SEED_TO_LABEL = "SEEDEDITOR_ADD_SEED_TO_LABEL";
 export const SEEDEDITOR_EDIT_SEED = "SEEDEDITOR_EDIT_SEED";
 export const SEEDEDITOR_REMOVE_SEED_TO_LABEL =
   "SEEDEDITOR_REMOVE_SEED_TO_LABEL";
+export const SEEDEDITOR_CLEAR_SEEDS = "SEEDEDITOR_CLEAR_SEEDS";
 
 export const SEEDEDITOR_LEARN_ATTEMPT = "SEEDEDITOR_LEARN_ATTEMPT";
 export const SEEDEDITOR_LEARN_SUCCESS = "SEEDEDITOR_LEARN_SUCCESS";
@@ -45,6 +46,10 @@ interface SeedEditorRemoveSeedFromLabel {
   };
 }
 
+interface SeedEditorClearSeeds {
+  type: typeof SEEDEDITOR_CLEAR_SEEDS;
+}
+
 interface SeedEditorLearnAttempt {
   type: typeof SEEDEDITOR_LEARN_ATTEMPT;
 }
@@ -65,6 +70,7 @@ export type Actions =
   | SeedEditorAddSeedToLabel
   | SeedEditorEditSeed
   | SeedEditorRemoveSeedFromLabel
+  | SeedEditorClearSeeds
   | SeedEditorLearnAttempt
   | SeedEditorLearnSuccess
   | SeedEditorLearnFail

@@ -23,8 +23,8 @@ export const addSeedtoLabelUL = (seed: ICreateSeed) => (
     type: SeedEditorTypes.SEEDEDITOR_ADD_SEED_TO_LABEL,
     payload: {
       labelid: selectedLabelID,
-      seed
-    }
+      seed,
+    },
   });
 };
 
@@ -35,8 +35,8 @@ export const editSeedUL = (labelid: string, seed: ICreateSeed) => (
     type: SeedEditorTypes.SEEDEDITOR_EDIT_SEED,
     payload: {
       labelid: labelid,
-      seed
-    }
+      seed,
+    },
   });
 };
 
@@ -47,8 +47,16 @@ export const removeSeedfromlabelUL = (labelid: string, tempseedid: string) => (
     type: SeedEditorTypes.SEEDEDITOR_REMOVE_SEED_TO_LABEL,
     payload: {
       labelid,
-      seedid: tempseedid
-    }
+      seedid: tempseedid,
+    },
+  });
+};
+
+export const clearSeedsUL = () => (
+  dispatch: (e: SeedEditorTypes.Actions) => void
+): void => {
+  dispatch({
+    type: SeedEditorTypes.SEEDEDITOR_CLEAR_SEEDS,
   });
 };
 
@@ -57,7 +65,7 @@ export const learnSeeds = (): MyThunkResult<Promise<boolean>> => (
   getState
 ): Promise<boolean> => {
   dispatch({
-    type: SeedEditorTypes.SEEDEDITOR_LEARN_ATTEMPT
+    type: SeedEditorTypes.SEEDEDITOR_LEARN_ATTEMPT,
   });
   const ctradingMap = getState().maps.current.map;
   const editorSeeds = getState().seeds.editor.ulseedsbyLabel;
@@ -71,8 +79,8 @@ export const learnSeeds = (): MyThunkResult<Promise<boolean>> => (
     }
 
     let seedInsertPromises: Promise<ISeed>[] = [];
-    Object.keys(editorSeeds).forEach(labelID => {
-      Object.keys(editorSeeds[labelID]).forEach(tempseedID => {
+    Object.keys(editorSeeds).forEach((labelID) => {
+      Object.keys(editorSeeds[labelID]).forEach((tempseedID) => {
         seedConsumer.setPath(
           `/tradingmap/${ctradingMap._id}/label/${labelID}/seed`
         );
@@ -83,20 +91,20 @@ export const learnSeeds = (): MyThunkResult<Promise<boolean>> => (
     });
 
     Promise.all(seedInsertPromises)
-      .then(learnedSeeds => {
+      .then((learnedSeeds) => {
         dispatch({
           type: SeedLibraryTypes.SEEDLIBRARY_ADD_SEEDS,
-          payload: learnedSeeds
+          payload: learnedSeeds,
         });
         dispatch({
-          type: SeedEditorTypes.SEEDEDITOR_LEARN_SUCCESS
+          type: SeedEditorTypes.SEEDEDITOR_LEARN_SUCCESS,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
         dispatch({
           type: SeedEditorTypes.SEEDEDITOR_LEARN_FAIL,
-          payload: err
+          payload: err,
         });
       });
 
@@ -109,6 +117,6 @@ export const changeSeedTool = (seedtool: "SEEDSELECT" | "VIEW" | "TEST") => (
 ): void => {
   dispatch({
     type: SeedEditorTypes.SEEDEDITOR_CHANGE_SEEDTOOL,
-    payload: seedtool
+    payload: seedtool,
   });
 };
