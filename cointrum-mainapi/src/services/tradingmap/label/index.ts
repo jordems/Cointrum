@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 
 import { checkLearningHubParams } from "../../../middleware/checks";
-import seedRoutes from "./seed/routes";
-import GenericController from "./../../../utils/GenericController";
+import seedRoutes from "./seed";
+import GenericController from "../../../utils/GenericController";
 import { ILabel } from "../../../models/Label";
 import Label from "../../../models/Label";
 
@@ -23,14 +23,14 @@ export default [
       async ({ params }: Request, res: Response) => {
         try {
           const labels = await labelController.queryDocuments({
-            tradingmapid: params.tradingmapid
+            tradingmapid: params.tradingmapid,
           });
           res.status(200).json(labels);
         } catch (err) {
           res.status(400).send(err);
         }
-      }
-    ]
+      },
+    ],
   },
   {
     path: "/api/v1/tradingmap/:tradingmapid/label",
@@ -41,14 +41,14 @@ export default [
         try {
           const newLabel = await labelController.createDocument({
             tradingmapid: params.tradingmapid,
-            ...body
+            ...body,
           });
           res.status(200).json(newLabel);
         } catch (err) {
           res.status(400).send(err);
         }
-      }
-    ]
+      },
+    ],
   },
   {
     path: "/api/v1/tradingmap/:tradingmapid/label/:labelid",
@@ -66,8 +66,8 @@ export default [
         } catch (err) {
           res.status(400).send(err);
         }
-      }
-    ]
+      },
+    ],
   },
   {
     path: "/api/v1/tradingmap/:tradingmapid/label/:labelid",
@@ -84,7 +84,7 @@ export default [
           if (updatedLabel === null) {
             res.json({
               updated: false,
-              message: "Didn't Find Document to Update"
+              message: "Didn't Find Document to Update",
             });
           } else {
             res.status(200).json(updatedLabel);
@@ -92,8 +92,8 @@ export default [
         } catch (err) {
           res.status(400).send(err);
         }
-      }
-    ]
+      },
+    ],
   },
   {
     path: "/api/v1/tradingmap/:tradingmapid/label/:labelid",
@@ -109,7 +109,7 @@ export default [
           if (removedLabel === null) {
             res.status(400).json({
               remove: false,
-              message: "Didn't Find Document to Delete"
+              message: "Didn't Find Document to Delete",
             });
           } else {
             res.status(200).json(removedLabel);
@@ -117,7 +117,7 @@ export default [
         } catch (err) {
           res.status(400).send(err);
         }
-      }
-    ]
-  }
+      },
+    ],
+  },
 ];

@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 
 import { checkCreationHubParams } from "../../middleware/checks";
-import classifierRoutes from "./classifier/routes";
-import labelRoutes from "./label/routes";
-import GenericController from "./../../utils/GenericController";
+import classifierRoutes from "./classifier";
+import labelRoutes from "./label";
+import GenericController from "../../utils/GenericController";
 import { ITradingMap } from "../../models/TradingMap";
 import TradingMap from "../../models/TradingMap";
 
@@ -29,8 +29,8 @@ export default [
         } catch (err) {
           res.status(400).send(err);
         }
-      }
-    ]
+      },
+    ],
   },
   {
     path: "/api/v1/tradingmap",
@@ -46,8 +46,8 @@ export default [
         } catch (err) {
           res.status(400).send(err);
         }
-      }
-    ]
+      },
+    ],
   },
   {
     path: "/api/v1/tradingmap/:tradingmapid",
@@ -67,8 +67,8 @@ export default [
         } catch (err) {
           res.status(400).send(err);
         }
-      }
-    ]
+      },
+    ],
   },
   {
     path: "/api/v1/tradingmap/:tradingmapid",
@@ -85,7 +85,7 @@ export default [
           if (updatedTradingMap === null) {
             res.json({
               updated: false,
-              message: "Didn't Find Document to Update"
+              message: "Didn't Find Document to Update",
             });
           } else {
             res.status(200).json(updatedTradingMap);
@@ -93,8 +93,8 @@ export default [
         } catch (err) {
           res.status(400).send(err);
         }
-      }
-    ]
+      },
+    ],
   },
   {
     path: "/api/v1/tradingmap/:tradingmapid",
@@ -110,7 +110,7 @@ export default [
           if (removedTradingMap === null) {
             res.status(400).json({
               remove: false,
-              message: "Didn't Find Document to Delete"
+              message: "Didn't Find Document to Delete",
             });
           } else {
             res.status(200).json(removedTradingMap);
@@ -118,7 +118,7 @@ export default [
         } catch (err) {
           res.status(400).send(err);
         }
-      }
-    ]
-  }
+      },
+    ],
+  },
 ];

@@ -3,7 +3,7 @@ import request from "supertest";
 import { applyMiddleware, applyRoutes } from "../../utils";
 import middleware from "../../middleware";
 import errorHandlers from "../../middleware/errorHandlers";
-import routes from "./routes";
+import routes from ".";
 import { connectDB } from "./../../utils/Database";
 
 //@ts-ignore
@@ -14,7 +14,7 @@ global.console = {
   error: console.error,
   warn: jest.fn(),
   info: console.info,
-  debug: console.debug
+  debug: console.debug,
 };
 
 describe("routes: /tradingmap", () => {
@@ -27,7 +27,7 @@ describe("routes: /tradingmap", () => {
     desc: "desc",
     exchange: "binance",
     basecurrency: "USDT",
-    altcurrency: "BNB"
+    altcurrency: "BNB",
   };
 
   beforeAll(async () => {
@@ -38,7 +38,7 @@ describe("routes: /tradingmap", () => {
     await connectDB();
   });
   describe("get: /tradingmap", () => {
-    test("a valid call", async done => {
+    test("a valid call", async (done) => {
       const response = await request(router)
         .get("/api/v1/tradingmap")
         .expect("Content-Type", /json/)
@@ -46,7 +46,7 @@ describe("routes: /tradingmap", () => {
 
       done();
     });
-    test("a bad call with wrong extention", async done => {
+    test("a bad call with wrong extention", async (done) => {
       const response = await request(router)
         .get("/api/v1123/tradingmap")
         .expect(404);
@@ -55,7 +55,7 @@ describe("routes: /tradingmap", () => {
     });
   });
   describe("post: /tradingmap", () => {
-    test("a valid call", async done => {
+    test("a valid call", async (done) => {
       const response = await request(router)
         .post("/api/v1/tradingmap")
         .send(sampleDocument)
@@ -72,14 +72,14 @@ describe("routes: /tradingmap", () => {
       sampleDocument = response.body;
       done();
     });
-    test("a bad call missing a required field `name`", async done => {
+    test("a bad call missing a required field `name`", async (done) => {
       const response = await request(router)
         .post("/api/v1/tradingmap")
         .send({
           desc: "desc",
           exchange: "binance",
           basecurrency: "USDT",
-          altcurrency: "BNB"
+          altcurrency: "BNB",
         })
         .set("Accept", "application/json")
         .expect("Content-Type", /json/)
@@ -87,7 +87,7 @@ describe("routes: /tradingmap", () => {
 
       done();
     });
-    test("a valid call missing a NON-required field `name`", async done => {
+    test("a valid call missing a NON-required field `name`", async (done) => {
       const response = await request(router)
         .post("/api/v1/tradingmap")
         .send({
@@ -95,7 +95,7 @@ describe("routes: /tradingmap", () => {
           desc: "desc",
           exchange: "binance",
           basecurrency: "USDT",
-          altcurrency: "BNB"
+          altcurrency: "BNB",
         })
         .set("Accept", "application/json")
         .expect("Content-Type", /json/)
@@ -110,7 +110,7 @@ describe("routes: /tradingmap", () => {
     });
   });
   describe("get: /tradingmap/:tradingmapid", () => {
-    test("a valid call", async done => {
+    test("a valid call", async (done) => {
       const response = await request(router)
         .get(`/api/v1/tradingmap/${addDocKeys[0]}`)
         .set("Accept", "application/json")
@@ -120,7 +120,7 @@ describe("routes: /tradingmap", () => {
       expect(response.body).toEqual(sampleDocument);
       done();
     });
-    test("a valid call requesting non-existant id", async done => {
+    test("a valid call requesting non-existant id", async (done) => {
       const response = await request(router)
         .get(`/api/v1/tradingmap/non-ExistantIDbtw`)
         .set("Accept", "application/json")
@@ -128,7 +128,7 @@ describe("routes: /tradingmap", () => {
         .expect(400);
       done();
     });
-    test("a bad call missing '/' between tradingmap and id", async done => {
+    test("a bad call missing '/' between tradingmap and id", async (done) => {
       const response = await request(router)
         .get(`/api/v1/tradingmap${addDocKeys[0]}`)
         .expect(404);
@@ -136,11 +136,11 @@ describe("routes: /tradingmap", () => {
     });
   });
   describe("put: /tradingmap/:tradingmapid", () => {
-    test("a valid call updating name", async done => {
+    test("a valid call updating name", async (done) => {
       const response = await request(router)
         .put(`/api/v1/tradingmap/${addDocKeys[0]}`)
         .send({
-          name: "new name"
+          name: "new name",
         })
         .set("Accept", "application/json")
         .expect("Content-Type", /json/)
@@ -154,12 +154,12 @@ describe("routes: /tradingmap", () => {
     });
 
     // Expect update to work, but ignore fields not in schema
-    test("testing code injection attempt", async done => {
+    test("testing code injection attempt", async (done) => {
       const response = await request(router)
         .put(`/api/v1/tradingmap/${addDocKeys[0]}`)
         .send({
           name: "new name12",
-          NonExisitingField: "bad data"
+          NonExisitingField: "bad data",
         })
         .set("Accept", "application/json")
         .expect("Content-Type", /json/)
@@ -176,11 +176,11 @@ describe("routes: /tradingmap", () => {
       done();
     });
 
-    test("attempt to update non-existing map", async done => {
+    test("attempt to update non-existing map", async (done) => {
       const response = await request(router)
         .put(`/api/v1/tradingmap/non-ExistantIDbtw`)
         .send({
-          name: "Name2"
+          name: "Name2",
         })
         .set("Accept", "application/json")
         .expect("Content-Type", /json/)
@@ -190,7 +190,7 @@ describe("routes: /tradingmap", () => {
     });
   });
   describe("delete: /tradingmap/:tradingmapid", () => {
-    test("deleting keys created during test", async done => {
+    test("deleting keys created during test", async (done) => {
       for (let x = 0; x < addDocKeys.length; x++) {
         const response = await request(router)
           .delete(`/api/v1/tradingmap/${addDocKeys[x]}`)

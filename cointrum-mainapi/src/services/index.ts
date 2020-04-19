@@ -1,3 +1,3 @@
-import tradingmapRoutes from "./tradingmap/routes";
+import tradingmapRoutes from "./tradingmap";
 
 export default [...tradingmapRoutes];
