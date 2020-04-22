@@ -2,7 +2,19 @@ import { ConnectionOptions, connect } from "mongoose";
 import dotenv from "dotenv";
 dotenv.config();
 
-const serverurl = process.env.DB_URL; // REPLACE WITH YOUR DB SERVER
+
+/*
+  @Requires
+  `.env` File for MongoDB Cluster
+  Format:
+  ....
+  DB_URL= ....
+  DB_USER= ....
+  DB_PASS= ....
+  .....
+*/
+
+const serverurl = process.env.DB_URL; 
 const user = process.env.DB_USER;
 const password = process.env.DB_PASS;
 
