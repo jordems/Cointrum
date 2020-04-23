@@ -1,7 +1,11 @@
-import BinanceClient,{Binance} from 'binance-api-node'
+import BinanceClient,{Binance, CandleChartInterval, Candle, ReconnectingWebSocketHandler} from 'binance-api-node'
 
 import dotenv from "dotenv";
 import IMarket from './IMarket';
+import ICandle from './types/ICandle';
+import { IBaseCurrencies, IAltCurrencies, ICycleDurations } from '../../types/exchange';
+
+import {cycledurations} from '../../types/exchange/cycledurations';
 dotenv.config();
 
 
@@ -23,8 +27,12 @@ export default class BinanceAPI implements IMarket {
         });
     }
 
-    getCandleSticks(): void {
-        throw new Error("Method not implemented.");
+    getCandleSticks(basecurrency: IBaseCurrencies, altcurrency: IAltCurrencies, interval: ICycleDurations, start?: Date, end?: Date): Promise<ICandle[]> {
+        return this.client.candles({ symbol: `${basecurrency}${altcurrency}`, interval: interval as CandleChartInterval , startTime: start?.getMilliseconds(), endTime: end?.getMilliseconds()});;
+    }
+
+    getLiveCandleSocket(basecurrency: IBaseCurrencies, altcurrency: IAltCurrencies, interval: ICycleDurations, callback: (ticker: Candle) => void): ReconnectingWebSocketHandler {
+        return this.client.ws.candles(`${basecurrency}${altcurrency}`, interval as CandleChartInterval, callback );
     }
 
 
