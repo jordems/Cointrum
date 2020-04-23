@@ -3,6 +3,7 @@ import BinanceClient, {
   CandleChartInterval,
   Candle,
   ReconnectingWebSocketHandler,
+  CandlesOptions,
 } from "binance-api-node";
 
 import dotenv from "dotenv";
@@ -38,18 +39,29 @@ export default class BinanceAPI implements IMarket {
     basecurrency: IBaseCurrencies,
     altcurrency: IAltCurrencies,
     interval: ICycleDurations,
-    start?: string,
-    end?: string
+    start?: number,
+    end?: number
   ): Promise<ICandle[]> {
-    //TODO FIX
-
-    //@ts-ignore
-    return this.client.candles({
+    let candleParams = {
       symbol: `${basecurrency}${altcurrency}`,
       interval: interval as CandleChartInterval,
-      //   startTime: start ? parseInt(start) : undefined,
-      //   endTime: end ? parseInt(end) : undefined,
-    });
+    } as CandlesOptions;
+
+    if (start) {
+      candleParams = {
+        ...candleParams,
+        startTime: start,
+      };
+    }
+
+    if (end) {
+      candleParams = {
+        ...candleParams,
+        endTime: end,
+      };
+    }
+
+    return this.client.candles(candleParams);
   }
 
   getLiveCandleSocket(

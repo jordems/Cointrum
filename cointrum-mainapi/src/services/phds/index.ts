@@ -12,7 +12,7 @@ import { IExchanges } from "../../types/exchange";
  * Handles all Interactions with the phds Collection in db
  */
 
-const phdsController = new PHDSController();
+let phdsController: PHDSController;
 
 export default [
   {
@@ -21,8 +21,19 @@ export default [
     handler: [
       checkphdsParams,
       async (req: Request, res: Response) => {
+        phdsController = new PHDSController(
+          req.params.exchange as IExchanges,
+          req.query.basecurrency,
+          req.query.altcurrency,
+          req.query.interval
+        );
+        console.log("Initialized phdsController");
         try {
-          const phdselements = await phdsController.getCandleSticks(req.params.exchange as IExchanges, req.query.basecurrency, req.query.altcurrency, req.query.interval, req.query.start, req.query.end);
+          const phdselements = await phdsController.getCandleSticks(
+            req.query.start,
+            req.query.end
+          );
+          console.log("Finished Controller Call");
           res.status(200).json(phdselements);
         } catch (err) {
           res.status(400).send(err);

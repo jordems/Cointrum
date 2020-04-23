@@ -1,19 +1,33 @@
 import { ICycleDurations } from "../../types/exchange";
 
-export default function subtractTime(date: Date, interval: ICycleDurations): Date{
-    if(interval.includes("m")){
-        let newDate = date;
-        newDate.setMinutes(newDate.getMinutes() - parseInt(interval));
-        return newDate;
-    }else if(interval.includes("h")){
-        let newDate = date;
-        newDate.setHours(newDate.getHours() - parseInt(interval));
-        return newDate;
-    }else if(interval.includes("d")){
-        let newDate = date;
-        newDate.setDate(newDate.getDate() - parseInt(interval));
-        return newDate;
-    }
+export default function subtractTime(
+  date: number,
+  interval: ICycleDurations,
+  multiplier?: number
+): number {
+  let mul = multiplier ? multiplier : 1;
 
-    return date;
+  if (interval.includes("m")) {
+    const newDate = date;
+
+    return (
+      newDate - 60000 * parseInt(interval.substr(0, interval.length - 1)) * mul
+    );
+  } else if (interval.includes("h")) {
+    const newDate = date;
+
+    return (
+      newDate -
+      3600000 * parseInt(interval.substr(0, interval.length - 1)) * mul
+    );
+  } else if (interval.includes("d")) {
+    const newDate = date;
+
+    return (
+      newDate -
+      86400000 * parseInt(interval.substr(0, interval.length - 1)) * mul
+    );
+  }
+
+  return date;
 }

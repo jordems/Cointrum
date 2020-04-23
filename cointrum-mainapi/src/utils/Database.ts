@@ -2,7 +2,6 @@ import { ConnectionOptions, connect } from "mongoose";
 import dotenv from "dotenv";
 dotenv.config();
 
-
 /*
   @Requires
   `.env` File for MongoDB Cluster
@@ -14,7 +13,7 @@ dotenv.config();
   .....
 */
 
-const serverurl = process.env.DB_URL; 
+const serverurl = process.env.DB_URL;
 const user = process.env.DB_USER;
 const password = process.env.DB_PASS;
 
@@ -24,15 +23,13 @@ export const connectDB = async () => {
       useNewUrlParser: true,
       useCreateIndex: true,
       useFindAndModify: false,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
     };
     await connect(`mongodb+srv://${user}:${password}@${serverurl}`, options);
 
     require("mongoose").Promise = global.Promise;
-
-    // console.log("MongoDB Connected...");
   } catch (err) {
-    console.error(err.message);
+    console.error(err);
     // Exit process with failure
     process.exit(1);
   }

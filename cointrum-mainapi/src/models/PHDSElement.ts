@@ -1,17 +1,19 @@
 import { Schema, Document, model, Model } from "mongoose";
-import { IExchanges, IBaseCurrencies, IAltCurrencies } from "../types/exchange";
+import {
+  IExchanges,
+  IBaseCurrencies,
+  IAltCurrencies,
+  ICycleDurations,
+} from "../types/exchange";
 
 export interface IPHDSElement extends Document {
-  exchange: IExchanges;
-  basecurrency: IBaseCurrencies;
-  altcurrency: IAltCurrencies;
-  openTime: Date;
+  openTime: number;
   open: number;
   high: number;
   low: number;
   close: number;
   volume: number;
-  closeTime: Date;
+  closeTime: number;
   quoteVolume: number;
   trades: number;
   baseAssetVolume: number;
@@ -19,20 +21,11 @@ export interface IPHDSElement extends Document {
 }
 
 const PHDSElementSchema = new Schema({
-  exchange: {
-    type: String,
-    required: "exchange required",
-  },
-  basecurrency: {
-    type: String,
-    required: "basecurrency required",
-  },
-  altcurrency: {
-    type: String,
-    required: "altcurrency required",
+  _id: {
+    type: Number,
   },
   openTime: {
-    type: Date,
+    type: Number,
     required: "openTime required",
   },
   open: {
@@ -56,7 +49,7 @@ const PHDSElementSchema = new Schema({
     required: "volume required",
   },
   closeTime: {
-    type: Date,
+    type: Number,
     required: "closeTime required",
   },
   quoteVolume: {
@@ -81,9 +74,15 @@ const PHDSElementSchema = new Schema({
   },
 });
 
-const PHDSElement: Model<IPHDSElement> = model(
-  "PHDSElement",
-  PHDSElementSchema
-);
-
+const PHDSElement = (
+  exchange: IExchanges,
+  basecurrency: IBaseCurrencies,
+  altcurrency: IAltCurrencies,
+  interval: ICycleDurations
+): Model<IPHDSElement> => {
+  return model(
+    `${exchange}:${basecurrency}:${altcurrency}:${interval}:`,
+    PHDSElementSchema
+  );
+};
 export default PHDSElement;

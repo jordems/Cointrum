@@ -737,14 +737,14 @@
           {
             "name": "start",
             "in": "query",
-            "description": "Start Time in ms",
+            "description": "Start Time in ms UTC",
             "required": false,
             "schema": { "type": "number" }
           },
           {
             "name": "end",
             "in": "query",
-            "description": "End Time in ms",
+            "description": "End Time in ms UTC",
             "required": false,
             "schema": { "type": "number" }
           }
