@@ -690,7 +690,7 @@
         ]
       }
     },
-    "/phds/{exchange}": {
+    "/phds/{exchange}/candles": {
       "get": {
         "tags": ["Learning Hub"],
         "summary": "Returns Candles for Charts",

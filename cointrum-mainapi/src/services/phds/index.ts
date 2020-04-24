@@ -1,9 +1,6 @@
 import { Request, Response } from "express";
 
 import { checkphdsParams } from "../../middleware/checks";
-import GenericController from "../../utils/GenericController";
-import { ITradingMap } from "../../models/TradingMap";
-import TradingMap from "../../models/TradingMap";
 import PHDSController from "./PHDSController";
 import { IExchanges } from "../../types/exchange";
 
@@ -16,7 +13,7 @@ let phdsController: PHDSController;
 
 export default [
   {
-    path: "/api/v1/phds/:exchange",
+    path: "/api/v1/phds/:exchange/candles",
     method: "get",
     handler: [
       checkphdsParams,
