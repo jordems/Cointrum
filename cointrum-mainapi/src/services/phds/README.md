@@ -6,7 +6,7 @@ The phds is a set of data containing all current pricing history of currency to 
 
 ### Main Use Case
 
-1. Given: `basecurrency`, `altcurrency`, `charttype`, and specified `timeframe`. Return `chartdata` from phds from within `timeframe` of `basecurrency`-`altcurrency`
+1. Given: `exchange`, `basecurrency`, `altcurrency`, `interval`, and optionally a specified `start` and `end` timeframe. Return `IPHDSElement`'s from phds from within the timeframe of `basecurrency`-`altcurrency`
 
    **Chart Types**:
 

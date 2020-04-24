@@ -27,13 +27,11 @@ export default [
           req.query.altcurrency,
           req.query.interval
         );
-        console.log("Initialized phdsController");
         try {
           const phdselements = await phdsController.getCandleSticks(
             req.query.start,
             req.query.end
           );
-          console.log("Finished Controller Call");
           res.status(200).json(phdselements);
         } catch (err) {
           res.status(400).send(err);

@@ -7,7 +7,8 @@
     "postinstall": "npx tsc",
     "dev": "tsc-watch --onSuccess \"node ./dist/server.js\"",
     "start": "npx pm2 start pm2.yaml",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand",
+    "cleartest": "jest --clearCache"
   },
   "keywords": [],
   "author": "",

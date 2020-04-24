@@ -30,9 +30,11 @@ export default class PHDSController extends GenericController<IPHDSElement> {
     this.interval = interval;
   }
 
-  async getCandleSticks(start?: number, end?: number): Promise<IPHDSElement[]> {
-    console.log("Called phdsController getCandleSticks");
-
+  async getCandleSticks(
+    start?: number,
+    end?: number,
+    recretry?: boolean
+  ): Promise<IPHDSElement[]> {
     // By default set startTime for last interval (current time - interval)
 
     const currentTime = new Date().getTime(); // in UTC milliseconds
@@ -50,29 +52,22 @@ export default class PHDSController extends GenericController<IPHDSElement> {
       };
     }
 
-    console.log("Generated Query at Time", currentTime, query);
-
     // First check if current Info is in Mongo
-    const results = await this.queryDocuments(query);
+    let results = await this.queryDocuments(query);
 
-    console.log("Query Results Recieved", results.length);
     // If end is included make sure, we have all data up to endtime (within an interval) Or else all data up to current time
-    if (
-      results.length > 0 &&
-      ((!end &&
-        results[results.length - 1].closeTime >=
-          subtractTime(currentTime, this.interval)) ||
-        (end &&
-          results[results.length - 1].closeTime >=
-            subtractTime(end, this.interval)))
-    ) {
-      console.log("Contains all needed Results, Return");
+
+    let missingZones = this.findMissingZones(
+      results,
+      currentTime,
+      startTime,
+      end
+    );
+
+    if (missingZones.length === 0) {
       // IF SO return that info
       return results;
-    }
-    //return results;
-    else {
-      console.log("Doesn't Contain all needed results, Get Results");
+    } else {
       // ELSE GET Info from api, add to Mongo, then return to user
       let marketAPI: IMarket;
       switch (this.exchange) {
@@ -82,38 +77,94 @@ export default class PHDSController extends GenericController<IPHDSElement> {
         default:
           throw new Error("Requesting Exchange that doesn't exist");
       }
+      let freshresults: IPHDSElement[] = [...results];
+      for (const missingZone of missingZones) {
+        const candles = await marketAPI.getCandleSticks(
+          this.basecurrency,
+          this.altcurrency,
+          this.interval,
+          missingZone[0],
+          missingZone[1]
+        );
 
-      const candles = await marketAPI.getCandleSticks(
-        this.basecurrency,
-        this.altcurrency,
-        this.interval,
-        startTime,
-        end
-      );
-      console.log("Got results from marketAPI", candles.length);
+        let docPromises: Promise<IPHDSElement>[] = [];
 
-      // Add Extra information to Candles
-      let docPromises: Promise<IPHDSElement>[] = [];
+        for (const candle of candles) {
+          const phdsdoc = {
+            _id: candle.openTime, // ID of document is openTime
+            ...candle,
+          } as any;
 
-      for (const candle of candles) {
-        const phdsdoc = {
-          _id: candle.openTime, // ID of document is openTime
-          ...candle,
-        } as any;
+          docPromises.push(this.createDocument(phdsdoc));
+        }
 
-        docPromises.push(this.createDocument(phdsdoc));
+        const tresults = await Promise.all(docPromises);
+        freshresults = [...freshresults, ...tresults];
       }
-      console.log("Setup Document Creation Promises");
-      const results = await Promise.all(docPromises);
-      console.log("Finished Document Creation Promises");
 
-      if (!start && docPromises.length === 0) {
+      // Not with additional zones added, Resort the result array
+      freshresults.sort((a, b) => a._id - b._id);
+
+      if (!start && freshresults.length === 0) {
         // if binance doesn't have any now, pull an earlier interval
-        // TODO May Tank perfomance if binance servers go down
-        return this.getCandleSticks(subtractTime(startTime, this.interval));
+        return this.getCandleSticks(
+          subtractTime(startTime, this.interval),
+          end,
+          true
+        );
       } else {
-        return results;
+        return freshresults;
       }
     }
+  }
+
+  findMissingZones(
+    phdselements: IPHDSElement[],
+    currentTime: number,
+    start: number,
+    end?: number
+  ): Array<[number, number]> {
+    if (phdselements.length === 0) {
+      return [[start, currentTime]];
+    }
+
+    let untouchedZones: Array<[number, number]> = [];
+    let startidx = 0;
+    let currentValue = phdselements[0];
+
+    // Check for Missing Zone from Start to first Element
+    if (start < subtractTime(currentValue.openTime, this.interval)) {
+      untouchedZones.push([start, currentValue.openTime - 1]);
+    }
+
+    // Find Missing Sections between PHDS Elements
+    for (let x = 1; x < phdselements.length; x++) {
+      const nextValue = phdselements[x];
+
+      if (nextValue.openTime === currentValue.closeTime + 1) {
+        startidx = x;
+      } else {
+        untouchedZones.push([
+          phdselements[startidx].closeTime + 1,
+          nextValue.openTime - 1,
+        ]);
+      }
+      currentValue = nextValue;
+    }
+
+    // Add Section from after last PHDS Element to `end`
+    if (
+      !end &&
+      currentValue.closeTime < subtractTime(currentTime, this.interval)
+    ) {
+      untouchedZones.push([currentValue.closeTime + 1, currentTime - 1]);
+    } else if (
+      end &&
+      currentValue.closeTime < subtractTime(end, this.interval)
+    ) {
+      untouchedZones.push([currentValue.closeTime + 1, end - 1]);
+    }
+
+    return untouchedZones;
   }
 }
