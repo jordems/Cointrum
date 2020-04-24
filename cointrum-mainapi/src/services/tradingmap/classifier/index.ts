@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { checkTradingHubParams } from "../../../middleware/checks";
-import GenericController from "./../../../utils/GenericController";
+import GenericController from "../../../utils/GenericController";
 import { IClassifier } from "../../../models/Classifier";
 import Classifier from "../../../models/Classifier";
 
@@ -21,14 +21,14 @@ export default [
       async ({ params }: Request, res: Response) => {
         try {
           const classifiers = await classifierController.queryDocuments({
-            tradingmapid: params.tradingmapid
+            tradingmapid: params.tradingmapid,
           });
           res.status(200).json(classifiers);
         } catch (err) {
           res.status(400).send(err);
         }
-      }
-    ]
+      },
+    ],
   },
   {
     path: "/api/v1/tradingmap/:tradingmapid/classifier",
@@ -39,14 +39,14 @@ export default [
         try {
           const newClassifier = await classifierController.createDocument({
             tradingmapid: params.tradingmapid,
-            ...body
+            ...body,
           });
           res.status(200).json(newClassifier);
         } catch (err) {
           res.status(400).send(err);
         }
-      }
-    ]
+      },
+    ],
   },
   {
     path: "/api/v1/tradingmap/:tradingmapid/classifier/:classifierid",
@@ -66,8 +66,8 @@ export default [
         } catch (err) {
           res.status(400).send(err);
         }
-      }
-    ]
+      },
+    ],
   },
   {
     path: "/api/v1/tradingmap/:tradingmapid/classifier/:classifierid",
@@ -84,7 +84,7 @@ export default [
           if (updatedClassifier === null) {
             res.json({
               updated: false,
-              message: "Didn't Find Document to Update"
+              message: "Didn't Find Document to Update",
             });
           } else {
             res.status(200).json(updatedClassifier);
@@ -92,8 +92,8 @@ export default [
         } catch (err) {
           res.status(400).send(err);
         }
-      }
-    ]
+      },
+    ],
   },
   {
     path: "/api/v1/tradingmap/:tradingmapid/classifier/:classifierid",
@@ -109,7 +109,7 @@ export default [
           if (removedClassifier === null) {
             res.status(400).json({
               remove: false,
-              message: "Didn't Find Document to Delete"
+              message: "Didn't Find Document to Delete",
             });
           } else {
             res.status(200).json(removedClassifier);
@@ -117,7 +117,7 @@ export default [
         } catch (err) {
           res.status(400).send(err);
         }
-      }
-    ]
-  }
+      },
+    ],
+  },
 ];

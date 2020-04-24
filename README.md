@@ -4,10 +4,21 @@ The end product of Cointrum will be a Trading bot that will use trading indicato
 
 ## Installation
 
-Installs all node dependencies in front-end and back-end.
+1. Installs all node dependencies in front-end and back-end.
 
 ```
 $ npm run installdeps
+```
+
+2. Set up a `.env` file in Cointrum/cointrum-mainapi/.env with MongoDB and BinanceAPI Keys
+
+```
+DB_URL=
+DB_USER=
+DB_PASS=
+
+BINANCE_API_KEY=
+BINANCE_API_SECRET_KEY=
 ```
 
 ## Run Development Environment

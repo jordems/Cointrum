@@ -689,6 +689,67 @@
           }
         ]
       }
+    },
+    "/phds/{exchange}": {
+      "get": {
+        "tags": ["Learning Hub"],
+        "summary": "Returns Candles for Charts",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "parameters": [
+          {
+            "name": "exchange",
+            "in": "path",
+            "description": "Type of Exchange",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "basecurrency",
+            "in": "query",
+            "description": "Base Currency",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "altcurrency",
+            "in": "query",
+            "description": "Alt Currency",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "interval",
+            "in": "query",
+            "description": "Training interval cycle",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "description": "Start Time in ms UTC",
+            "required": false,
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "description": "End Time in ms UTC",
+            "required": false,
+            "schema": { "type": "number" }
+          }
+        ]
+      }
     }
   },
   "definitions": {
@@ -767,6 +828,69 @@
         },
         "confidencevalues": {
           "type": "object"
+        }
+      }
+    },
+    "phdselement": {
+      "type": "object",
+      "required": [
+        "exchange",
+        "basecurrency",
+        "altcurrency",
+        "openTime",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "closeTime",
+        "quoteVolume",
+        "trades",
+        "baseAssetVolume",
+        "quoteAssetVolume"
+      ],
+      "properties": {
+        "exchange": {
+          "type": "string"
+        },
+        "basecurrency": {
+          "type": "string"
+        },
+        "altcurrency": {
+          "type": "string"
+        },
+        "openTime": {
+          "type": "date"
+        },
+        "open": {
+          "type": "number"
+        },
+        "high": {
+          "type": "number"
+        },
+        "low": {
+          "type": "number"
+        },
+        "close": {
+          "type": "number"
+        },
+        "volume": {
+          "type": "number"
+        },
+        "closeTime": {
+          "type": "date"
+        },
+        "quoteVolume": {
+          "type": "number"
+        },
+        "trades": {
+          "type": "number"
+        },
+        "baseAssetVolume": {
+          "type": "number"
+        },
+        "quoteAssetVolume": {
+          "type": "number"
         }
       }
     }

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { checkLearningHubLabelsParams } from "../../../../middleware/checks";
-import GenericController from "./../../../../utils/GenericController";
+import GenericController from "../../../../utils/GenericController";
 import { ISeed } from "../../../../models/Seed";
 import Seed from "../../../../models/Seed";
 
@@ -21,14 +21,14 @@ export default [
       async ({ params }: Request, res: Response) => {
         try {
           const seeds = await seedController.queryDocuments({
-            labelid: params.labelid
+            labelid: params.labelid,
           });
           res.status(200).json(seeds);
         } catch (err) {
           res.status(400).send(err);
         }
-      }
-    ]
+      },
+    ],
   },
   {
     path: "/api/v1/tradingmap/:tradingmapid/label/:labelid/seed",
@@ -39,14 +39,14 @@ export default [
         try {
           const newSeed = await seedController.createDocument({
             labelid: params.labelid,
-            ...body
+            ...body,
           });
           res.status(200).json(newSeed);
         } catch (err) {
           res.status(400).send(err);
         }
-      }
-    ]
+      },
+    ],
   },
   {
     path: "/api/v1/tradingmap/:tradingmapid/label/:labelid/seed/:seedid",
@@ -64,8 +64,8 @@ export default [
         } catch (err) {
           res.status(400).send(err);
         }
-      }
-    ]
+      },
+    ],
   },
   {
     path: "/api/v1/tradingmap/:tradingmapid/label/:labelid/seed/:seedid",
@@ -82,7 +82,7 @@ export default [
           if (updatedSeed === null) {
             res.json({
               updated: false,
-              message: "Didn't Find Document to Update"
+              message: "Didn't Find Document to Update",
             });
           } else {
             res.status(200).json(updatedSeed);
@@ -90,8 +90,8 @@ export default [
         } catch (err) {
           res.status(400).send(err);
         }
-      }
-    ]
+      },
+    ],
   },
   {
     path: "/api/v1/tradingmap/:tradingmapid/label/:labelid/seed/:seedid",
@@ -107,7 +107,7 @@ export default [
           if (removedSeed === null) {
             res.status(400).json({
               remove: false,
-              message: "Didn't Find Document to Delete"
+              message: "Didn't Find Document to Delete",
             });
           } else {
             res.status(200).json(removedSeed);
@@ -115,7 +115,7 @@ export default [
         } catch (err) {
           res.status(400).send(err);
         }
-      }
-    ]
-  }
+      },
+    ],
+  },
 ];
