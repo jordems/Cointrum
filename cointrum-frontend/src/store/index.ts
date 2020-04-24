@@ -4,12 +4,14 @@ import { composeWithDevTools } from "redux-devtools-extension";
 
 import labelsReducers from "./labels";
 import mapsReducers from "./maps";
+import phdsReducers from "./phds";
 import seedsReducers from "./seeds";
 
 const rootReducer = combineReducers({
   labels: labelsReducers,
   maps: mapsReducers,
-  seeds: seedsReducers
+  phds: phdsReducers,
+  seeds: seedsReducers,
 });
 
 export type AppState = ReturnType<typeof rootReducer>;

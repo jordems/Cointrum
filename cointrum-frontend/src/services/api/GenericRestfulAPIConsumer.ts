@@ -7,7 +7,7 @@ interface Document {
   _id: string;
 }
 
-export default class RestfulAPIConsumer<
+export default class GenericRestfulAPIConsumer<
   DocumentModel extends Document,
   CreateModel
 > {
@@ -24,10 +24,10 @@ export default class RestfulAPIConsumer<
     return new Promise((resolve, reject) => {
       axios
         .get(this.path)
-        .then(resp => {
+        .then((resp) => {
           resolve(resp.data);
         })
-        .catch(err => {
+        .catch((err) => {
           const { response } = err;
 
           if (response && response.status === 400) {
@@ -42,10 +42,10 @@ export default class RestfulAPIConsumer<
     return new Promise((resolve, reject) => {
       axios
         .get(this.path + `/${id}`)
-        .then(resp => {
+        .then((resp) => {
           resolve(resp.data);
         })
-        .catch(err => {
+        .catch((err) => {
           const { response } = err;
 
           if (response && response.status === 400) {
@@ -62,10 +62,10 @@ export default class RestfulAPIConsumer<
       console.log(doc);
       axios
         .post(this.path, doc)
-        .then(resp => {
+        .then((resp) => {
           resolve(resp.data);
         })
-        .catch(err => {
+        .catch((err) => {
           const { response } = err;
 
           if (response && response.status === 400) {
@@ -81,10 +81,10 @@ export default class RestfulAPIConsumer<
     return new Promise((resolve, reject) => {
       axios
         .put(this.path + `/${doc._id}`, doc)
-        .then(resp => {
+        .then((resp) => {
           resolve(resp.data);
         })
-        .catch(err => {
+        .catch((err) => {
           const { response } = err;
 
           if (response && response.status === 400) {
@@ -100,10 +100,10 @@ export default class RestfulAPIConsumer<
     return new Promise((resolve, reject) => {
       axios
         .delete(this.path + `/${id}`)
-        .then(resp => {
+        .then((resp) => {
           resolve(resp.data);
         })
-        .catch(err => {
+        .catch((err) => {
           const { response } = err;
 
           if (response && response.status === 400) {

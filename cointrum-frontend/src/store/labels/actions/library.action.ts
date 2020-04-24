@@ -2,7 +2,7 @@ import { ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 
 import { AppState } from "store";
-import RestfulAPIConsumer from "services/api/RestfulAPIConsumer";
+import GenericRestfulAPIConsumer from "services/api/GenericRestfulAPIConsumer";
 import * as LabelLibraryTypes from "./../types/library.types";
 import * as LabelCreateTypes from "./../types/create.types";
 import * as LabelCurrentTypes from "./../types/current.types";
@@ -10,7 +10,7 @@ import { ILabel, ICreateLabel } from "models";
 
 type MyThunkResult<R> = ThunkAction<R, AppState, undefined, Action>;
 
-const labelConsumer = new RestfulAPIConsumer<ILabel, ICreateLabel>(
+const labelConsumer = new GenericRestfulAPIConsumer<ILabel, ICreateLabel>(
   `/tradingmap/$temp/label`
 );
 
@@ -29,23 +29,23 @@ export const fetchLabelLibrary = (): MyThunkResult<Promise<ILabel[]>> => (
   return new Promise((resolve, reject) => {
     labelConsumer
       .fetchAllDocuments()
-      .then(labels => {
+      .then((labels) => {
         const fetchLabel: { [labelid: string]: ILabel } = {};
 
-        labels.forEach(label => {
+        labels.forEach((label) => {
           fetchLabel[label._id] = label;
         });
 
         dispatch({
           type: LabelLibraryTypes.LABELLIBRARY_FETCH_LABELS_SUCCESS,
-          payload: fetchLabel
+          payload: fetchLabel,
         });
         resolve(labels);
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch({
           type: LabelLibraryTypes.LABELLIBRARY_FETCH_LABELS_FAIL,
-          payload: err
+          payload: err,
         });
         reject();
       });
@@ -69,23 +69,23 @@ export const addLabeltoLibrary = (
   return new Promise((resolve, reject) => {
     labelConsumer
       .createDocument({ tradingmapid: currentTradingMap._id, ...label })
-      .then(label => {
+      .then((label) => {
         // Reset Label Creation Form Fields
         dispatch({
-          type: LabelCreateTypes.LABELCREATE_RESET_FORM
+          type: LabelCreateTypes.LABELCREATE_RESET_FORM,
         });
 
         // Add Label to Library
         dispatch({
           type: LabelLibraryTypes.LABELLIBRARY_ADD_LABEL,
-          payload: label
+          payload: label,
         });
         resolve();
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch({
           type: LabelCreateTypes.LABELCREATE_CREATION_FAILED,
-          payload: err
+          payload: err,
         });
         reject();
       });
@@ -110,23 +110,23 @@ export const editLabelinLibrary = (
   return new Promise((resolve, reject) => {
     labelConsumer
       .editDocument({ _id: id, ...label } as ILabel)
-      .then(Label => {
+      .then((Label) => {
         // Reset Label Dialog Form Fields
         dispatch({
-          type: LabelCreateTypes.LABELCREATE_RESET_FORM
+          type: LabelCreateTypes.LABELCREATE_RESET_FORM,
         });
 
         // Add Label to Library
         dispatch({
           type: LabelLibraryTypes.LABELLIBRARY_EDIT_LABEL,
-          payload: Label
+          payload: Label,
         });
         resolve();
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch({
           type: LabelCreateTypes.LABELCREATE_CREATION_FAILED,
-          payload: err
+          payload: err,
         });
         reject();
       });
@@ -152,17 +152,17 @@ export const removeLabelfromLibrary = (
   return new Promise((resolve, reject) => {
     labelConsumer
       .removeDocument(labelid)
-      .then(_label => {
+      .then((_label) => {
         // Remove Label from Library
         dispatch({
           type: LabelLibraryTypes.LABELLIBRARY_REMOVE_LABEL,
-          payload: labelid
+          payload: labelid,
         });
 
         // If label being removed is current label, clear current label
         if (currentLabel && labelid === currentLabel._id) {
           dispatch({
-            type: LabelCurrentTypes.LABELCURRENT_CLEAR_LABEL
+            type: LabelCurrentTypes.LABELCURRENT_CLEAR_LABEL,
           });
         }
 
@@ -170,7 +170,7 @@ export const removeLabelfromLibrary = (
 
         resolve();
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
         //TODO Popup that says Label Removed Failed
         reject();

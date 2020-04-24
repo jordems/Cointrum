@@ -16,6 +16,7 @@ import { styles, wrapStyles } from "./styles";
 import { testCandles } from "./TESTDATA";
 import { connector } from "./redux";
 import { ICreateSeed } from "models";
+import { candleConversion } from "./lib/DataTypeConversion";
 
 type ChartProps = ConnectedProps<typeof connector> &
   WithStyles<typeof styles> & {
@@ -55,7 +56,10 @@ class Chart extends React.Component<ChartProps> {
 
   componentDidMount() {
     window.addEventListener("resize", this.onResize);
-    this.buildChart();
+
+    this.props.fetchInitialPHDS().then(() => {
+      this.buildChart();
+    });
   }
 
   componentWillUnmount() {
@@ -115,7 +119,7 @@ class Chart extends React.Component<ChartProps> {
 
       this.applyMode(chart);
 
-      candleSeries.setData(phds);
+      candleSeries.setData(candleConversion(phds));
 
       this.applyULSeeds(chart);
 

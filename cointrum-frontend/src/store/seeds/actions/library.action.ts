@@ -2,14 +2,14 @@ import { ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 
 import { AppState } from "store";
-import RestfulAPIConsumer from "services/api/RestfulAPIConsumer";
+import GenericRestfulAPIConsumer from "services/api/GenericRestfulAPIConsumer";
 
 import { ISeed, ICreateSeed, ILabel } from "models";
 import * as SeedLibraryTypes from "../types/library.types";
 
 type MyThunkResult<R> = ThunkAction<R, AppState, undefined, Action>;
 
-const seedConsumer = new RestfulAPIConsumer<ISeed, ICreateSeed>(
+const seedConsumer = new GenericRestfulAPIConsumer<ISeed, ICreateSeed>(
   `/tradingmap/$temp/label/$temp/seed`
 );
 
@@ -31,17 +31,17 @@ export const fetchSeedsByLabel = (
   return new Promise((resolve, reject) => {
     seedConsumer
       .fetchAllDocuments()
-      .then(seeds => {
+      .then((seeds) => {
         dispatch({
           type: SeedLibraryTypes.SEEDLIBRARY_FETCH_SEEDS_FOR_LABEL_SUCCESS,
-          payload: seeds
+          payload: seeds,
         });
         resolve();
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch({
           type: SeedLibraryTypes.SEEDLIBRARY_FETCH_SEEDS_FOR_LABEL_FAIL,
-          payload: err
+          payload: err,
         });
         reject();
       });

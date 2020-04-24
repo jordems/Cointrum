@@ -30,11 +30,7 @@ export default class PHDSController extends GenericController<IPHDSElement> {
     this.interval = interval;
   }
 
-  async getCandleSticks(
-    start?: number,
-    end?: number,
-    recretry?: boolean
-  ): Promise<IPHDSElement[]> {
+  async getCandleSticks(start?: number, end?: number): Promise<IPHDSElement[]> {
     // By default set startTime for last interval (current time - interval)
 
     const currentTime = new Date().getTime(); // in UTC milliseconds
@@ -109,8 +105,7 @@ export default class PHDSController extends GenericController<IPHDSElement> {
         // if binance doesn't have any now, pull an earlier interval
         return this.getCandleSticks(
           subtractTime(startTime, this.interval),
-          end,
-          true
+          end
         );
       } else {
         return freshresults;

@@ -4,7 +4,7 @@ import { ICreateSeed, ISeed } from "models";
 import { AppState } from "store";
 import { ThunkAction } from "redux-thunk";
 import { Action } from "redux";
-import RestfulAPIConsumer from "services/api/RestfulAPIConsumer";
+import GenericRestfulAPIConsumer from "services/api/GenericRestfulAPIConsumer";
 
 type MyThunkResult<R> = ThunkAction<R, AppState, undefined, Action>;
 
@@ -69,7 +69,7 @@ export const learnSeeds = (): MyThunkResult<Promise<boolean>> => (
   });
   const ctradingMap = getState().maps.current.map;
   const editorSeeds = getState().seeds.editor.ulseedsbyLabel;
-  const seedConsumer = new RestfulAPIConsumer<ISeed, ICreateSeed>(
+  const seedConsumer = new GenericRestfulAPIConsumer<ISeed, ICreateSeed>(
     `/tradingmap/$temp/label/$temp/seed`
   );
   return new Promise((resolve, reject) => {
@@ -107,8 +107,6 @@ export const learnSeeds = (): MyThunkResult<Promise<boolean>> => (
           payload: err,
         });
       });
-
-    //TODO Place all editor seeds in db, then add seeds to redux Library
   });
 };
 

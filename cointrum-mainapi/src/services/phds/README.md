@@ -15,3 +15,5 @@ The phds is a set of data containing all current pricing history of currency to 
 ### Additive Cases
 
 1. Adding Extra charttypes such as `MAC-D`, `Volume-Chart`, `Base-line`, ... Indicator Types (Look on Trading View for examples)
+2. This Service should Ideally be seperated into it's own express services (kuberneties)
+3. When creating the Trading Temporary Current Data Set, we can make it so when it pulls data though websocket, automaitcally funnel into phds So, less binance API calls are required in future.
