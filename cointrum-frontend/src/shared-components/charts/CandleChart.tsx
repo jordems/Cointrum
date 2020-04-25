@@ -10,7 +10,7 @@ import {
   MouseCoordinateY,
 } from "react-financial-charts/lib/coordinates";
 import { elderRay, ema } from "react-financial-charts/lib/indicator";
-import { ZoomButtons } from "react-financial-charts/lib/interactive";
+import { ClickCallback } from "react-financial-charts/lib/interactive";
 import { discontinuousTimeScaleProviderBuilder } from "react-financial-charts/lib/scale";
 import {
   BarSeries,
@@ -26,18 +26,29 @@ import {
 import { withDeviceRatio } from "react-financial-charts/lib/utils";
 import { lastVisibleItemBasedZoomAnchor } from "react-financial-charts/lib/utils/zoomBehavior";
 import { IOHLCData } from "./lib/IOHLCData";
+import { ChartClickEvent } from "./lib/ChartClickEvent";
 
 interface StockChartProps {
   readonly data: IOHLCData[];
   readonly height: number;
   readonly dateTimeFormat?: string;
+  readonly pricesDisplayFormat?: string;
   readonly width: number;
   readonly ratio: number;
+  readonly onClick?: (event: ChartClickEvent) => void;
 }
+
+const ChartStyles = {
+  showGridLines: true,
+  gridLinesStroke: "rgba(197, 203, 206, 0.3)",
+  fontColour: "white",
+};
 
 class StockChart extends React.Component<StockChartProps> {
   private readonly margin = { left: 0, right: 48, top: 0, bottom: 24 };
-  private readonly pricesDisplayFormat = format(".2f");
+  private readonly pricesDisplayFormat = format(
+    this.props.pricesDisplayFormat ? this.props.pricesDisplayFormat : ".4f"
+  );
   private readonly xScaleProvider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(
     (d: IOHLCData) => d.date
   );
@@ -45,7 +56,7 @@ class StockChart extends React.Component<StockChartProps> {
   public render() {
     const {
       data: initialData,
-      dateTimeFormat = "%d %b",
+      dateTimeFormat = "%d %b, %Y",
       height,
       ratio,
       width,
@@ -109,16 +120,31 @@ class StockChart extends React.Component<StockChartProps> {
         zoomAnchor={lastVisibleItemBasedZoomAnchor}
       >
         <Chart
-          id={2}
+          id={"VolumeChart"}
           height={barChartHeight}
           origin={barChartOrigin}
           yExtents={this.barChartExtents}
         >
           <BarSeries fill={this.openCloseColor} yAccessor={this.yBarSeries} />
         </Chart>
-        <Chart id={3} height={chartHeight} yExtents={this.candleChartExtents}>
-          <XAxis showGridLines showTickLabel={false} />
-          <YAxis showGridLines tickFormat={this.pricesDisplayFormat} />
+        <Chart
+          id={"CandleChart"}
+          height={chartHeight}
+          yExtents={this.candleChartExtents}
+        >
+          <XAxis
+            tickLabelFill={ChartStyles.fontColour}
+            showGridLines={ChartStyles.showGridLines}
+            showTickLabel={false}
+            gridLinesStroke={ChartStyles.gridLinesStroke}
+          />
+          <YAxis
+            tickLabelFill={ChartStyles.fontColour}
+            fill={ChartStyles.fontColour}
+            showGridLines={ChartStyles.showGridLines}
+            tickFormat={this.pricesDisplayFormat}
+            gridLinesStroke={ChartStyles.gridLinesStroke}
+          />
           <CandlestickSeries />
           <LineSeries yAccessor={ema26.accessor()} stroke={ema26.stroke()} />
           <LineSeries yAccessor={ema12.accessor()} stroke={ema12.stroke()} />
@@ -135,6 +161,8 @@ class StockChart extends React.Component<StockChartProps> {
             yAccessor={this.yEdgeIndicator}
           />
           <MovingAverageTooltip
+            textFill={ChartStyles.fontColour}
+            displayFormat={this.pricesDisplayFormat}
             origin={[8, 24]}
             options={[
               {
@@ -152,18 +180,31 @@ class StockChart extends React.Component<StockChartProps> {
             ]}
           />
 
-          <ZoomButtons />
-          <OHLCTooltip origin={[8, 16]} />
+          {/* <ZoomButtons /> */}
+          <OHLCTooltip
+            origin={[8, 16]}
+            textFill={ChartStyles.fontColour}
+            ohlcFormat={this.pricesDisplayFormat}
+          />
+          <ClickCallback onClick={this.props.onClick} />
         </Chart>
         <Chart
-          id={4}
+          id={"ElderRayChart"}
           height={elderRayHeight}
           yExtents={[0, elder.accessor()]}
           origin={elderRayOrigin}
           padding={{ top: 8, bottom: 8 }}
         >
-          <XAxis showGridLines gridLinesStroke="#e0e3eb" />
-          <YAxis ticks={4} tickFormat={this.pricesDisplayFormat} />
+          <XAxis
+            tickLabelFill={ChartStyles.fontColour}
+            showGridLines={ChartStyles.showGridLines}
+            gridLinesStroke={ChartStyles.gridLinesStroke}
+          />
+          <YAxis
+            tickLabelFill={ChartStyles.fontColour}
+            ticks={4}
+            tickFormat={this.pricesDisplayFormat}
+          />
 
           <MouseCoordinateX displayFormat={timeDisplayFormat} />
           <MouseCoordinateY
@@ -174,6 +215,7 @@ class StockChart extends React.Component<StockChartProps> {
           <ElderRaySeries yAccessor={elder.accessor()} />
 
           <SingleValueTooltip
+            valueFill={ChartStyles.fontColour}
             yAccessor={elder.accessor()}
             yLabel="Elder Ray"
             yDisplayFormat={(d: any) =>
@@ -183,6 +225,7 @@ class StockChart extends React.Component<StockChartProps> {
             }
             origin={[8, 16]}
           />
+          <ClickCallback onClick={this.props.onClick} />
         </Chart>
         <CrossHairCursor />
       </ChartCanvas>
