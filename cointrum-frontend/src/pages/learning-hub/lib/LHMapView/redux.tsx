@@ -2,6 +2,22 @@ import { connect } from "react-redux";
 
 import { AppState } from "store";
 
-const mapStateToProps = (state: AppState) => ({});
+import { addSeedtoLabelUL } from "store/seeds/actions/editor.action";
+import {
+  fetchInitialPHDS,
+  fetchPHDSRange,
+} from "store/phds/actions/library.action";
 
-export const connector = connect(mapStateToProps, {});
+const mapStateToProps = (state: AppState) => ({
+  mode: state.seeds.editor.seedtool,
+  currentLabel: state.labels.current.label,
+  phds: state.phds.library.phdselements,
+  error: state.phds.library.error,
+  loading: state.phds.library.loading,
+});
+
+export const connector = connect(mapStateToProps, {
+  addSeedtoLabelUL,
+  fetchInitialPHDS,
+  fetchPHDSRange,
+});
