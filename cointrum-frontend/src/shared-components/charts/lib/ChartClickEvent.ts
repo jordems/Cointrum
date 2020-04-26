@@ -1,4 +1,4 @@
-interface ChartTuple {
+export interface IChartTuple {
   close: number;
   date: Date;
   elderRay: {
@@ -14,16 +14,16 @@ interface ChartTuple {
   volume: number;
 }
 
-export interface ChartClickEvent {
+export interface IChartClickEvent {
   chartConfig: any;
   chartId: string | number;
   currentCharts: Array<string | number>;
-  currentItem: ChartTuple;
+  currentItem: IChartTuple;
   displayXAccessor: any;
-  fullData: Array<ChartTuple>;
+  fullData: Array<IChartTuple>;
   hovering: boolean;
   mouseXY: [number, number];
-  plotData: Array<ChartTuple>;
+  plotData: Array<IChartTuple>;
   prevMouseXY: [number, number];
   show: boolean;
   height: number;

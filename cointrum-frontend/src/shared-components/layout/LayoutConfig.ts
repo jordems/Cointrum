@@ -13,18 +13,25 @@ const config = {
         type: "item",
         name: "Learning Hub",
         link: "/learning-hub",
-        icon: "CastForEducation"
+        icon: "CastForEducation",
       },
       {
         id: "trading-hub-item",
         type: "item",
         name: "Trading Hub",
         link: "/trading-hub",
-        icon: "ImportExport"
+        icon: "ImportExport",
       },
-      { id: "divider-1", type: "divider" }
-    ]
-  }
+      {
+        id: "monitoring-hub-item",
+        type: "item",
+        name: "Monitoring Hub",
+        link: "/monitoring-hub",
+        icon: "ImportExport",
+      },
+      { id: "divider-1", type: "divider" },
+    ],
+  },
 };
 
 export default config;

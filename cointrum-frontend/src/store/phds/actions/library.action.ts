@@ -11,7 +11,9 @@ type MyThunkResult<R> = ThunkAction<R, AppState, undefined, Action>;
 
 const phdsConsumer = new PHDSAPIConsumer();
 
-export const fetchInitialPHDS = (): MyThunkResult<Promise<boolean>> => (
+export const fetchInitialPHDS = (
+  intevalMultiply?: number
+): MyThunkResult<Promise<boolean>> => (
   dispatch: (e: PHDSLibraryTypes.Actions) => void,
   getState
 ): Promise<boolean> => {
@@ -29,7 +31,7 @@ export const fetchInitialPHDS = (): MyThunkResult<Promise<boolean>> => (
   let startTime = subtractTime(
     currentTime,
     currentTradingMap.cycleduration,
-    5000
+    intevalMultiply ? intevalMultiply : 1000
   );
 
   return new Promise((resolve, reject) => {

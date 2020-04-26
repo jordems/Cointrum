@@ -1,5 +1,5 @@
 import React from "react";
-import { WithStyles, Button } from "@material-ui/core";
+import { WithStyles } from "@material-ui/core";
 import { ConnectedProps } from "react-redux";
 
 import { styles, wrapStyles } from "./styles";
@@ -7,22 +7,16 @@ import { connector } from "./redux";
 
 import Chart from "shared-components/charts/CandleChart";
 
-import LHSeedSelectedCard from "./LHSeedsSelectedCard";
 import { candleConversion } from "shared-components/charts/lib/DataTypeConversion";
 import { getPriceDisplayFormat } from "shared-components/charts/lib/getPriceDisplayFormat";
-import { IChartClickEvent } from "shared-components/charts/lib/ChartClickEvent";
 
-type LHMapViewProps = WithStyles<typeof styles> &
+type MHMapViewProps = WithStyles<typeof styles> &
   ConnectedProps<typeof connector>;
 
-class LHMapView extends React.Component<LHMapViewProps> {
+class MHMapView extends React.Component<MHMapViewProps> {
   componentDidMount() {
-    this.props.fetchInitialPHDS();
+    this.props.fetchInitialPHDS(5000);
   }
-
-  handleChartClick = (event: IChartClickEvent) => {
-    this.props.handleSelection(event.currentItem);
-  };
 
   render() {
     const { classes, loading, phds } = this.props;
@@ -34,17 +28,16 @@ class LHMapView extends React.Component<LHMapViewProps> {
       ? undefined
       : getPriceDisplayFormat(phds[phdsKeys.values().next().value]);
 
+    const chartInput = candleConversion(phds);
+
     return (
       <div className={classes.root}>
-        <LHSeedSelectedCard />
-
         {displayChart && (
           <Chart
-            data={candleConversion(phds)}
+            data={chartInput}
             width={1150}
             height={700}
             pricesDisplayFormat={priceDisplayFormat}
-            onClick={this.handleChartClick}
           />
         )}
       </div>
@@ -52,4 +45,4 @@ class LHMapView extends React.Component<LHMapViewProps> {
   }
 }
 
-export default connector(wrapStyles(LHMapView));
+export default connector(wrapStyles(MHMapView));

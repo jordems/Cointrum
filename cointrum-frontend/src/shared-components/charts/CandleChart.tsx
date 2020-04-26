@@ -27,7 +27,7 @@ import { withDeviceRatio } from "react-financial-charts/lib/utils";
 import { lastVisibleItemBasedZoomAnchor } from "react-financial-charts/lib/utils/zoomBehavior";
 import { Label } from "react-financial-charts/lib/annotation";
 import { IOHLCData } from "./lib/IOHLCData";
-import { ChartClickEvent } from "./lib/ChartClickEvent";
+import { IChartClickEvent } from "./lib/ChartClickEvent";
 
 interface StockChartProps {
   readonly data: IOHLCData[];
@@ -36,7 +36,7 @@ interface StockChartProps {
   readonly pricesDisplayFormat?: string;
   readonly width: number;
   readonly ratio: number;
-  readonly onClick?: (event: ChartClickEvent) => void;
+  readonly onClick?: (event: IChartClickEvent) => void;
 }
 
 const ChartStyles = {
