@@ -1,10 +1,13 @@
+import { uuid } from "uuidv4";
+
 import * as SeedEditorTypes from "../types/editor.types";
 import * as SeedLibraryTypes from "../types/library.types";
-import { ICreateSeed, ISeed } from "models";
+import { ICreateSeed, ISeed, IPHDSElement } from "models";
 import { AppState } from "store";
 import { ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 import GenericRestfulAPIConsumer from "services/api/GenericRestfulAPIConsumer";
+import { IOHLCData } from "shared-components/charts/lib/IOHLCData";
 
 type MyThunkResult<R> = ThunkAction<R, AppState, undefined, Action>;
 
@@ -117,4 +120,50 @@ export const changeSeedTool = (seedtool: "SEEDSELECT" | "VIEW" | "TEST") => (
     type: SeedEditorTypes.SEEDEDITOR_CHANGE_SEEDTOOL,
     payload: seedtool,
   });
+};
+
+export const handleSelection = (data: IOHLCData) => (
+  dispatch: (e: SeedEditorTypes.Actions | MyThunkResult<void>) => void,
+  getState: () => AppState
+): void => {
+  const { selection } = getState().seeds.editor;
+
+  if (!selection.start) {
+    dispatch({
+      type: SeedEditorTypes.SEEDEDITOR_CHANGE_SELECTION,
+      payload: {
+        frame: "start",
+        data,
+      },
+    });
+  } else if (!selection.end) {
+    dispatch({
+      type: SeedEditorTypes.SEEDEDITOR_CHANGE_SELECTION,
+      payload: {
+        frame: "end",
+        data,
+      },
+    });
+
+    const { phdselements } = getState().phds.library;
+    // Currently When `end` frame is added we automatiically add the seed to ulseedsbylabel
+
+    let seedData: IPHDSElement[] = [];
+    for (const ele of Object.values(phdselements)) {
+      const eleTime = new Date(ele.openTime);
+      if (selection.start.date > eleTime && data.date < eleTime) {
+        seedData.push(ele);
+      }
+    }
+
+    const newSeed: ICreateSeed = {
+      tempid: uuid(),
+      data: seedData,
+    };
+
+    dispatch(addSeedtoLabelUL(newSeed));
+    dispatch({
+      type: SeedEditorTypes.SEEDEDITOR_CLEAR_SELECTION,
+    });
+  }
 };

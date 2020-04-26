@@ -29,7 +29,7 @@ export const fetchInitialPHDS = (): MyThunkResult<Promise<boolean>> => (
   let startTime = subtractTime(
     currentTime,
     currentTradingMap.cycleduration,
-    1000
+    5000
   );
 
   return new Promise((resolve, reject) => {

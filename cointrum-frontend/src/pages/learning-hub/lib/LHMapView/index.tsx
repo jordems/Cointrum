@@ -21,8 +21,7 @@ class LHMapView extends React.Component<LHMapViewProps> {
   }
 
   handleChartClick = (event: ChartClickEvent) => {
-    // Add seed Selection Start and End Paramters into Redux
-    console.log(event);
+    this.props.handleSelection(event.currentItem);
   };
 
   render() {

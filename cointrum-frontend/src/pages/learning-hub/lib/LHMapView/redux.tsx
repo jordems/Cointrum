@@ -2,7 +2,10 @@ import { connect } from "react-redux";
 
 import { AppState } from "store";
 
-import { addSeedtoLabelUL } from "store/seeds/actions/editor.action";
+import {
+  addSeedtoLabelUL,
+  handleSelection,
+} from "store/seeds/actions/editor.action";
 import {
   fetchInitialPHDS,
   fetchPHDSRange,
@@ -18,6 +21,7 @@ const mapStateToProps = (state: AppState) => ({
 
 export const connector = connect(mapStateToProps, {
   addSeedtoLabelUL,
+  handleSelection,
   fetchInitialPHDS,
   fetchPHDSRange,
 });
