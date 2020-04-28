@@ -146,12 +146,19 @@ export const handleSelection = (data: IOHLCData) => (
     });
 
     const { phdselements } = getState().phds.library;
-    // Currently When `end` frame is added we automatiically add the seed to ulseedsbylabel
 
+    // Currently When `end` frame is added we automatically add the seed to ulseedsbylabel
     let seedData: IPHDSElement[] = [];
     for (const ele of Object.values(phdselements)) {
       const eleTime = new Date(ele.openTime);
-      if (selection.start.date > eleTime && data.date < eleTime) {
+
+      // If User Selects Endtime first, swap start and end time
+      const startTime =
+        selection.start.date < data.date ? selection.start.date : data.date;
+      const endTime =
+        selection.start.date < data.date ? data.date : selection.start.date;
+
+      if (startTime <= eleTime && endTime >= eleTime) {
         seedData.push(ele);
       }
     }

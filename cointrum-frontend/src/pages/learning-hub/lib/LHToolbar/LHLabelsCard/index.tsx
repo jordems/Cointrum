@@ -33,7 +33,6 @@ class LHLabelsCard extends React.Component<LHLabelsCardProps> {
       classes,
       labels,
       loading,
-      error,
       openCreateLabelDialog,
       openEditorLabelDialog,
     } = this.props;

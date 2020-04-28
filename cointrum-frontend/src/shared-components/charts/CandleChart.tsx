@@ -25,7 +25,6 @@ import {
 } from "react-financial-charts/lib/tooltip";
 import { withDeviceRatio } from "react-financial-charts/lib/utils";
 import { lastVisibleItemBasedZoomAnchor } from "react-financial-charts/lib/utils/zoomBehavior";
-import { Label } from "react-financial-charts/lib/annotation";
 import { IOHLCData } from "./lib/IOHLCData";
 import { IChartClickEvent } from "./lib/ChartClickEvent";
 

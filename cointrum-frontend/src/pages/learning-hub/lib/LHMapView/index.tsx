@@ -1,5 +1,5 @@
 import React from "react";
-import { WithStyles, Button } from "@material-ui/core";
+import { WithStyles } from "@material-ui/core";
 import { ConnectedProps } from "react-redux";
 
 import { styles, wrapStyles } from "./styles";
