@@ -1,7 +1,4 @@
-import axios from "axios";
-
-import config from "services/api/config";
-import { Error500, Error400 } from "services/api/ErrorTypes";
+import { API_Request } from "./API_Request";
 
 interface Document {
   _id: string;
@@ -13,105 +10,29 @@ export default class GenericRestfulAPIConsumer<
 > {
   private path: string;
   constructor(path: string) {
-    this.path = config.url + path;
+    this.path = path;
   }
 
   public setPath(path: string) {
-    this.path = config.url + path;
+    this.path = path;
   }
 
   public fetchAllDocuments(): Promise<DocumentModel[]> {
-    return new Promise((resolve, reject) => {
-      axios
-        .get(this.path)
-        .then((resp) => {
-          resolve(resp.data);
-        })
-        .catch((err) => {
-          const { response } = err;
-
-          if (response && response.status === 400) {
-            reject(Error400(response.data));
-          } else {
-            reject(Error500);
-          }
-        });
-    });
+    return API_Request("GET", this.path);
   }
   public async fetchDocumentbyID(id: string): Promise<DocumentModel> {
-    return new Promise((resolve, reject) => {
-      axios
-        .get(this.path + `/${id}`)
-        .then((resp) => {
-          resolve(resp.data);
-        })
-        .catch((err) => {
-          const { response } = err;
-
-          if (response && response.status === 400) {
-            reject(Error400(response.data));
-          } else {
-            reject(Error500);
-          }
-        });
-    });
+    return API_Request("GET", this.path + `/${id}`);
   }
 
   public async createDocument(doc: CreateModel): Promise<DocumentModel> {
-    return new Promise((resolve, reject) => {
-      console.log(doc);
-      axios
-        .post(this.path, doc)
-        .then((resp) => {
-          resolve(resp.data);
-        })
-        .catch((err) => {
-          const { response } = err;
-
-          if (response && response.status === 400) {
-            reject(Error400(response.data));
-          } else {
-            reject(Error500);
-          }
-        });
-    });
+    return API_Request("POST", this.path, doc);
   }
 
   public editDocument(doc: DocumentModel): Promise<DocumentModel> {
-    return new Promise((resolve, reject) => {
-      axios
-        .put(this.path + `/${doc._id}`, doc)
-        .then((resp) => {
-          resolve(resp.data);
-        })
-        .catch((err) => {
-          const { response } = err;
-
-          if (response && response.status === 400) {
-            reject(Error400(response.data));
-          } else {
-            reject(Error500);
-          }
-        });
-    });
+    return API_Request("PUT", this.path + `/${doc._id}`, doc);
   }
 
   public removeDocument(id: string): Promise<DocumentModel> {
-    return new Promise((resolve, reject) => {
-      axios
-        .delete(this.path + `/${id}`)
-        .then((resp) => {
-          resolve(resp.data);
-        })
-        .catch((err) => {
-          const { response } = err;
-
-          if (response && response.status === 400) {
-            reject(Error400(response.data));
-          } else {
-            reject(Error500);
-          }
-        });
-    });
+    return API_Request("DELETE", this.path + `/${id}`);
   }
 }

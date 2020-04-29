@@ -36,7 +36,7 @@ export const fetchInitialPHDS = (
 
   return new Promise((resolve, reject) => {
     phdsConsumer
-      .fetchCandles(
+      .fetchPHDS(
         currentTradingMap.exchange,
         currentTradingMap.basecurrency,
         currentTradingMap.altcurrency,
@@ -78,7 +78,7 @@ export const fetchPHDSRange = (
 
   return new Promise((resolve, reject) => {
     phdsConsumer
-      .fetchCandles(
+      .fetchPHDS(
         currentTradingMap.exchange,
         currentTradingMap.basecurrency,
         currentTradingMap.altcurrency,

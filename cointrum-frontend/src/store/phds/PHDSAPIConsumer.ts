@@ -1,7 +1,3 @@
-import axios from "axios";
-
-import config from "services/api/config";
-import { Error500, Error400 } from "services/api/ErrorTypes";
 import { IPHDSElement } from "models";
 import {
   IExchanges,
@@ -9,10 +5,11 @@ import {
   IAltCurrencies,
   ICycleDurations,
 } from "shared-components/types";
-import { addQueryParametersToURL } from "services/tools/URLParamaterTools";
+
+import { API_Request } from "services/api/API_Request";
 
 export default class PHDSAPIConsumer {
-  public fetchCandles(
+  public fetchPHDS(
     exchange: IExchanges,
     basecurrency: IBaseCurrencies,
     altcurrency: IAltCurrencies,
@@ -20,33 +17,17 @@ export default class PHDSAPIConsumer {
     start?: number,
     end?: number
   ): Promise<IPHDSElement[]> {
-    const path = addQueryParametersToURL(
-      config.url + `/phds/${exchange}/candles`,
-      {
-        basecurrency,
-        altcurrency,
-        interval,
-        start,
-        end,
-      }
-    );
-    console.log(path);
+    const queryParameters = {
+      basecurrency,
+      altcurrency,
+      interval,
+      start,
+      end,
+    };
 
-    return new Promise((resolve, reject) => {
-      axios
-        .get(path)
-        .then((resp) => {
-          resolve(resp.data);
-        })
-        .catch((err) => {
-          const { response } = err;
-
-          if (response && response.status === 400) {
-            reject(Error400(response.data));
-          } else {
-            reject(Error500);
-          }
-        });
+    return API_Request("GET", {
+      path: `/phds/${exchange}`,
+      params: queryParameters,
     });
   }
 }
