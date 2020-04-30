@@ -32,7 +32,6 @@ import { ICreateSeed, ILabel } from "models";
 
 interface StockChartProps {
   readonly data: IOHLCData[];
-  readonly seedsSelected?: { label: ILabel; seed: ICreateSeed }[];
   readonly height: number;
   readonly dateTimeFormat?: string;
   readonly pricesDisplayFormat?: string;
@@ -63,7 +62,6 @@ class StockChart extends React.Component<StockChartProps> {
       height,
       ratio,
       width,
-      //seedsSelected,
     } = this.props;
 
     const ema12 = ema()
@@ -85,35 +83,6 @@ class StockChart extends React.Component<StockChartProps> {
     const elder = elderRay();
 
     let calculatedData = elder(ema26(ema12(initialData)));
-
-    // // Attach selected Labels from Props to calculatedData
-    // if (seedsSelected) {
-    //   for (const seedlb of seedsSelected) {
-    //     for (let x = 0; x < calculatedData.length; x++) {
-    //       if (seedlb.seed.data.length > 0) {
-    //         if (
-    //           seedlb.seed.data[0].openTime === calculatedData[x].date.getTime()
-    //         ) {
-    //           console.log(
-    //             "compare",
-    //             seedlb.seed.data[0].openTime,
-    //             calculatedData[x].date.getTime()
-    //           );
-    //           calculatedData[x].label = { text: "Sample", height: 100 };
-    //         }
-    //         if (
-    //           seedlb.seed.data[seedlb.seed.data.length - 1].closeTime ===
-    //           calculatedData[x].date.getTime()
-    //         ) {
-    //           calculatedData[x].label = { text: "Sample", height: 100 };
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
-
-    // const labelAccessor = (d: any) => d.label;
-    // console.log(calculatedData, seedsSelected);
 
     const { margin, xScaleProvider } = this;
 

@@ -10,7 +10,6 @@ import Chart from "shared-components/charts/CandleChart";
 import { candleConversion } from "shared-components/charts/lib/DataTypeConversion";
 import { getPriceDisplayFormat } from "shared-components/charts/lib/getPriceDisplayFormat";
 import { IChartClickEvent } from "shared-components/charts/lib/ChartClickEvent";
-import { getDigestableSeeds } from "services/tools/DigestableSeeds";
 
 type LHChartProps = WithStyles<typeof styles> &
   ConnectedProps<typeof connector>;
@@ -33,13 +32,9 @@ class LHChart extends React.Component<LHChartProps> {
     if (!displayChart) {
       return null;
     }
-
-    // Get Labels Formatted into easily digestable structure for charts
-    const seedsSelected = getDigestableSeeds(labels, ulseedsbyLabel);
     return (
       <Chart
         data={candleConversion(phds)}
-        seedsSelected={seedsSelected}
         width={1150}
         height={700}
         pricesDisplayFormat={priceDisplayFormat}
