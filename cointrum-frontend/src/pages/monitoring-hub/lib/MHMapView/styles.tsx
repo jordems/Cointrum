@@ -2,7 +2,9 @@ import { Theme, createStyles, withStyles } from "@material-ui/core";
 
 export const styles = (theme: Theme) =>
   createStyles({
-    root: {}
+    root: {
+      marginRight: 225
+    }
   });
 
 export function wrapStyles(component: any) {

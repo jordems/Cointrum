@@ -7,6 +7,7 @@ const initialState: SeedEditorTypes.State = {
   learning: false,
   error: undefined,
   seedtool: "SEEDSELECT",
+  selection: {},
 };
 
 export function editorReducer(
@@ -75,6 +76,19 @@ export function editorReducer(
       return {
         ...state,
         seedtool: action.payload,
+      };
+    case SeedEditorTypes.SEEDEDITOR_CHANGE_SELECTION:
+      return {
+        ...state,
+        selection: {
+          ...state.selection,
+          [action.payload.frame]: action.payload.data,
+        },
+      };
+    case SeedEditorTypes.SEEDEDITOR_CLEAR_SELECTION:
+      return {
+        ...state,
+        selection: {},
       };
     default:
       return state;

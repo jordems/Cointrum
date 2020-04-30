@@ -7,7 +7,6 @@ import {
   ICycleDurations,
   IExchanges,
 } from "../../types/exchange";
-import ICandle from "../../utils/markets/types/ICandle";
 import IMarket from "../../utils/markets/IMarket";
 import subtractTime from "../../utils/math/TimeSubtractor";
 
@@ -30,30 +29,14 @@ export default class PHDSController extends GenericController<IPHDSElement> {
     this.interval = interval;
   }
 
-  async getCandleSticks(
-    start?: number,
-    end?: number,
-    recretry?: boolean
-  ): Promise<IPHDSElement[]> {
+  async getPHDS(start?: number, end?: number): Promise<IPHDSElement[]> {
     // By default set startTime for last interval (current time - interval)
-
     const currentTime = new Date().getTime(); // in UTC milliseconds
 
     let startTime = start ? start : subtractTime(currentTime, this.interval);
 
-    let query: any = {
-      _id: { $gte: startTime },
-    };
-
-    if (end) {
-      query = {
-        ...query,
-        closeTime: { $lte: end },
-      };
-    }
-
-    // First check if current Info is in Mongo
-    let results = await this.queryDocuments(query);
+    // First check if current Info is in db
+    const results = await this.getExistingDBResults(startTime, end);
 
     // If end is included make sure, we have all data up to endtime (within an interval) Or else all data up to current time
 
@@ -98,7 +81,7 @@ export default class PHDSController extends GenericController<IPHDSElement> {
           docPromises.push(this.createDocument(phdsdoc));
         }
 
-        const tresults = await Promise.all(docPromises);
+        let tresults = await Promise.all(docPromises);
         freshresults = [...freshresults, ...tresults];
       }
 
@@ -107,15 +90,26 @@ export default class PHDSController extends GenericController<IPHDSElement> {
 
       if (!start && freshresults.length === 0) {
         // if binance doesn't have any now, pull an earlier interval
-        return this.getCandleSticks(
-          subtractTime(startTime, this.interval),
-          end,
-          true
-        );
+        return this.getPHDS(subtractTime(startTime, this.interval), end);
       } else {
         return freshresults;
       }
     }
+  }
+
+  private getExistingDBResults(start?: number, end?: number) {
+    let query: any = {
+      _id: { $gte: start },
+    };
+
+    if (end) {
+      query = {
+        ...query,
+        closeTime: { $lte: end },
+      };
+    }
+
+    return this.queryDocuments(query);
   }
 
   findMissingZones(

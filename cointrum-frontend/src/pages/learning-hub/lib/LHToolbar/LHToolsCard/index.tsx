@@ -5,18 +5,15 @@ import {
   CardContent,
   Typography,
   Button,
-  Divider,
   CircularProgress,
   CardActions,
 } from "@material-ui/core";
 import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 
-import PanToolIcon from "@material-ui/icons/PanTool";
 import ColorizeOutlinedIcon from "@material-ui/icons/ColorizeOutlined";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 
 import { ConnectedProps } from "react-redux";
-import { size } from "lodash";
 
 import { connector } from "./redux";
 

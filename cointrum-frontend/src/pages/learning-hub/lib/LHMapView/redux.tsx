@@ -2,6 +2,13 @@ import { connect } from "react-redux";
 
 import { AppState } from "store";
 
-const mapStateToProps = (state: AppState) => ({});
+import { fetchInitialPHDS } from "store/phds/actions/library.action";
 
-export const connector = connect(mapStateToProps, {});
+const mapStateToProps = (state: AppState) => ({
+  error: state.phds.library.error,
+  loading: state.phds.library.loading,
+});
+
+export const connector = connect(mapStateToProps, {
+  fetchInitialPHDS,
+});

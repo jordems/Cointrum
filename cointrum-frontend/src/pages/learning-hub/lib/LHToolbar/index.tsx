@@ -1,5 +1,5 @@
 import React from "react";
-import { WithStyles, Drawer, Divider } from "@material-ui/core";
+import { WithStyles, Drawer } from "@material-ui/core";
 
 import LHToolsCard from "./LHToolsCard";
 import LHLabelsCard from "./LHLabelsCard";

@@ -14,7 +14,6 @@ import {
   IconButton,
 } from "@material-ui/core";
 
-import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { ConnectedProps } from "react-redux";
 
@@ -67,8 +66,6 @@ const LHSeedsSelectedCard: React.FunctionComponent<LHSeedsSelectedProps> = ({
                 >
                   {seedIDs &&
                     seedIDs.map((seedID, idx) => {
-                      const seed = ulseedsbyLabel[labelID][seedID];
-
                       return (
                         <ListItem
                           key={`ulSelectedSeed${seedID}`}

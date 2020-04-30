@@ -1,0 +1,107 @@
+---
+title: "Cointrum Model Testing"
+author: "Jordan Emslie"
+date: "26/04/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Cointrum Model Testing
+
+
+Get some candle Data from Cointrum API
+```{r}
+library("rjson")
+json_file <- "http://localhost:3001/api/v1/phds/Binance/candles?basecurrency=BNB&altcurrency=BTC&interval=1m&start=1587657944046&end=1587687944046&,"
+json_data <- fromJSON(paste(readLines(json_file), collapse=""))
+```
+
+Reformat Data to R standards
+```{r}
+
+# R Dataframe values
+openTime <- c()
+open<- c()
+high<- c()
+low<- c()
+close<- c()
+volume<- c()
+closeTime<- c()
+quoteVolume<- c()
+trades<- c()
+baseAssetVolume<- c()
+quoteAssetVolume<- c()
+
+# Creata a sense of Amount increase for a Response Variable
+value <- 100
+amount <- c()
+
+for(ChartTuple in json_data){
+  openTime <- c(openTime, ChartTuple[2]$openTime)
+  open <- c(open, ChartTuple[3]$open)
+  high <- c(high, ChartTuple[4]$high)
+  low <- c(low, ChartTuple[5]$low)
+  close <- c(close, ChartTuple[6]$close)
+  volume <- c(volume, ChartTuple[7]$volume)
+  closeTime <- c(closeTime, ChartTuple[8]$closeTime)
+  quoteVolume<- c(quoteVolume, as.numeric(ChartTuple[9]$quoteVolume))
+  trades<- c(trades, ChartTuple[10]$trades)
+  baseAssetVolume<- c(baseAssetVolume, ChartTuple[11]$baseAssetVolume)
+  quoteAssetVolume<- c(quoteAssetVolume, ChartTuple[12]$quoteAssetVolume)
+  amount <- c(amount, value)
+  value <- value * 1.0001
+}
+
+
+
+# Build chartData Dataframe
+chartData <- data.frame(amount, openTime, open, high, low, close, volume, closeTime, quoteVolume, trades, baseAssetVolume, quoteAssetVolume)
+```
+
+
+Add on additional parameters
+```{r}
+
+```
+
+
+Plot Data to find Clusters
+```{r}
+plot(chartData)
+```
+
+Attempt Linear Regression Net Anaylsis
+```{r}
+chartlm <- lm(amount~., data=chartData)
+
+summary(chartlm)
+
+```
+
+
+Attempt Simple Neural Net Anaylsis
+```{r}
+library(neuralnet)
+
+
+```
+
+Attempt PCA Anaylsis
+```{r}
+
+```
+
+Attempt MultiModel Anaylsis
+```{r}
+
+```
+
+
+`Using a classification variable try to setup a buy and sell frequence to factor in!!!!`
+Attempt Classification Analysis
+```{r}
+
+```

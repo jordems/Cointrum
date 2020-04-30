@@ -690,10 +690,10 @@
         ]
       }
     },
-    "/phds/{exchange}/candles": {
+    "/phds/{exchange}": {
       "get": {
         "tags": ["Learning Hub"],
-        "summary": "Returns Candles for Charts",
+        "summary": "Returns phds for charts and seed selection",
         "responses": {
           "200": {
             "description": "OK"

@@ -2,7 +2,7 @@ import { ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 
 import { AppState } from "store";
-import RestfulAPIConsumer from "services/api/RestfulAPIConsumer";
+import GenericRestfulAPIConsumer from "services/api/GenericRestfulAPIConsumer";
 import * as MapLibraryTypes from "./../types/library.types";
 import * as MapCreateTypes from "./../types/create.types";
 import * as MapCurrentTypes from "./../types/current.types";
@@ -10,7 +10,7 @@ import { ITradingMap, ICreateTradingMap } from "models";
 
 type MyThunkResult<R> = ThunkAction<R, AppState, undefined, Action>;
 
-const tradingMapConsumer = new RestfulAPIConsumer<
+const tradingMapConsumer = new GenericRestfulAPIConsumer<
   ITradingMap,
   ICreateTradingMap
 >("/tradingmap");
@@ -21,23 +21,23 @@ export const fetchMapLibrary = (): MyThunkResult<Promise<boolean>> => (
   return new Promise((resolve, reject) => {
     tradingMapConsumer
       .fetchAllDocuments()
-      .then(tradingMaps => {
+      .then((tradingMaps) => {
         const fetchMap: { [tradingmapid: string]: ITradingMap } = {};
 
-        tradingMaps.forEach(map => {
+        tradingMaps.forEach((map) => {
           fetchMap[map._id] = map;
         });
 
         dispatch({
           type: MapLibraryTypes.MAPLIBRARY_FETCH_MAPS_SUCCESS,
-          payload: fetchMap
+          payload: fetchMap,
         });
         resolve();
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch({
           type: MapLibraryTypes.MAPLIBRARY_FETCH_MAPS_FAIL,
-          payload: err
+          payload: err,
         });
         reject();
       });
@@ -52,23 +52,23 @@ export const addMaptoLibrary = (
   return new Promise((resolve, reject) => {
     tradingMapConsumer
       .createDocument(map)
-      .then(tradingMap => {
+      .then((tradingMap) => {
         // Reset Map Creation Form Fields
         dispatch({
-          type: MapCreateTypes.MAPCREATE_RESET_FORM
+          type: MapCreateTypes.MAPCREATE_RESET_FORM,
         });
 
         // Add Map to Library
         dispatch({
           type: MapLibraryTypes.MAPLIBRARY_ADD_MAP,
-          payload: tradingMap
+          payload: tradingMap,
         });
         resolve();
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch({
           type: MapCreateTypes.MAPCREATE_CREATION_FAILED,
-          payload: err
+          payload: err,
         });
         reject();
       });
@@ -84,23 +84,23 @@ export const editMapinLibrary = (
   return new Promise((resolve, reject) => {
     tradingMapConsumer
       .editDocument({ _id: id, ...map } as ITradingMap)
-      .then(tradingMap => {
+      .then((tradingMap) => {
         // Reset Map Dialog Form Fields
         dispatch({
-          type: MapCreateTypes.MAPCREATE_RESET_FORM
+          type: MapCreateTypes.MAPCREATE_RESET_FORM,
         });
 
         // Add Map to Library
         dispatch({
           type: MapLibraryTypes.MAPLIBRARY_EDIT_MAP,
-          payload: tradingMap
+          payload: tradingMap,
         });
         resolve();
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch({
           type: MapCreateTypes.MAPCREATE_CREATION_FAILED,
-          payload: err
+          payload: err,
         });
         reject();
       });
@@ -118,17 +118,17 @@ export const removeMapfromLibrary = (
   return new Promise((resolve, reject) => {
     tradingMapConsumer
       .removeDocument(mapid)
-      .then(_tradingMap => {
+      .then((_tradingMap) => {
         // Remove Map from Library
         dispatch({
           type: MapLibraryTypes.MAPLIBRARY_REMOVE_MAP,
-          payload: mapid
+          payload: mapid,
         });
 
         // If map being removed is current map, clear current map
         if (currentMap && mapid === currentMap._id) {
           dispatch({
-            type: MapCurrentTypes.MAPCURRENT_CLEAR_MAP
+            type: MapCurrentTypes.MAPCURRENT_CLEAR_MAP,
           });
         }
 
@@ -136,7 +136,7 @@ export const removeMapfromLibrary = (
 
         resolve();
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
         //TODO Popup that says Map Removed Failed
         reject();

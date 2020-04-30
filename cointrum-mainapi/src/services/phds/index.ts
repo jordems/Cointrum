@@ -13,7 +13,7 @@ let phdsController: PHDSController;
 
 export default [
   {
-    path: "/api/v1/phds/:exchange/candles",
+    path: "/api/v1/phds/:exchange",
     method: "get",
     handler: [
       checkphdsParams,
@@ -25,7 +25,7 @@ export default [
           req.query.interval
         );
         try {
-          const phdselements = await phdsController.getCandleSticks(
+          const phdselements = await phdsController.getPHDS(
             req.query.start,
             req.query.end
           );
