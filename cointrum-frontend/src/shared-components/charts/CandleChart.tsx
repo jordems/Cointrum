@@ -18,6 +18,7 @@ import {
   ElderRaySeries,
   LineSeries,
 } from "react-financial-charts/lib/series";
+import { Label } from "react-financial-charts/lib/annotation";
 import {
   MovingAverageTooltip,
   OHLCTooltip,
@@ -27,9 +28,11 @@ import { withDeviceRatio } from "react-financial-charts/lib/utils";
 import { lastVisibleItemBasedZoomAnchor } from "react-financial-charts/lib/utils/zoomBehavior";
 import { IOHLCData } from "./lib/IOHLCData";
 import { IChartClickEvent } from "./lib/ChartClickEvent";
+import { ICreateSeed, ILabel } from "models";
 
 interface StockChartProps {
   readonly data: IOHLCData[];
+  readonly seedsSelected?: { label: ILabel; seed: ICreateSeed }[];
   readonly height: number;
   readonly dateTimeFormat?: string;
   readonly pricesDisplayFormat?: string;
@@ -60,6 +63,7 @@ class StockChart extends React.Component<StockChartProps> {
       height,
       ratio,
       width,
+      //seedsSelected,
     } = this.props;
 
     const ema12 = ema()
@@ -80,7 +84,36 @@ class StockChart extends React.Component<StockChartProps> {
 
     const elder = elderRay();
 
-    const calculatedData = elder(ema26(ema12(initialData)));
+    let calculatedData = elder(ema26(ema12(initialData)));
+
+    // // Attach selected Labels from Props to calculatedData
+    // if (seedsSelected) {
+    //   for (const seedlb of seedsSelected) {
+    //     for (let x = 0; x < calculatedData.length; x++) {
+    //       if (seedlb.seed.data.length > 0) {
+    //         if (
+    //           seedlb.seed.data[0].openTime === calculatedData[x].date.getTime()
+    //         ) {
+    //           console.log(
+    //             "compare",
+    //             seedlb.seed.data[0].openTime,
+    //             calculatedData[x].date.getTime()
+    //           );
+    //           calculatedData[x].label = { text: "Sample", height: 100 };
+    //         }
+    //         if (
+    //           seedlb.seed.data[seedlb.seed.data.length - 1].closeTime ===
+    //           calculatedData[x].date.getTime()
+    //         ) {
+    //           calculatedData[x].label = { text: "Sample", height: 100 };
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+
+    // const labelAccessor = (d: any) => d.label;
+    // console.log(calculatedData, seedsSelected);
 
     const { margin, xScaleProvider } = this;
 
@@ -148,6 +181,7 @@ class StockChart extends React.Component<StockChartProps> {
           <CandlestickSeries />
           <LineSeries yAccessor={ema26.accessor()} stroke={ema26.stroke()} />
           <LineSeries yAccessor={ema12.accessor()} stroke={ema12.stroke()} />
+
           <MouseCoordinateY
             rectWidth={margin.right}
             displayFormat={this.pricesDisplayFormat}
