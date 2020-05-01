@@ -18,6 +18,25 @@ export interface IPHDSElement extends Document {
   trades: number;
   baseAssetVolume: number;
   quoteAssetVolume: number;
+
+  atr14: number;
+
+  BBmiddle: number;
+  BBupper: number;
+  BBlower: number;
+
+  ElderRay: [number, number];
+
+  ema26: number;
+  ema12: number;
+
+  forceindex13: number;
+
+  MACD: number;
+
+  RSI14: number;
+
+  SAR00202: number;
 }
 
 const PHDSElementSchema = new Schema({
@@ -67,6 +86,39 @@ const PHDSElementSchema = new Schema({
   quoteAssetVolume: {
     type: Number,
     required: "quoteAssetVolume required",
+  },
+  atr14: {
+    type: Number,
+  },
+  BBmiddle: {
+    type: Number,
+  },
+  BBupper: {
+    type: Number,
+  },
+  BBlower: {
+    type: Number,
+  },
+  ElderRay: {
+    type: Number,
+  },
+  ema26: {
+    type: Number,
+  },
+  ema12: {
+    type: Number,
+  },
+  forceindex13: {
+    type: Number,
+  },
+  MACD: {
+    type: Number,
+  },
+  RSI14: {
+    type: Number,
+  },
+  SAR00202: {
+    type: Number,
   },
   created_date: {
     type: Date,

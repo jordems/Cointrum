@@ -9,6 +9,14 @@ import {
 } from "../../types/exchange";
 import IMarket from "../../utils/markets/IMarket";
 import subtractTime from "../../utils/math/TimeSubtractor";
+import { ema } from "../../utils/math/indicators/ema";
+import { atr } from "../../utils/math/indicators/atr";
+import { bollingerband } from "../../utils/math/indicators/bollingerband";
+import { elderray } from "../../utils/math/indicators/elderray";
+import { forceindex } from "../../utils/math/indicators/forceindex";
+import { macd } from "../../utils/math/indicators/macd";
+import { IBaseIndicator } from "../../utils/math/indicators/IBaseIndicator";
+import { rsi } from "../../utils/math/indicators/rsi";
 
 export default class PHDSController extends GenericController<IPHDSElement> {
   private exchange: IExchanges;
@@ -62,21 +70,40 @@ export default class PHDSController extends GenericController<IPHDSElement> {
       }
       let freshresults: IPHDSElement[] = [...results];
       for (const missingZone of missingZones) {
-        const candles = await marketAPI.getCandleSticks(
+        const fullresults = await marketAPI.getCandleSticks(
           this.basecurrency,
           this.altcurrency,
           this.interval,
-          missingZone[0],
+          subtractTime(missingZone[0], this.interval, 30), // Get 30 extra prev results for indicators
           missingZone[1]
         );
+
+        let candles = fullresults.slice(30);
+
+        // Add Indicators to data
+        const indicators = [
+          atr,
+          bollingerband,
+          elderray,
+          ema,
+          forceindex,
+          macd,
+          rsi,
+        ];
+
+        for (const indicator of indicators) {
+          indicator(candles, fullresults);
+        }
 
         let docPromises: Promise<IPHDSElement>[] = [];
 
         for (const candle of candles) {
-          const phdsdoc = {
+          let phdsdoc = {
             _id: candle.openTime, // ID of document is openTime
             ...candle,
           } as any;
+
+          // Add Indicators
 
           docPromises.push(this.createDocument(phdsdoc));
         }

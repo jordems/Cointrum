@@ -11,6 +11,7 @@ const mapStateToProps = (state: AppState) => ({
   loading: state.phds.library.loading,
   labels: state.labels.library.labels,
   ulseedsbyLabel: state.seeds.editor.ulseedsbyLabel,
+  cycleduration: state.maps.current.map?.cycleduration,
 });
 
 export const connector = connect(mapStateToProps, {
