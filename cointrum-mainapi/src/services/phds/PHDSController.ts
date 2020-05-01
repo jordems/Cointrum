@@ -17,6 +17,7 @@ import { forceindex } from "../../utils/math/indicators/forceindex";
 import { macd } from "../../utils/math/indicators/macd";
 import { IBaseIndicator } from "../../utils/math/indicators/IBaseIndicator";
 import { rsi } from "../../utils/math/indicators/rsi";
+import { sar } from "../../utils/math/indicators/sar";
 
 export default class PHDSController extends GenericController<IPHDSElement> {
   private exchange: IExchanges;
@@ -79,7 +80,6 @@ export default class PHDSController extends GenericController<IPHDSElement> {
         );
 
         let candles = fullresults.slice(30);
-
         // Add Indicators to data
         const indicators = [
           atr,
@@ -89,11 +89,16 @@ export default class PHDSController extends GenericController<IPHDSElement> {
           forceindex,
           macd,
           rsi,
+          sar,
         ];
 
         for (const indicator of indicators) {
+          console.log("ha");
           indicator(candles, fullresults);
+          console.log("ha2");
         }
+
+        console.log(candles[0]);
 
         let docPromises: Promise<IPHDSElement>[] = [];
 
