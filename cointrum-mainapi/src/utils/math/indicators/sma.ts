@@ -5,11 +5,17 @@ export function smaAlgo(
   element: ICandle,
   phdselements: ICandle[]
 ): number {
-  const startingIdx = phdselements.indexOf(element);
+  let startingIdx = -1;
+
+  phdselements.forEach((ele, idx) => {
+    if (ele.openTime === element.openTime) {
+      startingIdx = idx;
+    }
+  });
 
   try {
     const prevElements = phdselements.slice(
-      startingIdx - windowSize,
+      startingIdx - (windowSize - 1),
       startingIdx
     );
 

@@ -37,9 +37,9 @@ describe("Indicator Calculation Tests:", () => {
   });
 
   test("BollingerBand:", () => {
-    const EXPECTEDRESULTSLOWER = [57.71, 57.69];
-    const EXPECTEDRESULTSMIDDLE = [59.53, 59.57];
-    const EXPECTEDRESULTSUPPER = [61.36, 61.45];
+    const EXPECTEDRESULTSLOWER = [57.770646485251845, 57.78581185653787];
+    const EXPECTEDRESULTSMIDDLE = [59.53183370000001, 59.573497950000004];
+    const EXPECTEDRESULTSUPPER = [61.29302091474817, 61.36118404346214];
 
     const resultingElements = bollingerband(tElements, lElements);
 
