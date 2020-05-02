@@ -22,16 +22,18 @@ describe("Indicator Calculation Tests:", () => {
   });
 
   test("ATR:", () => {
-    const EXPECTEDRESULTS = [1.02, 0.98];
+    const EXPECTEDRESULTS = [1.0302600848840426, 0.9475137937200747];
 
     const resultingElements = atr(tElements, lElements);
+
+    console.log(resultingElements[0]);
 
     let actualResults: number[] = [];
     for (const ele of resultingElements) {
       ele.atr14 && actualResults.push(ele.atr14);
     }
 
-    expect(actualResults).toBe(EXPECTEDRESULTS);
+    expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
   });
 
   test("BollingerBand:", () => {
@@ -50,9 +52,9 @@ describe("Indicator Calculation Tests:", () => {
       ele.BBupper && actualResultsUpper.push(ele.BBupper);
     }
 
-    expect(actualResultsLower).toBe(EXPECTEDRESULTSLOWER);
-    expect(actualResultsMiddle).toBe(EXPECTEDRESULTSMIDDLE);
-    expect(actualResultsUpper).toBe(EXPECTEDRESULTSUPPER);
+    expect(actualResultsLower).toStrictEqual(EXPECTEDRESULTSLOWER);
+    expect(actualResultsMiddle).toStrictEqual(EXPECTEDRESULTSMIDDLE);
+    expect(actualResultsUpper).toStrictEqual(EXPECTEDRESULTSUPPER);
   });
 
   test("ElderRay:", () => {
