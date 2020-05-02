@@ -14,13 +14,11 @@ export function rsiAlgo(
   element: ICandle,
   phdselements: ICandle[]
 ): number {
-  const startingIdx = phdselements.findIndex(
-    (ele) => ele.openTime === element.openTime
-  );
+  const startingIdx = phdselements.indexOf(element);
 
   try {
     // Calculate Prev Gain and Loss
-    const PprevElements = phdselements.splice(
+    const PprevElements = phdselements.slice(
       startingIdx - (windowSize + 1),
       startingIdx
     );
@@ -29,7 +27,7 @@ export function rsiAlgo(
     const prevavgloss = getGain(PallElements) / 14;
 
     // Calculate Current Average Gain and Loss
-    const prevElements = phdselements.splice(
+    const prevElements = phdselements.slice(
       startingIdx - windowSize,
       startingIdx
     );
@@ -47,8 +45,8 @@ function getGain(elements: ICandle[]) {
   let gain = 0;
 
   for (let x = 1; x < elements.length; x++) {
-    if (parseInt(elements[x].close) > parseInt(elements[x - 1].close)) {
-      gain += parseInt(elements[x].close) - parseInt(elements[x - 1].close);
+    if (parseFloat(elements[x].close) > parseFloat(elements[x - 1].close)) {
+      gain += parseFloat(elements[x].close) - parseFloat(elements[x - 1].close);
     }
   }
   return gain;
@@ -58,8 +56,8 @@ function getLoss(elements: ICandle[]) {
   let loss = 0;
 
   for (let x = 1; x < elements.length; x++) {
-    if (parseInt(elements[x].close) < parseInt(elements[x - 1].close)) {
-      loss += parseInt(elements[x - 1].close) - parseInt(elements[x].close);
+    if (parseFloat(elements[x].close) < parseFloat(elements[x - 1].close)) {
+      loss += parseFloat(elements[x - 1].close) - parseFloat(elements[x].close);
     }
   }
   return loss;

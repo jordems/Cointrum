@@ -48,7 +48,6 @@ export default class PHDSController extends GenericController<IPHDSElement> {
     const results = await this.getExistingDBResults(startTime, end);
 
     // If end is included make sure, we have all data up to endtime (within an interval) Or else all data up to current time
-
     let missingZones = this.findMissingZones(
       results,
       currentTime,
@@ -69,6 +68,7 @@ export default class PHDSController extends GenericController<IPHDSElement> {
         default:
           throw new Error("Requesting Exchange that doesn't exist");
       }
+
       let freshresults: IPHDSElement[] = [...results];
       for (const missingZone of missingZones) {
         const fullresults = await marketAPI.getCandleSticks(
@@ -80,6 +80,7 @@ export default class PHDSController extends GenericController<IPHDSElement> {
         );
 
         let candles = fullresults.slice(30);
+
         // Add Indicators to data
         const indicators = [
           atr,
@@ -91,14 +92,9 @@ export default class PHDSController extends GenericController<IPHDSElement> {
           rsi,
           sar,
         ];
-
         for (const indicator of indicators) {
-          console.log("ha");
-          indicator(candles, fullresults);
-          console.log("ha2");
+          candles = indicator(candles, fullresults);
         }
-
-        console.log(candles[0]);
 
         let docPromises: Promise<IPHDSElement>[] = [];
 

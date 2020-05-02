@@ -16,7 +16,7 @@ function elderrayAlgo(
   try {
     const ema13 = emaAlgo(13, element, phdselements);
 
-    return [parseInt(element.high) - ema13, parseInt(element.low) - ema13];
+    return [parseFloat(element.high) - ema13, parseFloat(element.low) - ema13];
   } catch (e) {
     return [NaN, NaN];
   }

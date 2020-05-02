@@ -2,6 +2,7 @@ import { IBaseIndicator } from "./IBaseIndicator";
 import ICandle from "../../markets/types/ICandle";
 
 export const sar: IBaseIndicator = (phdselements, extraelements) => {
+  console.log(phdselements.length, extraelements.length);
   for (const ele of phdselements) {
     ele.SAR00202 = sarAlgo(ele, extraelements);
   }
@@ -10,22 +11,14 @@ export const sar: IBaseIndicator = (phdselements, extraelements) => {
 };
 
 export function sarAlgo(element: ICandle, phdselements: ICandle[]): number {
-  let startingIdx = -1;
+  const startingIdx = phdselements.indexOf(element);
 
-  for (let x = 0; x < phdselements.length; x++) {
-    if (phdselements[x].open === element.open) {
-      startingIdx = x;
-    }
-  }
-  console.log("Startingidx", startingIdx);
-
-  const prevElements = phdselements.splice(startingIdx - 5, startingIdx);
+  const prevElements = phdselements.slice(startingIdx - 5, startingIdx);
   const allElements = [...prevElements, element];
-  console.log(prevElements);
   // initial PSAR
   let prevAF: number = 0.02;
-  let prevEP: number = parseInt(allElements[1].low);
-  let prevSAR: number = parseInt(allElements[1].high);
+  let prevEP: number = parseFloat(allElements[1].low);
+  let prevSAR: number = parseFloat(allElements[1].high);
   let prevState: "Climbing" | "Falling" = "Falling";
   let prevDiv: number = (prevSAR - prevEP) * prevAF;
 
@@ -41,26 +34,26 @@ export function sarAlgo(element: ICandle, phdselements: ICandle[]): number {
     if (prevState === "Falling") {
       initialSAR = Math.max(
         prevSAR - prevDiv,
-        parseInt(allElements[x - 1].high),
-        parseInt(allElements[x - 2].high)
+        parseFloat(allElements[x - 1].high),
+        parseFloat(allElements[x - 2].high)
       );
     } else {
       initialSAR = Math.min(
         prevSAR - prevDiv,
-        parseInt(allElements[x - 1].low),
-        parseInt(allElements[x - 2].low)
+        parseFloat(allElements[x - 1].low),
+        parseFloat(allElements[x - 2].low)
       );
     }
 
     // Calculate new SAR
     if (prevState === "Falling") {
-      if (parseInt(allElements[x].high) < initialSAR) {
+      if (parseFloat(allElements[x].high) < initialSAR) {
         SAR = initialSAR;
       } else {
         SAR = prevEP;
       }
     } else {
-      if (parseInt(allElements[x].low) > initialSAR) {
+      if (parseFloat(allElements[x].low) > initialSAR) {
         SAR = initialSAR;
       } else {
         SAR = prevEP;
@@ -68,7 +61,7 @@ export function sarAlgo(element: ICandle, phdselements: ICandle[]): number {
     }
 
     // Calculate new State
-    if (SAR > parseInt(allElements[x].close)) {
+    if (SAR > parseFloat(allElements[x].close)) {
       State = "Falling";
     } else {
       State = "Climbing";
@@ -76,9 +69,9 @@ export function sarAlgo(element: ICandle, phdselements: ICandle[]): number {
 
     // Calculate new EP
     if (prevState === "Falling") {
-      EP = Math.min(prevEP, parseInt(allElements[x].low));
+      EP = Math.min(prevEP, parseFloat(allElements[x].low));
     } else {
-      EP = Math.max(prevEP, parseInt(allElements[x].high));
+      EP = Math.max(prevEP, parseFloat(allElements[x].high));
     }
 
     // Calculate new AF

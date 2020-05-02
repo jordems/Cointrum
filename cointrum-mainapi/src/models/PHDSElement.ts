@@ -100,7 +100,7 @@ const PHDSElementSchema = new Schema({
     type: Number,
   },
   ElderRay: {
-    type: Number,
+    type: [Number, Number],
   },
   ema26: {
     type: Number,

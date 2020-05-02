@@ -25,9 +25,7 @@ export function emaAlgo(
     return 0;
   }
 
-  const startingIdx = phdselements.findIndex(
-    (ele) => ele.openTime === element.openTime
-  );
+  const startingIdx = phdselements.indexOf(element);
 
   const prevDay = phdselements[startingIdx - 1];
   if (!prevDay) {
@@ -36,7 +34,7 @@ export function emaAlgo(
 
   const k = 2 / (windowSize + 1);
   return (
-    parseInt(element.close) * k +
+    parseFloat(element.close) * k +
     emaAlgo(windowSize, prevDay, phdselements, tcount + 1) * (1 - k)
   );
 }

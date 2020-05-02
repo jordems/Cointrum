@@ -5,12 +5,10 @@ export function smaAlgo(
   element: ICandle,
   phdselements: ICandle[]
 ): number {
-  const startingIdx = phdselements.findIndex(
-    (ele) => ele.openTime === element.openTime
-  );
+  const startingIdx = phdselements.indexOf(element);
 
   try {
-    const prevElements = phdselements.splice(
+    const prevElements = phdselements.slice(
       startingIdx - windowSize,
       startingIdx
     );
@@ -19,7 +17,7 @@ export function smaAlgo(
 
     let sum = 0;
     for (const ele of allElements) {
-      sum += parseInt(ele.close);
+      sum += parseFloat(ele.close);
     }
 
     return sum / windowSize;

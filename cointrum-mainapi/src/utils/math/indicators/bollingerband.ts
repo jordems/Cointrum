@@ -18,19 +18,17 @@ export function bollingerbandAlgo(
   element: ICandle,
   phdselements: ICandle[]
 ): number {
-  const startingIdx = phdselements.findIndex(
-    (ele) => ele.openTime === element.openTime
-  );
+  const startingIdx = phdselements.indexOf(element);
 
   try {
-    const prevElements = phdselements.splice(startingIdx - 20, startingIdx);
+    const prevElements = phdselements.slice(startingIdx - 20, startingIdx);
 
     const allElements = [...prevElements, element];
 
     let closingPrices: number[] = [];
 
     for (const ele of allElements) {
-      closingPrices.push(parseInt(ele.close));
+      closingPrices.push(parseFloat(ele.close));
     }
 
     const sma20 = smaAlgo(20, element, phdselements);

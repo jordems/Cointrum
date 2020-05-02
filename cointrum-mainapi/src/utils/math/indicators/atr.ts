@@ -21,12 +21,10 @@ export function atrAlgo(
   }
 
   if (tcount > windowSize) {
-    return 0;
+    return 1;
   }
 
-  const startingIdx = phdselements.findIndex(
-    (ele) => ele.openTime === element.openTime
-  );
+  const startingIdx = phdselements.indexOf(element);
 
   const prevDay = phdselements[startingIdx - 1];
   if (!prevDay) {
@@ -34,8 +32,8 @@ export function atrAlgo(
   }
 
   const tr =
-    Math.max(parseInt(element.high), parseInt(prevDay.close)) -
-    Math.min(parseInt(element.low), parseInt(prevDay.close));
+    Math.max(parseFloat(element.high), parseFloat(prevDay.close)) -
+    Math.min(parseFloat(element.low), parseFloat(prevDay.close));
 
   return (
     (atrAlgo(windowSize, prevDay, phdselements, tcount + 1) * (windowSize - 1) +

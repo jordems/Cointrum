@@ -24,17 +24,15 @@ export function forceindexAlgo(
     return 0;
   }
 
-  const startingIdx = phdselements.findIndex(
-    (ele) => ele.openTime === element.openTime
-  );
+  const startingIdx = phdselements.indexOf(element);
 
   const prevDay = phdselements[startingIdx - 1];
   if (!prevDay) {
     return NaN;
   }
   const fi1 =
-    (parseInt(element.close) - parseInt(prevDay.close)) *
-    parseInt(element.volume);
+    (parseFloat(element.close) - parseFloat(prevDay.close)) *
+    parseFloat(element.volume);
   const k = 2 / (windowSize + 1);
   return (
     fi1 * k +
