@@ -2,7 +2,7 @@ import { IBaseIndicator } from "./IBaseIndicator";
 import ICandle from "../../markets/types/ICandle";
 import { emaAlgo } from "./ema";
 
-export const macd: IBaseIndicator = (phdselements, extraelements) => {
+export const macd: IBaseIndicator = (candles, lastknownDocument) => {
   for (const ele of phdselements) {
     ele.MACD = macdAlgo(ele, extraelements);
   }

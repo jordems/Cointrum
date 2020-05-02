@@ -2,7 +2,7 @@ import { IBaseIndicator } from "./IBaseIndicator";
 import ICandle from "../../markets/types/ICandle";
 import { emaAlgo } from "./ema";
 
-export const elderray: IBaseIndicator = (phdselements, extraelements) => {
+export const elderray: IBaseIndicator = (candles, lastknownDocument) => {
   for (const ele of phdselements) {
     ele.ElderRay = elderrayAlgo(ele, extraelements);
   }

@@ -1,7 +1,8 @@
 import { IBaseIndicator } from "./IBaseIndicator";
 import ICandle from "../../markets/types/ICandle";
+import { smaAlgo } from "./sma";
 
-export const ema: IBaseIndicator = (phdselements, extraelements) => {
+export const ema: IBaseIndicator = (candles, lastknownDocument) => {
   for (const ele of phdselements) {
     ele.ema12 = emaAlgo(12, ele, extraelements);
     ele.ema26 = emaAlgo(26, ele, extraelements);
@@ -13,28 +14,35 @@ export const ema: IBaseIndicator = (phdselements, extraelements) => {
 export function emaAlgo(
   windowSize: number,
   element: ICandle,
-  phdselements: ICandle[],
-  count?: number
+  phdselements: ICandle[]
 ): number {
-  let tcount = count;
-  if (!tcount) {
-    tcount = 1;
-  }
+  let startingIdx = -1;
 
-  if (tcount > windowSize) {
-    return 0;
-  }
+  phdselements.forEach((ele, idx) => {
+    if (ele.openTime === element.openTime) {
+      startingIdx = idx;
+    }
+  });
 
-  const startingIdx = phdselements.indexOf(element);
+  try {
+    const prevElements = phdselements.slice(
+      startingIdx - (windowSize - 1),
+      startingIdx
+    );
+    const allElements = [...prevElements, element];
 
-  const prevDay = phdselements[startingIdx - 1];
-  if (!prevDay) {
+    let prevEma = smaAlgo(windowSize, allElements[0], phdselements);
+
+    let ema = 0;
+
+    const k = 2 / (windowSize + 1);
+    for (let x = 1; x < allElements.length; x++) {
+      ema = parseFloat(allElements[x].close) * k + prevEma * (1 - k);
+
+      prevEma = ema;
+    }
+    return ema;
+  } catch (e) {
     return NaN;
   }
-
-  const k = 2 / (windowSize + 1);
-  return (
-    parseFloat(element.close) * k +
-    emaAlgo(windowSize, prevDay, phdselements, tcount + 1) * (1 - k)
-  );
 }

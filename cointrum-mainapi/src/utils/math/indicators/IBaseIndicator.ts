@@ -1,6 +1,7 @@
 import ICandle from "../../markets/types/ICandle";
+import { IPHDSElement } from "../../../models/PHDSElement";
 
 export type IBaseIndicator = (
-  elements: ICandle[],
-  extraelements: ICandle[]
+  candles: ICandle[],
+  lastknowndocument?: IPHDSElement
 ) => ICandle[];

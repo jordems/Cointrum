@@ -70,11 +70,11 @@ describe("Indicator Calculation Tests:", () => {
       ele.ElderRay && actualResults.push(ele.ElderRay);
     }
 
-    expect(actualResults).toBe(EXPECTEDRESULTS);
+    expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
   });
 
   test("EMA:", () => {
-    const EXPECTEDRESULTSEMA12 = [59.94, 60.03];
+    const EXPECTEDRESULTSEMA12 = [60.01235248040212, 60.07803225734369];
     const EXPECTEDRESULTSEMA26 = [59.32, 59.41];
 
     const resultingElements = ema(tElements, lElements);
@@ -86,8 +86,8 @@ describe("Indicator Calculation Tests:", () => {
       ele.ema26 && actualResultsEMA26.push(ele.ema26);
     }
 
-    expect(actualResultsEMA12).toBe(EXPECTEDRESULTSEMA12);
-    expect(actualResultsEMA26).toBe(EXPECTEDRESULTSEMA26);
+    expect(actualResultsEMA12).toStrictEqual(EXPECTEDRESULTSEMA12);
+    expect(actualResultsEMA26).toStrictEqual(EXPECTEDRESULTSEMA26);
   });
 
   test("Force Index:", () => {
@@ -100,7 +100,7 @@ describe("Indicator Calculation Tests:", () => {
       ele.forceindex13 && actualResults.push(ele.forceindex13);
     }
 
-    expect(actualResults).toBe(EXPECTEDRESULTS);
+    expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
   });
 
   test("MACD:", () => {
@@ -113,7 +113,7 @@ describe("Indicator Calculation Tests:", () => {
       ele.MACD && actualResults.push(ele.MACD);
     }
 
-    expect(actualResults).toBe(EXPECTEDRESULTS);
+    expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
   });
 
   test("RSI:", () => {
@@ -126,7 +126,7 @@ describe("Indicator Calculation Tests:", () => {
       ele.RSI14 && actualResults.push(ele.RSI14);
     }
 
-    expect(actualResults).toBe(EXPECTEDRESULTS);
+    expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
   });
 
   test("SAR:", () => {
@@ -139,6 +139,6 @@ describe("Indicator Calculation Tests:", () => {
       ele.SAR00202 && actualResults.push(ele.SAR00202);
     }
 
-    expect(actualResults).toBe(EXPECTEDRESULTS);
+    expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
   });
 });

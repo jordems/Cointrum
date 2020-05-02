@@ -16,6 +16,8 @@ import {
 } from "../../types/exchange";
 
 import { cycledurations } from "../../types/exchange/cycledurations";
+import { IPHDSElement } from "../../models/PHDSElement";
+import subtractTime from "../math/TimeSubtractor";
 dotenv.config();
 
 const apiKey = process.env.BINANCE_API_KEY;
@@ -35,19 +37,25 @@ export default class BinanceAPI implements IMarket {
     });
   }
 
-  getCandleSticks(
+  async getCandleSticks(
     basecurrency: IBaseCurrencies,
     altcurrency: IAltCurrencies,
     interval: ICycleDurations,
     start?: number,
-    end?: number
+    end?: number,
+    lastknowndocument?: IPHDSElement
   ): Promise<ICandle[]> {
     let candleParams = {
       symbol: `${basecurrency}${altcurrency}`,
       interval: interval as CandleChartInterval,
     } as CandlesOptions;
 
-    if (start) {
+    if (lastknowndocument) {
+      candleParams = {
+        ...candleParams,
+        startTime: lastknowndocument.close,
+      };
+    } else if (start) {
       candleParams = {
         ...candleParams,
         startTime: start,
@@ -60,8 +68,48 @@ export default class BinanceAPI implements IMarket {
         endTime: end,
       };
     }
+    const currentTime = new Date().getTime();
 
-    return this.client.candles(candleParams);
+    try {
+      const results = (await this.client.candles(candleParams)) as ICandle[];
+
+      if (results.length === 0) {
+        return results;
+      } else {
+        if (
+          end &&
+          results[results.length - 1].closeTime < subtractTime(end, interval)
+        ) {
+          const section = await this.getCandleSticks(
+            basecurrency,
+            altcurrency,
+            interval,
+            results[results.length - 1].closeTime,
+            end
+          );
+
+          return [...results, ...section];
+        } else if (
+          !end &&
+          results[results.length - 1].closeTime <
+            subtractTime(currentTime, interval)
+        ) {
+          const section = await this.getCandleSticks(
+            basecurrency,
+            altcurrency,
+            interval,
+            results[results.length - 1].closeTime,
+            currentTime
+          );
+
+          return [...results, ...section];
+        } else {
+          return [...results];
+        }
+      }
+    } catch (e) {
+      throw new Error("Failed to Get Results from Binance API");
+    }
   }
 
   getLiveCandleSocket(

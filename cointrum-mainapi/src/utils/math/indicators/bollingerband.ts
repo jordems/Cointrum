@@ -3,40 +3,22 @@ import ICandle from "../../markets/types/ICandle";
 import { smaAlgo } from "./sma";
 import { std } from "../std";
 
-export const bollingerband: IBaseIndicator = (phdselements, extraelements) => {
-  for (const ele of phdselements) {
-    ele.BBupper = bollingerbandAlgo("upper", ele, extraelements);
-    ele.BBlower = bollingerbandAlgo("lower", ele, extraelements);
-    ele.BBmiddle = bollingerbandAlgo("middle", ele, extraelements);
-  }
+export const bollingerband: IBaseIndicator = (candles, lastknownDocument) => {
+  let tcandles = [...candles];
 
-  return phdselements;
+  bollingerbandAlgo("upper", tcandles, lastknownDocument?.BBupper);
+  bollingerbandAlgo("middle", tcandles, lastknownDocument?.BBmiddle);
+  bollingerbandAlgo("lower", tcandles, lastknownDocument?.BBlower);
+
+  return tcandles;
 };
 
 export function bollingerbandAlgo(
   band: "lower" | "middle" | "upper",
-  element: ICandle,
-  phdselements: ICandle[]
+  candles: ICandle[],
+  prevValue?: number
 ): number {
-  let startingIdx = -1;
-
-  phdselements.forEach((ele, idx) => {
-    if (ele.openTime === element.openTime) {
-      startingIdx = idx;
-    }
-  });
-
   try {
-    const prevElements = phdselements.slice(startingIdx - 20, startingIdx);
-
-    const allElements = [...prevElements, element];
-
-    let closingPrices: number[] = [];
-
-    for (const ele of allElements) {
-      closingPrices.push(parseFloat(ele.close));
-    }
-
     const sma20 = smaAlgo(20, element, phdselements);
     switch (band) {
       case "lower":

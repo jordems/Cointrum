@@ -47,7 +47,7 @@ export default class PHDSController extends GenericController<IPHDSElement> {
     // First check if current Info is in db
     const results = await this.getExistingDBResults(startTime, end);
 
-    // If end is included make sure, we have all data up to endtime (within an interval) Or else all data up to current time
+    // Check if there is any missing zones in data
     let missingZones = this.findMissingZones(
       results,
       currentTime,
@@ -56,10 +56,17 @@ export default class PHDSController extends GenericController<IPHDSElement> {
     );
 
     if (missingZones.length === 0) {
-      // IF SO return that info
+      // IF we have no missing zones return
       return results;
     } else {
-      // ELSE GET Info from api, add to Mongo, then return to user
+      // ELSE Fill mongo with data upto and including current current query. Then return current query
+
+      const lastKnownDocument = await this.queryDocuments(
+        {},
+        { openTime: -1 },
+        1
+      );
+
       let marketAPI: IMarket;
       switch (this.exchange) {
         case "Binance":
@@ -70,48 +77,46 @@ export default class PHDSController extends GenericController<IPHDSElement> {
       }
 
       let freshresults: IPHDSElement[] = [...results];
-      for (const missingZone of missingZones) {
-        const fullresults = await marketAPI.getCandleSticks(
-          this.basecurrency,
-          this.altcurrency,
-          this.interval,
-          subtractTime(missingZone[0], this.interval, 30), // Get 30 extra prev results for indicators
-          missingZone[1]
-        );
 
-        let candles = fullresults.slice(30);
+      let candles = await marketAPI.getCandleSticks(
+        this.basecurrency,
+        this.altcurrency,
+        this.interval,
+        start,
+        end,
+        lastKnownDocument[0]
+      );
 
-        // Add Indicators to data
-        const indicators = [
-          atr,
-          bollingerband,
-          elderray,
-          ema,
-          forceindex,
-          macd,
-          rsi,
-          sar,
-        ];
-        for (const indicator of indicators) {
-          candles = indicator(candles, fullresults);
-        }
-
-        let docPromises: Promise<IPHDSElement>[] = [];
-
-        for (const candle of candles) {
-          let phdsdoc = {
-            _id: candle.openTime, // ID of document is openTime
-            ...candle,
-          } as any;
-
-          // Add Indicators
-
-          docPromises.push(this.createDocument(phdsdoc));
-        }
-
-        let tresults = await Promise.all(docPromises);
-        freshresults = [...freshresults, ...tresults];
+      // Add Indicators to data
+      const indicators = [
+        atr,
+        bollingerband,
+        elderray,
+        ema,
+        forceindex,
+        macd,
+        rsi,
+        sar,
+      ];
+      for (const indicator of indicators) {
+        candles = indicator(candles, lastKnownDocument[0]);
       }
+
+      let docPromises: Promise<IPHDSElement>[] = [];
+
+      for (const candle of candles) {
+        let phdsdoc = {
+          _id: candle.openTime, // ID of document is openTime
+          ...candle,
+        } as any;
+
+        // Add Indicators
+
+        docPromises.push(this.createDocument(phdsdoc));
+      }
+
+      let tresults = await Promise.all(docPromises);
+      freshresults = [...freshresults, ...tresults];
 
       // Not with additional zones added, Resort the result array
       freshresults.sort((a, b) => a._id - b._id);

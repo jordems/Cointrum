@@ -1,7 +1,7 @@
 import { IBaseIndicator } from "./IBaseIndicator";
 import ICandle from "../../markets/types/ICandle";
 
-export const forceindex: IBaseIndicator = (phdselements, extraelements) => {
+export const forceindex: IBaseIndicator = (candles, lastknownDocument) => {
   for (const ele of phdselements) {
     ele.forceindex13 = forceindexAlgo(13, ele, extraelements);
   }

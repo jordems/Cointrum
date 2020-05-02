@@ -1,7 +1,7 @@
 import { IBaseIndicator } from "./IBaseIndicator";
 import ICandle from "../../markets/types/ICandle";
 
-export const rsi: IBaseIndicator = (phdselements, extraelements) => {
+export const rsi: IBaseIndicator = (candles, lastknownDocument) => {
   for (const ele of phdselements) {
     ele.RSI14 = rsiAlgo(14, ele, extraelements);
   }

@@ -1,7 +1,7 @@
 import { IBaseIndicator } from "./IBaseIndicator";
 import ICandle from "../../markets/types/ICandle";
 
-export const sar: IBaseIndicator = (phdselements, extraelements) => {
+export const sar: IBaseIndicator = (candles, lastknownDocument) => {
   console.log(phdselements.length, extraelements.length);
   for (const ele of phdselements) {
     ele.SAR00202 = sarAlgo(ele, extraelements);
