@@ -61,10 +61,10 @@ export default class PHDSController extends GenericController<IPHDSElement> {
     } else {
       // ELSE Fill mongo with data upto and including current current query. Then return current query
 
-      const lastKnownDocument = await this.queryDocuments(
+      const lastKnownDocuments = await this.queryDocuments(
         {},
         { openTime: -1 },
-        1
+        30
       );
 
       let marketAPI: IMarket;
@@ -84,7 +84,7 @@ export default class PHDSController extends GenericController<IPHDSElement> {
         this.interval,
         start,
         end,
-        lastKnownDocument[0]
+        lastKnownDocuments[0]
       );
 
       // Add Indicators to data
@@ -99,7 +99,7 @@ export default class PHDSController extends GenericController<IPHDSElement> {
         sar,
       ];
       for (const indicator of indicators) {
-        candles = indicator(candles, lastKnownDocument[0]);
+        candles = indicator(candles, lastKnownDocuments);
       }
 
       let docPromises: Promise<IPHDSElement>[] = [];

@@ -1,10 +1,12 @@
 import { IBaseIndicator } from "./IBaseIndicator";
 import ICandle from "../../markets/types/ICandle";
 
-export const atr: IBaseIndicator = (candles, lastknownDocument) => {
+export const atr: IBaseIndicator = (candles, lastknownDocuments) => {
   let tcandles = [...candles];
 
-  atrAlgo(14, tcandles, lastknownDocument?.atr14);
+  let prevATR = lastknownDocuments ? lastknownDocuments[0].atr14 : undefined;
+
+  atrAlgo(14, tcandles, prevATR);
 
   return tcandles;
 };

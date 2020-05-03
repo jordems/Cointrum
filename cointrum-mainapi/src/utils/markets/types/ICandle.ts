@@ -1,3 +1,5 @@
+import { IPHDSElement } from "../../../models/PHDSElement";
+
 export default interface ICandle {
   openTime: number;
   open: string;
@@ -29,4 +31,18 @@ export default interface ICandle {
   RSI14?: number;
 
   SAR00202?: number;
+}
+
+export function ICandleAdapter(phdselement: IPHDSElement): ICandle {
+  return {
+    ...phdselement,
+    open: phdselement.open.toString(),
+    high: phdselement.high.toString(),
+    low: phdselement.low.toString(),
+    close: phdselement.close.toString(),
+    volume: phdselement.volume.toString(),
+    quoteVolume: phdselement.quoteVolume.toString(),
+    baseAssetVolume: phdselement.baseAssetVolume.toString(),
+    quoteAssetVolume: phdselement.quoteAssetVolume.toString(),
+  };
 }
