@@ -1,44 +1,87 @@
 import { IBaseIndicator } from "./IBaseIndicator";
-import ICandle from "../../markets/types/ICandle";
+import ICandle, { ICandleAdapter } from "../../markets/types/ICandle";
+import { IPHDSElement } from "../../../models/PHDSElement";
 
-export const rsi: IBaseIndicator = (candles, lastknownDocument) => {
-  for (const ele of phdselements) {
-    ele.RSI14 = rsiAlgo(14, ele, extraelements);
-  }
+export const rsi: IBaseIndicator = (candles, lastknownDocuments) => {
+  let results = [...candles];
 
-  return phdselements;
+  results = rsiAlgo(candles, lastknownDocuments);
+
+  return results;
 };
 
 export function rsiAlgo(
-  windowSize: number,
-  element: ICandle,
-  phdselements: ICandle[]
-): number {
-  const startingIdx = phdselements.indexOf(element);
-
-  try {
-    // Calculate Prev Gain and Loss
-    const PprevElements = phdselements.slice(
-      startingIdx - (windowSize + 1),
-      startingIdx
-    );
-    const PallElements = [...PprevElements];
-    const prevavggain = getGain(PallElements) / 14;
-    const prevavgloss = getGain(PallElements) / 14;
-
-    // Calculate Current Average Gain and Loss
-    const prevElements = phdselements.slice(
-      startingIdx - windowSize,
-      startingIdx
-    );
-    const allElements = [...prevElements, element];
-    const avggain = (prevavggain * 13 + getGain(allElements)) / 14;
-    const avgloss = (prevavgloss * 13 + getLoss(allElements)) / 14;
-
-    return 100 - 100 / (1 + avggain / avgloss);
-  } catch (e) {
-    return NaN;
+  candles: ICandle[],
+  lastknownDocuments?: IPHDSElement[]
+): ICandle[] {
+  // Convert lastknownDocuments to type ICandle
+  let lastknownCandles: ICandle[] = [];
+  if (lastknownDocuments) {
+    for (const phdselement of lastknownDocuments) {
+      lastknownCandles.push(ICandleAdapter(phdselement));
+    }
   }
+  let results = [...candles];
+
+  let fullist = [...[...lastknownCandles].reverse(), ...candles];
+
+  let avggain: number;
+  let avgloss: number;
+  let prevavggain: number;
+  let prevavgloss: number;
+
+  const k = 2 / (14 + 1);
+
+  if (lastknownCandles.length === 0) {
+    for (let x = 0; x < 13; x++) {
+      results[13].RSI14 = NaN;
+      results[13].RSIGAIN = NaN;
+      results[13].RSILOSS = NaN;
+    }
+
+    const elements = results.slice(0, 14);
+    prevavggain = getGain(elements) * k;
+    prevavgloss = getLoss(elements) * k;
+
+    results[13].RSI14 = 100 - 100 / (1 + prevavggain / prevavgloss);
+    results[13].RSIGAIN = prevavggain;
+    results[13].RSILOSS = prevavgloss;
+
+    for (let x = 14; x < candles.length; x++) {
+      const elements = fullist.slice(x - 13, x + 1);
+
+      avggain = prevavggain * (1 - k) + getGain(elements) * k;
+      avgloss = prevavgloss * (1 - k) + getLoss(elements) * k;
+
+      results[x].RSI14 = 100 - 100 / (1 + avggain / avgloss);
+      results[x].RSIGAIN = avggain;
+      results[x].RSILOSS = avgloss;
+
+      prevavggain = avggain;
+      prevavgloss = avgloss;
+    }
+  } else {
+    prevavggain = lastknownCandles[0].RSIGAIN ? lastknownCandles[0].RSIGAIN : 0;
+    prevavgloss = lastknownCandles[0].RSILOSS ? lastknownCandles[0].RSILOSS : 0;
+
+    for (let x = 0; x < candles.length; x++) {
+      const elements = fullist.slice(
+        lastknownCandles.length - 14 + x,
+        lastknownCandles.length + x
+      );
+
+      avggain = prevavggain * (1 - k) + getGain(elements) * k;
+      avgloss = prevavgloss * (1 - k) + getLoss(elements) * k;
+
+      results[x].RSI14 = 100 - 100 / (1 + avggain / avgloss);
+      results[x].RSIGAIN = avggain;
+      results[x].RSILOSS = avgloss;
+
+      prevavggain = avggain;
+      prevavgloss = avgloss;
+    }
+  }
+  return results;
 }
 
 function getGain(elements: ICandle[]) {

@@ -35,6 +35,8 @@ export interface IPHDSElement extends Document {
 
   MACD: number;
 
+  RSIGAIN: number;
+  RSILOSS: number;
   RSI14: number;
 
   SAR00202: number;
@@ -116,6 +118,12 @@ const PHDSElementSchema = new Schema({
     type: Number,
   },
   MACD: {
+    type: Number,
+  },
+  RSIGAIN: {
+    type: Number,
+  },
+  RSILOSS: {
     type: Number,
   },
   RSI14: {

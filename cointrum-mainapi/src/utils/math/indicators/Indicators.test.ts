@@ -4,8 +4,8 @@ import {
   ema,
   elderray,
   forceindex,
-  // macd,
-  // rsi,
+  macd,
+  rsi,
   // sar,
 } from "./";
 import ICandle from "../../markets/types/ICandle";
@@ -249,31 +249,56 @@ describe("Indicator Calculation Tests:", () => {
     expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
   });
 
-  // test("MACD:", () => {
-  //   const EXPECTEDRESULTS = [0.11, 0.09];
+  test("MACD: /wo lastknown", () => {
+    const EXPECTEDRESULTS = [0.6199330837698867, 0.620697723396674];
 
-  //   const resultingElements = macd(tElements, lElements);
+    const resultingElements = macd(lElements);
 
-  //   let actualResults: number[] = [];
-  //   for (const ele of resultingElements) {
-  //     ele.MACD && actualResults.push(ele.MACD);
-  //   }
+    const checkingResults = resultingElements.splice(
+      resultingElements.length - 2
+    );
 
-  //   expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
-  // });
+    let actualResults: number[] = [];
+    for (const ele of checkingResults) {
+      ele.MACD && actualResults.push(ele.MACD);
+    }
 
-  // test("RSI:", () => {
-  //   const EXPECTEDRESULTS = [57.38, 58.1];
+    expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
+  });
 
-  //   const resultingElements = rsi(tElements, lElements);
+  test("MACD: /w lastknown", () => {
+    const EXPECTEDRESULTS = [0.6199330837698867, 0.620697723396674];
 
-  //   let actualResults: number[] = [];
-  //   for (const ele of resultingElements) {
-  //     ele.RSI14 && actualResults.push(ele.RSI14);
-  //   }
+    const resultingElements = macd(qdata, lknown);
 
-  //   expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
-  // });
+    const checkingResults = resultingElements.splice(
+      resultingElements.length - 2
+    );
+
+    let actualResults: number[] = [];
+    for (const ele of checkingResults) {
+      ele.MACD && actualResults.push(ele.MACD);
+    }
+
+    expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
+  });
+
+  test("RSI:", () => {
+    const EXPECTEDRESULTS = [57.38, 58.1];
+
+    const resultingElements = rsi(lElements);
+
+    const checkingResults = resultingElements.splice(
+      resultingElements.length - 20
+    );
+
+    let actualResults: number[] = [];
+    for (const ele of checkingResults) {
+      ele.RSI14 && actualResults.push(ele.RSI14);
+    }
+
+    expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
+  });
 
   // test("SAR:", () => {
   //   const EXPECTEDRESULTS = [57.69, 58.05];

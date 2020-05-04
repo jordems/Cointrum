@@ -29,6 +29,8 @@ export default interface ICandle {
 
   MACD?: number;
 
+  RSIGAIN?: number;
+  RSILOSS?: number;
   RSI14?: number;
 
   SAR00202?: number;
