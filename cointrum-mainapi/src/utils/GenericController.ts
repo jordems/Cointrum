@@ -15,8 +15,20 @@ export default class GenericController<T extends Document> {
     return this.model.find({});
   }
 
-  public queryDocuments(conditions: object) {
-    return this.model.find(conditions);
+  public queryDocuments(
+    queryconditions: object,
+    sortconditions?: object,
+    limit?: number
+  ) {
+    if (sortconditions && limit) {
+      return this.model.find(queryconditions).sort(sortconditions).limit(limit);
+    } else if (limit) {
+      return this.model.find(queryconditions).limit(limit);
+    } else if (sortconditions) {
+      return this.model.find(queryconditions).sort(sortconditions);
+    } else {
+      return this.model.find(queryconditions);
+    }
   }
 
   public createDocument(documentData: T) {

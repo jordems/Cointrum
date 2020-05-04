@@ -18,6 +18,32 @@ export interface IPHDSElement extends Document {
   trades: number;
   baseAssetVolume: number;
   quoteAssetVolume: number;
+
+  atr14: number;
+
+  BBmiddle: number;
+  BBupper: number;
+  BBlower: number;
+
+  ElderRay: [number, number];
+
+  ema26: number;
+  ema12: number;
+  ema13: number;
+
+  forceindex13: number;
+
+  MACD: number;
+
+  RSIGAIN: number;
+  RSILOSS: number;
+  RSI14: number;
+
+  PSAR_EP: number;
+  PSAR_ACC: number;
+  PSAR_INIT: number;
+  PSAR_TREND: string;
+  PSAR: number;
 }
 
 const PHDSElementSchema = new Schema({
@@ -67,6 +93,60 @@ const PHDSElementSchema = new Schema({
   quoteAssetVolume: {
     type: Number,
     required: "quoteAssetVolume required",
+  },
+  atr14: {
+    type: Number,
+  },
+  BBmiddle: {
+    type: Number,
+  },
+  BBupper: {
+    type: Number,
+  },
+  BBlower: {
+    type: Number,
+  },
+  ElderRay: {
+    type: [Number, Number],
+  },
+  ema26: {
+    type: Number,
+  },
+  ema12: {
+    type: Number,
+  },
+  ema13: {
+    type: Number,
+  },
+  forceindex13: {
+    type: Number,
+  },
+  MACD: {
+    type: Number,
+  },
+  RSIGAIN: {
+    type: Number,
+  },
+  RSILOSS: {
+    type: Number,
+  },
+  RSI14: {
+    type: Number,
+  },
+  PSAR_EP: {
+    type: Number,
+  },
+  PSAR_ACC: {
+    type: Number,
+  },
+  PSAR_INIT: {
+    type: Number,
+  },
+  PSAR_TREND: {
+    type: String,
+  },
+  PSAR: {
+    type: Number,
   },
   created_date: {
     type: Date,

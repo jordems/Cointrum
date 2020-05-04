@@ -38,6 +38,7 @@ interface StockChartProps {
   readonly width: number;
   readonly ratio: number;
   readonly onClick?: (event: IChartClickEvent) => void;
+  readonly onLoadMore?: (start: number, end: number) => Promise<boolean>;
 }
 
 const ChartStyles = {
@@ -120,6 +121,7 @@ class StockChart extends React.Component<StockChartProps> {
         xAccessor={xAccessor}
         xExtents={xExtents}
         zoomAnchor={lastVisibleItemBasedZoomAnchor}
+        onLoadMore={this.onLoadMore}
       >
         <Chart
           id={"VolumeChart"}
@@ -253,6 +255,13 @@ class StockChart extends React.Component<StockChartProps> {
 
   private readonly openCloseColor = (data: IOHLCData) => {
     return data.close > data.open ? "#26a69a" : "#ef5350";
+  };
+
+  private onLoadMore = (start: number, end: number): Promise<boolean> => {
+    if (this.props.onLoadMore) {
+      return this.props.onLoadMore(start, end);
+    }
+    return Promise.resolve(true);
   };
 }
 

@@ -9,6 +9,15 @@ import {
 } from "../../types/exchange";
 import IMarket from "../../utils/markets/IMarket";
 import subtractTime from "../../utils/math/TimeSubtractor";
+import { ema } from "../../utils/math/indicators/ema";
+import { atr } from "../../utils/math/indicators/atr";
+import { bollingerband } from "../../utils/math/indicators/bollingerband";
+import { elderray } from "../../utils/math/indicators/elderray";
+import { forceindex } from "../../utils/math/indicators/forceindex";
+import { macd } from "../../utils/math/indicators/macd";
+import { IBaseIndicator } from "../../utils/math/indicators/IBaseIndicator";
+import { rsi } from "../../utils/math/indicators/rsi";
+import { sar } from "../../utils/math/indicators/sar";
 
 export default class PHDSController extends GenericController<IPHDSElement> {
   private exchange: IExchanges;
@@ -38,8 +47,7 @@ export default class PHDSController extends GenericController<IPHDSElement> {
     // First check if current Info is in db
     const results = await this.getExistingDBResults(startTime, end);
 
-    // If end is included make sure, we have all data up to endtime (within an interval) Or else all data up to current time
-
+    // Check if there is any missing zones in data
     let missingZones = this.findMissingZones(
       results,
       currentTime,
@@ -48,10 +56,17 @@ export default class PHDSController extends GenericController<IPHDSElement> {
     );
 
     if (missingZones.length === 0) {
-      // IF SO return that info
+      // IF we have no missing zones return
       return results;
     } else {
-      // ELSE GET Info from api, add to Mongo, then return to user
+      // ELSE Fill mongo with data upto and including current current query. Then return current query
+
+      const lastKnownDocuments = await this.queryDocuments(
+        {},
+        { openTime: -1 },
+        30
+      );
+
       let marketAPI: IMarket;
       switch (this.exchange) {
         case "Binance":
@@ -60,30 +75,48 @@ export default class PHDSController extends GenericController<IPHDSElement> {
         default:
           throw new Error("Requesting Exchange that doesn't exist");
       }
+
       let freshresults: IPHDSElement[] = [...results];
-      for (const missingZone of missingZones) {
-        const candles = await marketAPI.getCandleSticks(
-          this.basecurrency,
-          this.altcurrency,
-          this.interval,
-          missingZone[0],
-          missingZone[1]
-        );
 
-        let docPromises: Promise<IPHDSElement>[] = [];
+      let candles = await marketAPI.getCandleSticks(
+        this.basecurrency,
+        this.altcurrency,
+        this.interval,
+        start,
+        end,
+        lastKnownDocuments[0]
+      );
 
-        for (const candle of candles) {
-          const phdsdoc = {
-            _id: candle.openTime, // ID of document is openTime
-            ...candle,
-          } as any;
-
-          docPromises.push(this.createDocument(phdsdoc));
-        }
-
-        let tresults = await Promise.all(docPromises);
-        freshresults = [...freshresults, ...tresults];
+      // Add Indicators to data
+      const indicators = [
+        atr,
+        bollingerband,
+        elderray,
+        ema,
+        forceindex,
+        macd,
+        rsi,
+        sar,
+      ];
+      for (const indicator of indicators) {
+        candles = indicator(candles, lastKnownDocuments);
       }
+
+      let docPromises: Promise<IPHDSElement>[] = [];
+
+      for (const candle of candles) {
+        let phdsdoc = {
+          _id: candle.openTime, // ID of document is openTime
+          ...candle,
+        } as any;
+
+        // Add Indicators
+
+        docPromises.push(this.createDocument(phdsdoc));
+      }
+
+      let tresults = await Promise.all(docPromises);
+      freshresults = [...freshresults, ...tresults];
 
       // Not with additional zones added, Resort the result array
       freshresults.sort((a, b) => a._id - b._id);
