@@ -33,7 +33,11 @@ export default interface ICandle {
   RSILOSS?: number;
   RSI14?: number;
 
-  SAR00202?: number;
+  PSAR_EP?: number;
+  PSAR_ACC?: number;
+  PSAR_INIT?: number;
+  PSAR_TREND?: "Falling" | "Rising";
+  PSAR?: number;
 }
 
 export function ICandleAdapter(phdselement: IPHDSElement): ICandle {

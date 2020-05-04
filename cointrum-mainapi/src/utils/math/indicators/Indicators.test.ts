@@ -6,7 +6,7 @@ import {
   forceindex,
   macd,
   rsi,
-  // sar,
+  sar,
 } from "./";
 import ICandle from "../../markets/types/ICandle";
 
@@ -283,13 +283,24 @@ describe("Indicator Calculation Tests:", () => {
     expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
   });
 
-  test("RSI:", () => {
-    const EXPECTEDRESULTS = [57.38, 58.1];
+  test("RSI: /wo lastknown", () => {
+    const EXPECTEDRESULTS = [57.382247207037715, 58.104745849400366];
 
     const resultingElements = rsi(lElements);
 
+    // Get RSI's GAIN/LOSS for /wlastknown test
+    // for (const lk of lknown.reverse()) {
+    //   const r = resultingElements.filter(
+    //     (ele) => ele.openTime === lk.openTime
+    //   )[0];
+    //   console.log(
+    //     r.openTime,
+    //     "\nRSIGAIN: " + r.RSIGAIN + ",\nRSILOSS: " + r.RSILOSS
+    //   );
+    // }
+
     const checkingResults = resultingElements.splice(
-      resultingElements.length - 20
+      resultingElements.length - 2
     );
 
     let actualResults: number[] = [];
@@ -300,16 +311,75 @@ describe("Indicator Calculation Tests:", () => {
     expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
   });
 
-  // test("SAR:", () => {
-  //   const EXPECTEDRESULTS = [57.69, 58.05];
+  test("RSI: /w lastknown", () => {
+    const EXPECTEDRESULTS = [57.382247207037715, 58.104745849400366];
 
-  //   const resultingElements = sar(tElements, lElements);
+    const resultingElements = rsi(qdata, lknown);
 
-  //   let actualResults: number[] = [];
-  //   for (const ele of resultingElements) {
-  //     ele.SAR00202 && actualResults.push(ele.SAR00202);
-  //   }
+    const checkingResults = resultingElements.splice(
+      resultingElements.length - 2
+    );
 
-  //   expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
-  // });
+    let actualResults: number[] = [];
+    for (const ele of checkingResults) {
+      ele.RSI14 && actualResults.push(ele.RSI14);
+    }
+
+    expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
+  });
+
+  test("SAR: /wo lastknown", () => {
+    const EXPECTEDRESULTS = [57.47029081503744, 57.69767324613519];
+
+    const resultingElements = sar(lElements);
+
+    const checkingResults = resultingElements.splice(
+      resultingElements.length - 2
+    );
+
+    // Get SAR's Info for /wlastknown test
+    // for (const lk of lknown.reverse()) {
+    //   const r = resultingElements.filter(
+    //     (ele) => ele.openTime === lk.openTime
+    //   )[0];
+    //   console.log(
+    //     r.openTime,
+    //     "\nPSAR: " +
+    //       r.PSAR +
+    //       ",\nPSAR_ACC: " +
+    //       r.PSAR_ACC +
+    //       ",\nPSAR_EP: " +
+    //       r.PSAR_EP +
+    //       ",\nPSAR_INIT: " +
+    //       r.PSAR_INIT +
+    //       ',\nPSAR_TREND: "' +
+    //       r.PSAR_TREND +
+    //       '"'
+    //   );
+    // }
+
+    let actualResults: number[] = [];
+    for (const ele of checkingResults) {
+      ele.PSAR && actualResults.push(ele.PSAR);
+    }
+
+    expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
+  });
+
+  test("SAR: /w lastknown", () => {
+    const EXPECTEDRESULTS = [57.47029081503744, 57.69767324613519];
+
+    const resultingElements = sar(qdata, lknown);
+
+    const checkingResults = resultingElements.splice(
+      resultingElements.length - 2
+    );
+
+    let actualResults: number[] = [];
+    for (const ele of checkingResults) {
+      ele.PSAR && actualResults.push(ele.PSAR);
+    }
+
+    expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
+  });
 });

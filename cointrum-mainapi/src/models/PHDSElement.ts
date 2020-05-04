@@ -39,7 +39,11 @@ export interface IPHDSElement extends Document {
   RSILOSS: number;
   RSI14: number;
 
-  SAR00202: number;
+  PSAR_EP: number;
+  PSAR_ACC: number;
+  PSAR_INIT: number;
+  PSAR_TREND: string;
+  PSAR: number;
 }
 
 const PHDSElementSchema = new Schema({
@@ -129,7 +133,19 @@ const PHDSElementSchema = new Schema({
   RSI14: {
     type: Number,
   },
-  SAR00202: {
+  PSAR_EP: {
+    type: Number,
+  },
+  PSAR_ACC: {
+    type: Number,
+  },
+  PSAR_INIT: {
+    type: Number,
+  },
+  PSAR_TREND: {
+    type: String,
+  },
+  PSAR: {
     type: Number,
   },
   created_date: {

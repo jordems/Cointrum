@@ -59,7 +59,6 @@ export function emaAlgo(
     } else if (windowSize === 13) {
       tema = lastknownCandles[0].ema13;
     } else if (windowSize === 26) {
-      console.log(lastknownCandles[0]);
       tema = lastknownCandles[0].ema26;
     }
     if (!tema) {

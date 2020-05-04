@@ -23,35 +23,36 @@ export function rsiAlgo(
   }
   let results = [...candles];
 
-  let fullist = [...[...lastknownCandles].reverse(), ...candles];
-
   let avggain: number;
   let avgloss: number;
   let prevavggain: number;
   let prevavgloss: number;
 
-  const k = 2 / (14 + 1);
-
   if (lastknownCandles.length === 0) {
     for (let x = 0; x < 13; x++) {
-      results[13].RSI14 = NaN;
-      results[13].RSIGAIN = NaN;
-      results[13].RSILOSS = NaN;
+      results[x].RSI14 = NaN;
+      results[x].RSIGAIN = NaN;
+      results[x].RSILOSS = NaN;
     }
 
     const elements = results.slice(0, 14);
-    prevavggain = getGain(elements) * k;
-    prevavgloss = getLoss(elements) * k;
+    prevavggain = getInitalGain(elements) / 14;
+    prevavgloss = getInitalLoss(elements) / 14;
 
     results[13].RSI14 = 100 - 100 / (1 + prevavggain / prevavgloss);
     results[13].RSIGAIN = prevavggain;
     results[13].RSILOSS = prevavgloss;
 
     for (let x = 14; x < candles.length; x++) {
-      const elements = fullist.slice(x - 13, x + 1);
+      let currentGain =
+        parseFloat(candles[x].close) - parseFloat(candles[x - 1].close);
+      currentGain = currentGain < 0 ? 0 : currentGain;
+      let currentLoss =
+        parseFloat(candles[x].close) - parseFloat(candles[x - 1].close);
+      currentLoss = currentLoss > 0 ? 0 : Math.abs(currentLoss);
 
-      avggain = prevavggain * (1 - k) + getGain(elements) * k;
-      avgloss = prevavgloss * (1 - k) + getLoss(elements) * k;
+      avggain = (prevavggain * 13 + currentGain) / 14;
+      avgloss = (prevavgloss * 13 + currentLoss) / 14;
 
       results[x].RSI14 = 100 - 100 / (1 + avggain / avgloss);
       results[x].RSIGAIN = avggain;
@@ -64,14 +65,33 @@ export function rsiAlgo(
     prevavggain = lastknownCandles[0].RSIGAIN ? lastknownCandles[0].RSIGAIN : 0;
     prevavgloss = lastknownCandles[0].RSILOSS ? lastknownCandles[0].RSILOSS : 0;
 
-    for (let x = 0; x < candles.length; x++) {
-      const elements = fullist.slice(
-        lastknownCandles.length - 14 + x,
-        lastknownCandles.length + x
-      );
+    let currentGain =
+      parseFloat(candles[0].close) - parseFloat(lastknownCandles[0].close);
+    currentGain = currentGain < 0 ? 0 : currentGain;
+    let currentLoss =
+      parseFloat(candles[0].close) - parseFloat(lastknownCandles[0].close);
+    currentLoss = currentLoss > 0 ? 0 : Math.abs(currentLoss);
 
-      avggain = prevavggain * (1 - k) + getGain(elements) * k;
-      avgloss = prevavgloss * (1 - k) + getLoss(elements) * k;
+    avggain = (prevavggain * 13 + currentGain) / 14;
+    avgloss = (prevavgloss * 13 + currentLoss) / 14;
+
+    results[0].RSI14 = 100 - 100 / (1 + avggain / avgloss);
+    results[0].RSIGAIN = avggain;
+    results[0].RSILOSS = avgloss;
+
+    prevavggain = avggain;
+    prevavgloss = avgloss;
+
+    for (let x = 1; x < candles.length; x++) {
+      let currentGain =
+        parseFloat(candles[x].close) - parseFloat(candles[x - 1].close);
+      currentGain = currentGain < 0 ? 0 : currentGain;
+      let currentLoss =
+        parseFloat(candles[x].close) - parseFloat(candles[x - 1].close);
+      currentLoss = currentLoss > 0 ? 0 : Math.abs(currentLoss);
+
+      avggain = (prevavggain * 13 + currentGain) / 14;
+      avgloss = (prevavgloss * 13 + currentLoss) / 14;
 
       results[x].RSI14 = 100 - 100 / (1 + avggain / avgloss);
       results[x].RSIGAIN = avggain;
@@ -84,7 +104,7 @@ export function rsiAlgo(
   return results;
 }
 
-function getGain(elements: ICandle[]) {
+function getInitalGain(elements: ICandle[]): number {
   let gain = 0;
 
   for (let x = 1; x < elements.length; x++) {
@@ -95,12 +115,14 @@ function getGain(elements: ICandle[]) {
   return gain;
 }
 
-function getLoss(elements: ICandle[]) {
+function getInitalLoss(elements: ICandle[]): number {
   let loss = 0;
 
   for (let x = 1; x < elements.length; x++) {
     if (parseFloat(elements[x].close) < parseFloat(elements[x - 1].close)) {
-      loss += parseFloat(elements[x - 1].close) - parseFloat(elements[x].close);
+      loss += Math.abs(
+        parseFloat(elements[x].close) - parseFloat(elements[x - 1].close)
+      );
     }
   }
   return loss;

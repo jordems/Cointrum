@@ -6,5 +6,5 @@ export * from "./forceindex";
 export * from "./macd";
 export * from "./rsi";
 export * from "./IBaseIndicator";
-// export * from "./sar";
-// export * from "./sma";
+export * from "./sar";
+export * from "./sma";
