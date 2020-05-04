@@ -1,10 +1,10 @@
 export * from "./atr";
 export * from "./bollingerband";
-// export * from "./elderray";
-// export * from "./ema";
-// export * from "./forceindex";
+export * from "./ema";
+export * from "./elderray";
+export * from "./forceindex";
 // export * from "./macd";
 // export * from "./rsi";
-// export * from "./IBaseIndicator";
+export * from "./IBaseIndicator";
 // export * from "./sar";
 // export * from "./sma";

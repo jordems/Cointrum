@@ -1,23 +1,34 @@
 import { IBaseIndicator } from "./IBaseIndicator";
-import ICandle from "../../markets/types/ICandle";
+import ICandle, { ICandleAdapter } from "../../markets/types/ICandle";
 import { emaAlgo } from "./ema";
+import { IPHDSElement } from "../../../models/PHDSElement";
 
-export const elderray: IBaseIndicator = (candles, lastknownDocument) => {
-  for (const ele of phdselements) {
-    ele.ElderRay = elderrayAlgo(ele, extraelements);
-  }
-  return phdselements;
+export const elderray: IBaseIndicator = (candles, lastknownDocuments) => {
+  let tcandles = [...candles];
+
+  tcandles = elderrayAlgo(candles, lastknownDocuments);
+
+  return tcandles;
 };
 
 function elderrayAlgo(
-  element: ICandle,
-  phdselements: ICandle[]
-): [number, number] {
-  try {
-    const ema13 = emaAlgo(13, element, phdselements);
+  candles: ICandle[],
+  lastknownDocuments?: IPHDSElement[]
+): ICandle[] {
+  let ema13elements = emaAlgo(13, [...candles], lastknownDocuments);
 
-    return [parseFloat(element.high) - ema13, parseFloat(element.low) - ema13];
-  } catch (e) {
-    return [NaN, NaN];
+  let results = [...candles];
+  for (let x = 0; x < candles.length; x++) {
+    if (ema13elements[x] === NaN) {
+      results[x].ElderRay = [NaN, NaN];
+    } else {
+      results[x].ElderRay = [
+        parseFloat(results[x].high) - ema13elements[x],
+        parseFloat(results[x].low) - ema13elements[x],
+      ];
+    }
+    results[x].ema13 = ema13elements[x];
   }
+
+  return results;
 }

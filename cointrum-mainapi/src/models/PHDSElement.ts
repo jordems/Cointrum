@@ -29,6 +29,7 @@ export interface IPHDSElement extends Document {
 
   ema26: number;
   ema12: number;
+  ema13: number;
 
   forceindex13: number;
 
@@ -106,6 +107,9 @@ const PHDSElementSchema = new Schema({
     type: Number,
   },
   ema12: {
+    type: Number,
+  },
+  ema13: {
     type: Number,
   },
   forceindex13: {

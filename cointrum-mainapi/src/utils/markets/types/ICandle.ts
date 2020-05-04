@@ -23,6 +23,7 @@ export default interface ICandle {
 
   ema26?: number;
   ema12?: number;
+  ema13?: number;
 
   forceindex13?: number;
 

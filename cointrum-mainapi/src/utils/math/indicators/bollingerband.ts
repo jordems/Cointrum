@@ -23,7 +23,8 @@ export function bollingerbandAlgo(
       lastknownCandles.push(ICandleAdapter(phdselement));
     }
   }
-  let fullist = [...lastknownCandles, ...candles];
+  // Reverse Candles as it's backwards to start
+  let fullist = [...lastknownCandles.reverse(), ...candles];
 
   let startingidx =
     lastknownCandles.length === 0 ? 20 : lastknownCandles.length;
