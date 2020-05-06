@@ -8,6 +8,8 @@ import { ReconnectingWebSocketHandler, Candle } from "binance-api-node";
 import { IPHDSElement } from "../../models/PHDSElement";
 
 export default interface IMarket {
+  getMarketName(): string;
+  getRequestsPerMinute(): number;
   getCandleSticks(
     basecurrency: IBaseCurrencies,
     altcurrency: IAltCurrencies,

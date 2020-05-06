@@ -26,27 +26,24 @@ export const BINANCE_PAGINATION_INTERVAL = 1000;
 export const BINANCE_REQUESTS_PER_MINUTE = 1000;
 
 export default class BinanceAPI implements IMarket {
-  private static instance: BinanceAPI;
   private client: Binance;
-  private requestCountReseter: NodeJS.Timeout;
-  private requestsPerMinute: number;
 
-  private constructor() {
+  constructor() {
     if (!apiKey || !apiSecret) {
       throw new Error("Set Binace API Key in .env File");
     }
-    this.requestsPerMinute = 0;
-    this.requestCountReseter = setInterval(() => {
-      this.requestsPerMinute = 0;
-    }, 1000);
     this.client = BinanceClient({
       apiKey,
       apiSecret,
     });
   }
 
-  public static getInstance(): BinanceAPI {
-    return this.instance || (this.instance = new this());
+  public getMarketName(): string {
+    return "Binance";
+  }
+
+  public getRequestsPerMinute(): number {
+    return BINANCE_REQUESTS_PER_MINUTE;
   }
 
   public async getCandleSticks(
@@ -56,17 +53,6 @@ export default class BinanceAPI implements IMarket {
     start?: number,
     end?: number
   ): Promise<ICandle[]> {
-    this.requestsPerMinute++;
-
-    console.log("Request", this.requestsPerMinute);
-    // Wait till request limit is lowered
-    const waitForLimit = async () => {
-      if (this.requestsPerMinute >= BINANCE_REQUESTS_PER_MINUTE) {
-        await setTimeout(waitForLimit, 100);
-      }
-    };
-    await waitForLimit();
-
     let candleParams = {
       symbol: `${basecurrency}${altcurrency}`,
       interval: interval as CandleChartInterval,

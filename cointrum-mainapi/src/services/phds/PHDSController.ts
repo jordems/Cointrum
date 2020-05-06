@@ -13,6 +13,7 @@ import IMarket from "../../utils/markets/IMarket";
 import subtractTime from "../../utils/math/TimeSubtractor";
 import { IndicatorDecorator } from "../../utils/math/IndicatorDecorator";
 import ICandle from "../../utils/markets/types/ICandle";
+import APILimiter from "../../utils/markets/APILimiter";
 
 export default class PHDSController extends GenericController<IPHDSElement> {
   private exchange: IExchanges;
@@ -57,19 +58,26 @@ export default class PHDSController extends GenericController<IPHDSElement> {
         30
       );
       lastKnownDocuments = results.reverse();
-
+      console.log("He");
       let marketAPI: IMarket;
       switch (this.exchange) {
         case "Binance":
-          marketAPI = BinanceAPI.getInstance();
+          try {
+            marketAPI = APILimiter.getInstance(new BinanceAPI());
+          } catch (e) {
+            console.log(e);
+            throw new Error(e);
+          }
           break;
         default:
           throw new Error("Requesting Exchange that doesn't exist");
       }
 
       let finalresults: IPHDSElement[] = [...results];
-      const timeofLastCandleLoaded = lastKnownDocuments[0]
-        ? lastKnownDocuments[0].closeTime
+      const timeofLastCandleLoaded = lastKnownDocuments[
+        lastKnownDocuments.length - 1
+      ]
+        ? lastKnownDocuments[lastKnownDocuments.length - 1].closeTime
         : marketAPI.getInitialStartTime();
       const PAGINATION_LIMIT = marketAPI.getPaginationInterval();
       const TIME_DIFF = endTime - timeofLastCandleLoaded;
