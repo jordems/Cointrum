@@ -7,6 +7,7 @@ import {
 } from "../types/exchange";
 
 export interface IPHDSElement extends Document {
+  discriminator: "IPHDSELEMENT";
   openTime: number;
   open: number;
   high: number;
@@ -42,7 +43,7 @@ export interface IPHDSElement extends Document {
   PSAR_EP: number;
   PSAR_ACC: number;
   PSAR_INIT: number;
-  PSAR_TREND: string;
+  PSAR_TREND: "Falling" | "Rising";
   PSAR: number;
 }
 

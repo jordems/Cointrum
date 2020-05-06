@@ -4,6 +4,7 @@ import BinanceClient, {
   Candle,
   ReconnectingWebSocketHandler,
   CandlesOptions,
+  CandleChartResult,
 } from "binance-api-node";
 
 import dotenv from "dotenv";
@@ -15,50 +16,74 @@ import {
   ICycleDurations,
 } from "../../types/exchange";
 
-import { cycledurations } from "../../types/exchange/cycledurations";
-import { IPHDSElement } from "../../models/PHDSElement";
-import subtractTime from "../math/TimeSubtractor";
 dotenv.config();
 
 const apiKey = process.env.BINANCE_API_KEY;
 const apiSecret = process.env.BINANCE_API_SECRET_KEY;
 
-export default class BinanceAPI implements IMarket {
-  private client: Binance;
+export const BINANCE_INIT_START_TIME = 1493929128000;
+export const BINANCE_PAGINATION_INTERVAL = 1000;
+export const BINANCE_REQUESTS_PER_MINUTE = 1000;
 
-  constructor() {
+export default class BinanceAPI implements IMarket {
+  private static instance: BinanceAPI;
+  private client: Binance;
+  private requestCountReseter: NodeJS.Timeout;
+  private requestsPerMinute: number;
+
+  private constructor() {
     if (!apiKey || !apiSecret) {
       throw new Error("Set Binace API Key in .env File");
     }
-
+    this.requestsPerMinute = 0;
+    this.requestCountReseter = setInterval(() => {
+      this.requestsPerMinute = 0;
+    }, 1000);
     this.client = BinanceClient({
       apiKey,
       apiSecret,
     });
   }
 
-  async getCandleSticks(
+  public static getInstance(): BinanceAPI {
+    return this.instance || (this.instance = new this());
+  }
+
+  public async getCandleSticks(
     basecurrency: IBaseCurrencies,
     altcurrency: IAltCurrencies,
     interval: ICycleDurations,
     start?: number,
-    end?: number,
-    lastknowndocument?: IPHDSElement
+    end?: number
   ): Promise<ICandle[]> {
+    this.requestsPerMinute++;
+
+    console.log("Request", this.requestsPerMinute);
+    // Wait till request limit is lowered
+    const waitForLimit = async () => {
+      if (this.requestsPerMinute >= BINANCE_REQUESTS_PER_MINUTE) {
+        await setTimeout(waitForLimit, 100);
+      }
+    };
+    await waitForLimit();
+
     let candleParams = {
       symbol: `${basecurrency}${altcurrency}`,
       interval: interval as CandleChartInterval,
+      limit: 1000,
     } as CandlesOptions;
 
-    if (lastknowndocument) {
-      candleParams = {
-        ...candleParams,
-        startTime: lastknowndocument.close,
-      };
-    } else if (start) {
+    if (start) {
+      // Start of Binance History
       candleParams = {
         ...candleParams,
         startTime: start,
+      };
+    } else {
+      // Start of Binance History
+      candleParams = {
+        ...candleParams,
+        startTime: 1493929128000,
       };
     }
 
@@ -68,48 +93,25 @@ export default class BinanceAPI implements IMarket {
         endTime: end,
       };
     }
-    const currentTime = new Date().getTime();
 
     try {
-      const results = (await this.client.candles(candleParams)) as ICandle[];
+      const results = await this.client.candles(candleParams);
 
-      if (results.length === 0) {
-        return results;
-      } else {
-        if (
-          end &&
-          results[results.length - 1].closeTime < subtractTime(end, interval)
-        ) {
-          const section = await this.getCandleSticks(
-            basecurrency,
-            altcurrency,
-            interval,
-            results[results.length - 1].closeTime,
-            end
-          );
-
-          return [...results, ...section];
-        } else if (
-          !end &&
-          results[results.length - 1].closeTime <
-            subtractTime(currentTime, interval)
-        ) {
-          const section = await this.getCandleSticks(
-            basecurrency,
-            altcurrency,
-            interval,
-            results[results.length - 1].closeTime,
-            currentTime
-          );
-
-          return [...results, ...section];
-        } else {
-          return [...results];
-        }
-      }
+      return this.convertToICandle(results);
     } catch (e) {
       throw new Error("Failed to Get Results from Binance API");
     }
+  }
+
+  private convertToICandle(results: CandleChartResult[]): ICandle[] {
+    let candles: ICandle[] = [];
+    for (const ele of results) {
+      candles.push({
+        discriminator: "ICANDLE",
+        ...ele,
+      });
+    }
+    return candles;
   }
 
   getLiveCandleSocket(
@@ -123,5 +125,13 @@ export default class BinanceAPI implements IMarket {
       interval as CandleChartInterval,
       callback
     );
+  }
+
+  public getInitialStartTime() {
+    return BINANCE_INIT_START_TIME;
+  }
+
+  public getPaginationInterval() {
+    return BINANCE_PAGINATION_INTERVAL;
   }
 }

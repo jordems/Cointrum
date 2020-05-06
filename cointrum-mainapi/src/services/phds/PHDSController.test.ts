@@ -153,8 +153,8 @@ describe("PHDSController: findMissingZones()", () => {
 
     const missingZones = phdsController.findMissingZones(
       testElements,
-      currentTime,
-      startTime
+      startTime,
+      currentTime
     );
 
     expect(missingZones.length).toBe(1);
@@ -243,8 +243,8 @@ describe("PHDSController: findMissingZones()", () => {
 
     const missingZones = phdsController.findMissingZones(
       testElements,
-      currentTime,
-      startTime
+      startTime,
+      currentTime
     );
 
     expect(missingZones.length).toBe(1);

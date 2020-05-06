@@ -13,8 +13,7 @@ export default interface IMarket {
     altcurrency: IAltCurrencies,
     interval: ICycleDurations,
     start?: number,
-    end?: number,
-    lastknowndocument?: IPHDSElement
+    end?: number
   ): Promise<ICandle[]>;
   getLiveCandleSocket(
     basecurrency: IBaseCurrencies,
@@ -22,4 +21,7 @@ export default interface IMarket {
     interval: ICycleDurations,
     callback: (ticker: Candle) => void
   ): ReconnectingWebSocketHandler;
+
+  getInitialStartTime(): number;
+  getPaginationInterval(): number;
 }

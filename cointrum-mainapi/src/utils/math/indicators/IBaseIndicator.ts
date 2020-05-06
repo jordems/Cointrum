@@ -3,5 +3,5 @@ import { IPHDSElement } from "../../../models/PHDSElement";
 
 export type IBaseIndicator = (
   candles: ICandle[],
-  lastknowndocument?: IPHDSElement[]
+  lastknowndocument?: IPHDSElement[] | ICandle[]
 ) => ICandle[];

@@ -1,12 +1,14 @@
 import { IBaseIndicator } from "./IBaseIndicator";
-import ICandle from "../../markets/types/ICandle";
+import ICandle, { ArrayICandleAdapter } from "../../markets/types/ICandle";
 
 export const atr: IBaseIndicator = (candles, lastknownDocuments) => {
   let tcandles = [...candles];
 
-  let prevATR = lastknownDocuments ? lastknownDocuments[0].atr14 : undefined;
+  const prevCandles = ArrayICandleAdapter(lastknownDocuments);
 
-  atrAlgo(14, tcandles, prevATR);
+  let prevCandle = prevCandles.length > 0 ? prevCandles[0] : undefined;
+
+  tcandles = atrAlgo(14, tcandles, prevCandle);
 
   return tcandles;
 };
@@ -14,11 +16,13 @@ export const atr: IBaseIndicator = (candles, lastknownDocuments) => {
 export function atrAlgo(
   period: number,
   candles: ICandle[],
-  prevATR?: number
-): void {
+  prevCandle?: ICandle
+): ICandle[] {
+  let result = [...candles];
+  let prevATR;
   let idx = 0;
 
-  if (!prevATR) {
+  if (!prevCandle) {
     if (candles.length < period + 1) {
       throw new Error("Not enough values to calculate ATR");
     }
@@ -30,38 +34,74 @@ export function atrAlgo(
         parseFloat(candles[idx].high) - parseFloat(candles[idx - 1].close),
         parseFloat(candles[idx - 1].close) - parseFloat(candles[idx].low)
       );
+      result[idx - 1].atr14 = -1;
     }
 
     // Set inital ATR if it doesn't exist
     prevATR = Isum / period;
-    candles[period].atr14 = prevATR;
-  }
+    result[period].atr14 = prevATR;
 
-  const a = 2 / (period + 1);
+    const a = 2 / (period + 1);
 
-  let ptr = Math.max(
-    parseFloat(candles[idx].high) - parseFloat(candles[idx].low),
-    parseFloat(candles[idx].high) - parseFloat(candles[idx - 1].close),
-    parseFloat(candles[idx - 1].close) - parseFloat(candles[idx].low)
-  );
-
-  let patr = a * ptr + (1 - a) * prevATR;
-  candles[idx].atr14 = patr;
-
-  let tr = 0;
-  let atr = 0;
-
-  for (let x = idx + 1; x < candles.length; x++) {
-    tr = Math.max(
-      parseFloat(candles[x].high) - parseFloat(candles[x].low),
-      parseFloat(candles[x].high) - parseFloat(candles[x - 1].close),
-      parseFloat(candles[x - 1].close) - parseFloat(candles[x].low)
+    let ptr = Math.max(
+      parseFloat(candles[idx].high) - parseFloat(candles[idx].low),
+      parseFloat(candles[idx].high) - parseFloat(candles[idx - 1].close),
+      parseFloat(candles[idx - 1].close) - parseFloat(candles[idx].low)
     );
 
-    atr = a * tr + (1 - a) * patr;
+    let patr = a * ptr + (1 - a) * prevATR;
+    result[idx].atr14 = patr;
 
-    candles[x].atr14 = atr;
-    patr = atr;
-    ptr = tr;
+    let tr = 0;
+    let atr = 0;
+
+    for (let x = idx + 1; x < candles.length; x++) {
+      tr = Math.max(
+        parseFloat(candles[x].high) - parseFloat(candles[x].low),
+        parseFloat(candles[x].high) - parseFloat(candles[x - 1].close),
+        parseFloat(candles[x - 1].close) - parseFloat(candles[x].low)
+      );
+
+      atr = a * tr + (1 - a) * patr;
+
+      result[x].atr14 = atr;
+      patr = atr;
+      ptr = tr;
+    }
+  } else {
+    prevATR = prevCandle.atr14;
+
+    if (prevATR === -1 || prevATR === undefined) {
+      return atrAlgo(period, candles);
+    }
+
+    const a = 2 / (period + 1);
+
+    let ptr = Math.max(
+      parseFloat(candles[idx].high) - parseFloat(candles[idx].low),
+      parseFloat(candles[idx].high) - parseFloat(prevCandle.close),
+      parseFloat(prevCandle.close) - parseFloat(candles[idx].low)
+    );
+
+    let patr = a * ptr + (1 - a) * prevATR;
+    result[idx].atr14 = patr;
+
+    let tr = 0;
+    let atr = 0;
+
+    for (let x = idx + 1; x < candles.length; x++) {
+      tr = Math.max(
+        parseFloat(candles[x].high) - parseFloat(candles[x].low),
+        parseFloat(candles[x].high) - parseFloat(candles[x - 1].close),
+        parseFloat(candles[x - 1].close) - parseFloat(candles[x].low)
+      );
+
+      atr = a * tr + (1 - a) * patr;
+
+      result[x].atr14 = atr;
+      patr = atr;
+      ptr = tr;
+    }
   }
+  return result;
 }

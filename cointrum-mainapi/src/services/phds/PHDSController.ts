@@ -1,6 +1,8 @@
 import GenericController from "../../utils/GenericController";
 import PHDSElement, { IPHDSElement } from "../../models/PHDSElement";
-import BinanceAPI from "../../utils/markets/BinanceAPI";
+import BinanceAPI, {
+  BINANCE_INIT_START_TIME,
+} from "../../utils/markets/BinanceAPI";
 import {
   IBaseCurrencies,
   IAltCurrencies,
@@ -9,15 +11,8 @@ import {
 } from "../../types/exchange";
 import IMarket from "../../utils/markets/IMarket";
 import subtractTime from "../../utils/math/TimeSubtractor";
-import { ema } from "../../utils/math/indicators/ema";
-import { atr } from "../../utils/math/indicators/atr";
-import { bollingerband } from "../../utils/math/indicators/bollingerband";
-import { elderray } from "../../utils/math/indicators/elderray";
-import { forceindex } from "../../utils/math/indicators/forceindex";
-import { macd } from "../../utils/math/indicators/macd";
-import { IBaseIndicator } from "../../utils/math/indicators/IBaseIndicator";
-import { rsi } from "../../utils/math/indicators/rsi";
-import { sar } from "../../utils/math/indicators/sar";
+import { IndicatorDecorator } from "../../utils/math/IndicatorDecorator";
+import ICandle from "../../utils/markets/types/ICandle";
 
 export default class PHDSController extends GenericController<IPHDSElement> {
   private exchange: IExchanges;
@@ -42,90 +37,124 @@ export default class PHDSController extends GenericController<IPHDSElement> {
     // By default set startTime for last interval (current time - interval)
     const currentTime = new Date().getTime(); // in UTC milliseconds
 
-    let startTime = start ? start : subtractTime(currentTime, this.interval);
+    const startTime = start ? start : subtractTime(currentTime, this.interval);
+
+    const endTime = end ? end : currentTime;
 
     // First check if current Info is in db
-    const results = await this.getExistingDBResults(startTime, end);
+    const results = await this.getExistingDBResults(startTime, endTime);
 
     // Check if there is any missing zones in data
-    let missingZones = this.findMissingZones(
-      results,
-      currentTime,
-      startTime,
-      end
-    );
+    let missingZones = this.findMissingZones(results, startTime, endTime);
 
     if (missingZones.length === 0) {
-      // IF we have no missing zones return
       return results;
     } else {
       // ELSE Fill mongo with data upto and including current current query. Then return current query
-
-      const lastKnownDocuments = await this.queryDocuments(
+      let lastKnownDocuments = await this.queryDocuments(
         {},
         { openTime: -1 },
         30
       );
+      lastKnownDocuments = results.reverse();
 
       let marketAPI: IMarket;
       switch (this.exchange) {
         case "Binance":
-          marketAPI = new BinanceAPI();
+          marketAPI = BinanceAPI.getInstance();
           break;
         default:
           throw new Error("Requesting Exchange that doesn't exist");
       }
 
-      let freshresults: IPHDSElement[] = [...results];
+      let finalresults: IPHDSElement[] = [...results];
+      const timeofLastCandleLoaded = lastKnownDocuments[0]
+        ? lastKnownDocuments[0].closeTime
+        : marketAPI.getInitialStartTime();
+      const PAGINATION_LIMIT = marketAPI.getPaginationInterval();
+      const TIME_DIFF = endTime - timeofLastCandleLoaded;
+      const NUM_CYCLES = TIME_DIFF / (60000 * PAGINATION_LIMIT);
 
-      let candles = await marketAPI.getCandleSticks(
-        this.basecurrency,
-        this.altcurrency,
-        this.interval,
-        start,
-        end,
-        lastKnownDocuments[0]
-      );
+      let sectionPromises: Promise<ICandle[]>[] = [];
 
-      // Add Indicators to data
-      const indicators = [
-        atr,
-        bollingerband,
-        elderray,
-        ema,
-        forceindex,
-        macd,
-        rsi,
-        sar,
-      ];
-      for (const indicator of indicators) {
-        candles = indicator(candles, lastKnownDocuments);
+      // Get all Results from market API
+      for (let x = 0; x < NUM_CYCLES; x++) {
+        sectionPromises.push(
+          new Promise(async (res, rej) => {
+            const timeSectionStart =
+              timeofLastCandleLoaded + x * 60000 * PAGINATION_LIMIT;
+            const timeSectionEnd =
+              timeofLastCandleLoaded + (x + 1) * 60000 * PAGINATION_LIMIT - 1;
+
+            console.log(
+              `cycle ${x}: TIME:${timeSectionStart}-${timeSectionEnd}`
+            );
+
+            marketAPI
+              .getCandleSticks(
+                this.basecurrency,
+                this.altcurrency,
+                this.interval,
+                timeSectionStart,
+                timeSectionEnd
+              )
+              .then((candles) => {
+                console.log(
+                  `cycle ${x}: FINISHED getting Candles ${candles.length}`
+                );
+                res(candles);
+              })
+              .catch((e) => {
+                rej(e);
+              });
+          })
+        );
       }
 
-      let docPromises: Promise<IPHDSElement>[] = [];
-
-      for (const candle of candles) {
-        let phdsdoc = {
-          _id: candle.openTime, // ID of document is openTime
-          ...candle,
-        } as any;
-
-        // Add Indicators
-
-        docPromises.push(this.createDocument(phdsdoc));
+      let candleSections: ICandle[][] = [];
+      try {
+        candleSections = await Promise.all(sectionPromises);
+      } catch (e) {
+        throw new Error(e);
       }
 
-      let tresults = await Promise.all(docPromises);
-      freshresults = [...freshresults, ...tresults];
+      candleSections[0] = IndicatorDecorator(candleSections[0]);
+      for (let x = 1; x < candleSections.length; x++) {
+        console.log(`cycle ${x - 1}: Finished Decorating Indicators`);
+        candleSections[x] = IndicatorDecorator(
+          candleSections[x],
+          candleSections[x - 1]
+        );
+      }
+      // candles = IndicatorDecorator(candles, lastKnownDocuments);
+
+      // let phdsdocs = [];
+
+      // for (const candle of candles) {
+      //   let phdsdoc = {
+      //     _id: candle.openTime, // ID of document is openTime
+      //     ...candle,
+      //   } as any;
+
+      //   phdsdocs.push(phdsdoc);
+      // }
+
+      // try {
+      //   const section = await this.insertBatch(phdsdocs);
+      //   res(section);
+      // } catch (e) {
+      //   rej(e);
+      //   return;
+      // }
 
       // Not with additional zones added, Resort the result array
-      freshresults.sort((a, b) => a._id - b._id);
-
-      if (!start && freshresults.length === 0) {
+      //freshresults.sort((a, b) => a._id - b._id);
+      console.log("end");
+      if (!start && finalresults.length === 0) {
         // if binance doesn't have any now, pull an earlier interval
-        return this.getPHDS(subtractTime(startTime, this.interval), end);
+        return this.getPHDS(subtractTime(startTime, this.interval), endTime);
       } else {
-        return freshresults;
+        return finalresults.filter((ele) => ele.openTime >= startTime);
       }
     }
   }
@@ -147,12 +176,11 @@ export default class PHDSController extends GenericController<IPHDSElement> {
 
   findMissingZones(
     phdselements: IPHDSElement[],
-    currentTime: number,
     start: number,
-    end?: number
+    end: number
   ): Array<[number, number]> {
     if (phdselements.length === 0) {
-      return [[start, currentTime]];
+      return [[start, end]];
     }
 
     let untouchedZones: Array<[number, number]> = [];
@@ -180,15 +208,7 @@ export default class PHDSController extends GenericController<IPHDSElement> {
     }
 
     // Add Section from after last PHDS Element to `end`
-    if (
-      !end &&
-      currentValue.closeTime < subtractTime(currentTime, this.interval)
-    ) {
-      untouchedZones.push([currentValue.closeTime + 1, currentTime - 1]);
-    } else if (
-      end &&
-      currentValue.closeTime < subtractTime(end, this.interval)
-    ) {
+    if (end && currentValue.closeTime < subtractTime(end, this.interval)) {
       untouchedZones.push([currentValue.closeTime + 1, end - 1]);
     }
 
