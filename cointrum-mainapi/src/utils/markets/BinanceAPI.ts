@@ -24,7 +24,7 @@ const apiSecret = process.env.BINANCE_API_SECRET_KEY;
 
 export const BINANCE_INIT_START_TIME = 1493929128000;
 export const BINANCE_PAGINATION_INTERVAL = 1000;
-export const BINANCE_REQUESTS_PER_MINUTE = 5;
+export const BINANCE_REQUESTS_PER_MINUTE = 1150;
 
 export default class BinanceAPI implements IMarket {
   private client: Binance;
@@ -80,8 +80,9 @@ export default class BinanceAPI implements IMarket {
     }
 
     try {
+      console.log("requesting Candle Sticks");
       const results = await this.client.candles(candleParams);
-
+      console.log("recieved Candle Sticks");
       return this.convertToICandle(results);
     } catch (e) {
       console.log(e);

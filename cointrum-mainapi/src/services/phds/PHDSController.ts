@@ -47,25 +47,48 @@ export default class PHDSController extends GenericController<IPHDSElement> {
         this.currencyPair.exchange
       );
 
-      // try {
-      //   const section = await this.insertBatch(phdsdocs);
-      //   res(section);
-      // } catch (e) {
-      //   rej(e);
-      //   return;
-      // }
-
-      // Not with additional zones added, Resort the result array
-      //freshresults.sort((a, b) => a._id - b._id);
-      console.log("end");
-      if (!start && finalresults.length === 0) {
-        // if binance doesn't have any now, pull an earlier interval
-        return this.getPHDS(
-          subtractTime(startTime, this.currencyPair.interval),
-          endTime
+      try {
+        const candleSections = await marketAPIConsumer.findSectionfromHistoricalData(
+          this.currencyPair,
+          startTime,
+          endTime,
+          results,
+          lastKnownDocuments
         );
-      } else {
-        return finalresults.filter((ele) => ele.openTime >= startTime);
+
+        let finalresults: IPHDSElement[] = [...results];
+
+        for (let x = 0; x < candleSections.length; x++) {
+          let phdsSection: IPHDSElement[] = [];
+
+          for (const candle of candleSections[x]) {
+            phdsSection.push({
+              _id: candle.openTime,
+              ...candle,
+            } as any);
+          }
+          const section = await this.insertBatch(phdsSection);
+
+          if (section[0].openTime > startTime) {
+            finalresults = [...finalresults, ...section];
+          }
+        }
+
+        // Not with additional zones added, Resort the result array
+        //freshresults.sort((a, b) => a._id - b._id);
+        console.log("end");
+        if (!start && finalresults.length === 0) {
+          // if binance doesn't have any now, pull an earlier interval
+          return this.getPHDS(
+            subtractTime(startTime, this.currencyPair.interval),
+            endTime
+          );
+        } else {
+          return finalresults;
+        }
+      } catch (e) {
+        console.log(e);
+        throw new Error(e);
       }
     }
   }

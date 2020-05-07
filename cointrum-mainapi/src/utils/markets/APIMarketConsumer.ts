@@ -20,11 +20,17 @@ export default class APIMarketConsumer {
   private constructor(market: IMarket) {
     this.market = market;
 
+    const maxRequestsperMinute = market.getRequestsPerMinute();
+
     const maxRequestsperSecond =
       1000 / (market.getRequestsPerMinute() / 60) + 5;
 
     this.limiter = new Bottleneck({
-      maxConcurrent: 1,
+      reservoir: maxRequestsperMinute,
+      reservoirRefreshAmount: maxRequestsperMinute,
+      reservoirRefreshInterval: 60 * 1000, // must be divisible by 250
+
+      // maxConcurrent: 1,
       minTime: maxRequestsperSecond,
     });
   }
@@ -35,7 +41,7 @@ export default class APIMarketConsumer {
     endTime: number,
     results: IPHDSElement[],
     lastKnownDocuments: IPHDSElement[]
-  ): IPHDSElement[] {
+  ): Promise<ICandle[][]> {
     let finalresults: IPHDSElement[] = [...results];
 
     const timeofLastCandleLoaded = lastKnownDocuments[
@@ -47,44 +53,30 @@ export default class APIMarketConsumer {
     const TIME_DIFF = endTime - timeofLastCandleLoaded;
     const NUM_REQUESTS = TIME_DIFF / (60000 * PAGINATION_LIMIT);
 
-    let sectionPromises: Promise<ICandle[]>[][] = [];
-
-    const REQUESTS_PER_MINUTE = this.market.getRequestsPerMinute();
-
-    let requestQueueidx = 0;
-    let requestSectionQueue: Promise<ICandle[]>[] = [];
+    let sectionPromises: Promise<ICandle[]>[] = [];
+    let requestnum = 0;
     // Get all Results from market API
     for (let x = 0; x < NUM_REQUESTS; x++) {
-      if (Math.floor(x / REQUESTS_PER_MINUTE) !== requestQueueidx) {
-        requestQueueidx = Math.floor(x / REQUESTS_PER_MINUTE);
-        sectionPromises.push(requestSectionQueue);
-        requestSectionQueue = [];
-      }
+      const timeSectionStart =
+        timeofLastCandleLoaded + x * 60000 * PAGINATION_LIMIT;
+      const timeSectionEnd =
+        timeofLastCandleLoaded + (x + 1) * 60000 * PAGINATION_LIMIT - 1;
 
-      requestSectionQueue.push(
-        new Promise(async (res, rej) => {
-          const timeSectionStart =
-            timeofLastCandleLoaded + x * 60000 * PAGINATION_LIMIT;
-          const timeSectionEnd =
-            timeofLastCandleLoaded + (x + 1) * 60000 * PAGINATION_LIMIT - 1;
-          console.log(`cycle ${x}: TIME:${timeSectionStart}-${timeSectionEnd}`);
-          this.market
-            .getCandleSticks(currencyPair, timeSectionStart, timeSectionEnd)
-            .then((candles) => {
-              res(candles);
-            })
-            .catch((e) => {
-              rej(e);
-            });
+      sectionPromises.push(
+        this.limiter.schedule(() => {
+          console.log(`$Starting request ${++requestnum}`);
+          return this.market.getCandleSticks(
+            currencyPair,
+            timeSectionStart,
+            timeSectionEnd
+          );
         })
       );
     }
 
     let candleSections: ICandle[][] = [];
     try {
-      for (const requestQueue of sectionPromises) {
-        candleSections = await Promise.all(requestQueue);
-      }
+      candleSections = await Promise.all(sectionPromises);
     } catch (e) {
       throw new Error(e);
     }
@@ -97,6 +89,8 @@ export default class APIMarketConsumer {
         candleSections[x - 1]
       );
     }
+
+    return candleSections;
   }
 
   private generateRequests() {}
