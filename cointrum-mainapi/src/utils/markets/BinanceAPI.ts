@@ -15,6 +15,7 @@ import {
   IAltCurrencies,
   ICycleDurations,
 } from "../../types/exchange";
+import ICurrencyPair from "../../types/ICurrencyPair";
 
 dotenv.config();
 
@@ -23,7 +24,7 @@ const apiSecret = process.env.BINANCE_API_SECRET_KEY;
 
 export const BINANCE_INIT_START_TIME = 1493929128000;
 export const BINANCE_PAGINATION_INTERVAL = 1000;
-export const BINANCE_REQUESTS_PER_MINUTE = 1000;
+export const BINANCE_REQUESTS_PER_MINUTE = 5;
 
 export default class BinanceAPI implements IMarket {
   private client: Binance;
@@ -47,15 +48,13 @@ export default class BinanceAPI implements IMarket {
   }
 
   public async getCandleSticks(
-    basecurrency: IBaseCurrencies,
-    altcurrency: IAltCurrencies,
-    interval: ICycleDurations,
+    currencyPair: ICurrencyPair,
     start?: number,
     end?: number
   ): Promise<ICandle[]> {
     let candleParams = {
-      symbol: `${basecurrency}${altcurrency}`,
-      interval: interval as CandleChartInterval,
+      symbol: `${currencyPair.basecurrency}${currencyPair.altcurrency}`,
+      interval: currencyPair.interval as CandleChartInterval,
       limit: 1000,
     } as CandlesOptions;
 
@@ -85,6 +84,7 @@ export default class BinanceAPI implements IMarket {
 
       return this.convertToICandle(results);
     } catch (e) {
+      console.log(e);
       throw new Error("Failed to Get Results from Binance API");
     }
   }

@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { checkphdsParams } from "../../middleware/checks";
 import PHDSController from "./PHDSController";
 import { IExchanges } from "../../types/exchange";
+import ICurrencyPair from "../../types/ICurrencyPair";
 
 /**
  * @constant phdsController
@@ -18,12 +19,12 @@ export default [
     handler: [
       checkphdsParams,
       async (req: Request, res: Response) => {
-        phdsController = new PHDSController(
-          req.params.exchange as IExchanges,
-          req.query.basecurrency,
-          req.query.altcurrency,
-          req.query.interval
-        );
+        phdsController = new PHDSController({
+          exchange: req.params.exchange as IExchanges,
+          basecurrency: req.query.basecurrency,
+          altcurrency: req.query.altcurrency,
+          interval: req.query.interval,
+        });
         try {
           const phdselements = await phdsController.getPHDS(
             req.query.start,

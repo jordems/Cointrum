@@ -1,44 +1,28 @@
 import GenericController from "../../utils/GenericController";
 import PHDSElement, { IPHDSElement } from "../../models/PHDSElement";
-import BinanceAPI, {
-  BINANCE_INIT_START_TIME,
-} from "../../utils/markets/BinanceAPI";
-import {
-  IBaseCurrencies,
-  IAltCurrencies,
-  ICycleDurations,
-  IExchanges,
-} from "../../types/exchange";
+
 import IMarket from "../../utils/markets/IMarket";
 import subtractTime from "../../utils/math/TimeSubtractor";
 import { IndicatorDecorator } from "../../utils/math/IndicatorDecorator";
 import ICandle from "../../utils/markets/types/ICandle";
-import APILimiter from "../../utils/markets/APILimiter";
+import APIMarketConsumer from "../../utils/markets/APIMarketConsumer";
+import ICurrencyPair from "../../types/ICurrencyPair";
 
 export default class PHDSController extends GenericController<IPHDSElement> {
-  private exchange: IExchanges;
-  private basecurrency: IBaseCurrencies;
-  private altcurrency: IAltCurrencies;
-  private interval: ICycleDurations;
-  constructor(
-    exchange: IExchanges,
-    basecurrency: IBaseCurrencies,
-    altcurrency: IAltCurrencies,
-    interval: ICycleDurations
-  ) {
-    super(PHDSElement(exchange, basecurrency, altcurrency, interval));
+  private currencyPair: ICurrencyPair;
+  constructor(currencyPair: ICurrencyPair) {
+    super(PHDSElement(currencyPair));
 
-    this.exchange = exchange;
-    this.basecurrency = basecurrency;
-    this.altcurrency = altcurrency;
-    this.interval = interval;
+    this.currencyPair = currencyPair;
   }
 
   async getPHDS(start?: number, end?: number): Promise<IPHDSElement[]> {
     // By default set startTime for last interval (current time - interval)
     const currentTime = new Date().getTime(); // in UTC milliseconds
 
-    const startTime = start ? start : subtractTime(currentTime, this.interval);
+    const startTime = start
+      ? start
+      : subtractTime(currentTime, this.currencyPair.interval);
 
     const endTime = end ? end : currentTime;
 
@@ -58,94 +42,10 @@ export default class PHDSController extends GenericController<IPHDSElement> {
         30
       );
       lastKnownDocuments = results.reverse();
-      console.log("He");
-      let marketAPI: IMarket;
-      switch (this.exchange) {
-        case "Binance":
-          try {
-            marketAPI = APILimiter.getInstance(new BinanceAPI());
-          } catch (e) {
-            console.log(e);
-            throw new Error(e);
-          }
-          break;
-        default:
-          throw new Error("Requesting Exchange that doesn't exist");
-      }
 
-      let finalresults: IPHDSElement[] = [...results];
-      const timeofLastCandleLoaded = lastKnownDocuments[
-        lastKnownDocuments.length - 1
-      ]
-        ? lastKnownDocuments[lastKnownDocuments.length - 1].closeTime
-        : marketAPI.getInitialStartTime();
-      const PAGINATION_LIMIT = marketAPI.getPaginationInterval();
-      const TIME_DIFF = endTime - timeofLastCandleLoaded;
-      const NUM_CYCLES = TIME_DIFF / (60000 * PAGINATION_LIMIT);
-
-      let sectionPromises: Promise<ICandle[]>[] = [];
-
-      // Get all Results from market API
-      for (let x = 0; x < NUM_CYCLES; x++) {
-        sectionPromises.push(
-          new Promise(async (res, rej) => {
-            const timeSectionStart =
-              timeofLastCandleLoaded + x * 60000 * PAGINATION_LIMIT;
-            const timeSectionEnd =
-              timeofLastCandleLoaded + (x + 1) * 60000 * PAGINATION_LIMIT - 1;
-
-            console.log(
-              `cycle ${x}: TIME:${timeSectionStart}-${timeSectionEnd}`
-            );
-
-            marketAPI
-              .getCandleSticks(
-                this.basecurrency,
-                this.altcurrency,
-                this.interval,
-                timeSectionStart,
-                timeSectionEnd
-              )
-              .then((candles) => {
-                console.log(
-                  `cycle ${x}: FINISHED getting Candles ${candles.length}`
-                );
-                res(candles);
-              })
-              .catch((e) => {
-                rej(e);
-              });
-          })
-        );
-      }
-
-      let candleSections: ICandle[][] = [];
-      try {
-        candleSections = await Promise.all(sectionPromises);
-      } catch (e) {
-        throw new Error(e);
-      }
-
-      candleSections[0] = IndicatorDecorator(candleSections[0]);
-      for (let x = 1; x < candleSections.length; x++) {
-        console.log(`cycle ${x - 1}: Finished Decorating Indicators`);
-        candleSections[x] = IndicatorDecorator(
-          candleSections[x],
-          candleSections[x - 1]
-        );
-      }
-      // candles = IndicatorDecorator(candles, lastKnownDocuments);
-
-      // let phdsdocs = [];
-
-      // for (const candle of candles) {
-      //   let phdsdoc = {
-      //     _id: candle.openTime, // ID of document is openTime
-      //     ...candle,
-      //   } as any;
-
-      //   phdsdocs.push(phdsdoc);
-      // }
+      let marketAPIConsumer = APIMarketConsumer.getInstance(
+        this.currencyPair.exchange
+      );
 
       // try {
       //   const section = await this.insertBatch(phdsdocs);
@@ -160,7 +60,10 @@ export default class PHDSController extends GenericController<IPHDSElement> {
       console.log("end");
       if (!start && finalresults.length === 0) {
         // if binance doesn't have any now, pull an earlier interval
-        return this.getPHDS(subtractTime(startTime, this.interval), endTime);
+        return this.getPHDS(
+          subtractTime(startTime, this.currencyPair.interval),
+          endTime
+        );
       } else {
         return finalresults.filter((ele) => ele.openTime >= startTime);
       }
@@ -196,7 +99,9 @@ export default class PHDSController extends GenericController<IPHDSElement> {
     let currentValue = phdselements[0];
 
     // Check for Missing Zone from Start to first Element
-    if (start < subtractTime(currentValue.openTime, this.interval)) {
+    if (
+      start < subtractTime(currentValue.openTime, this.currencyPair.interval)
+    ) {
       untouchedZones.push([start, currentValue.openTime - 1]);
     }
 
@@ -216,7 +121,10 @@ export default class PHDSController extends GenericController<IPHDSElement> {
     }
 
     // Add Section from after last PHDS Element to `end`
-    if (end && currentValue.closeTime < subtractTime(end, this.interval)) {
+    if (
+      end &&
+      currentValue.closeTime < subtractTime(end, this.currencyPair.interval)
+    ) {
       untouchedZones.push([currentValue.closeTime + 1, end - 1]);
     }
 
