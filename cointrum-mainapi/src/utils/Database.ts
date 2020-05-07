@@ -14,8 +14,8 @@ dotenv.config();
 */
 
 const serverurl = process.env.DB_URL;
-const user = process.env.DB_USER;
-const password = process.env.DB_PASS;
+// const user = process.env.DB_USER;
+// const password = process.env.DB_PASS;
 
 export const connectDB = async () => {
   try {
@@ -25,7 +25,7 @@ export const connectDB = async () => {
       useFindAndModify: false,
       useUnifiedTopology: true,
     };
-    await connect(`mongodb+srv://${user}:${password}@${serverurl}`, options);
+    await connect(`mongodb://${serverurl}`, options);
 
     require("mongoose").Promise = global.Promise;
   } catch (err) {

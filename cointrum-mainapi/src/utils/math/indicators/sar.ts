@@ -1,34 +1,38 @@
 import { IBaseIndicator } from "./IBaseIndicator";
-import ICandle, { ICandleAdapter } from "../../markets/types/ICandle";
+import ICandle, {
+  ICandleAdapter,
+  ArrayICandleAdapter,
+} from "../../markets/types/ICandle";
 import { IPHDSElement } from "../../../models/PHDSElement";
 
 export const sar: IBaseIndicator = (candles, lastknownDocuments) => {
   let results = [...candles];
 
-  results = sarAlgo(candles, lastknownDocuments);
+  const prevCandles = ArrayICandleAdapter(lastknownDocuments);
+
+  results = sarAlgo(candles, prevCandles);
 
   return results;
 };
 
 export function sarAlgo(
   candles: ICandle[],
-  lastknownDocuments?: IPHDSElement[]
+  prevCandles?: ICandle[]
 ): ICandle[] {
   // Convert lastknownDocuments to type ICandle
-  let lastknownCandles: ICandle[] = [];
-  if (lastknownDocuments) {
-    for (const phdselement of lastknownDocuments) {
-      lastknownCandles.push(ICandleAdapter(phdselement));
-    }
-  }
+  let lastknownCandles: ICandle[] = prevCandles ? prevCandles : [];
   let results = [...candles];
 
+  if (candles.length === 0) {
+    return [];
+  }
+
   if (lastknownCandles.length === 0) {
-    results[0].PSAR_EP = NaN;
-    results[0].PSAR_ACC = NaN;
-    results[0].PSAR_INIT = NaN;
+    results[0].PSAR_EP = -1;
+    results[0].PSAR_ACC = -1;
+    results[0].PSAR_INIT = -1;
     results[0].PSAR_TREND = "Falling";
-    results[0].PSAR = NaN;
+    results[0].PSAR = -1;
 
     // initial PSAR
     let prevAF: number = 0.02;
@@ -38,7 +42,7 @@ export function sarAlgo(
     let prevDif: number = (prevSAR - prevEP) * prevAF;
     results[1].PSAR_EP = prevEP;
     results[1].PSAR_ACC = prevAF;
-    results[1].PSAR_INIT = NaN;
+    results[1].PSAR_INIT = -1;
     results[1].PSAR_TREND = prevState;
     results[1].PSAR = prevSAR;
 
@@ -125,13 +129,14 @@ export function sarAlgo(
 
     return results;
   } else {
+    const lastCandle = lastknownCandles[lastknownCandles.length - 1];
     // initial PSAR
-    let prevAF = lastknownCandles[0].PSAR_ACC;
+    let prevAF = lastCandle.PSAR_ACC;
 
-    let prevEP = lastknownCandles[0].PSAR_EP;
-    let prevSAR = lastknownCandles[0].PSAR_ACC;
+    let prevEP = lastCandle.PSAR_EP;
+    let prevSAR = lastCandle.PSAR_ACC;
 
-    let prevState = lastknownCandles[0].PSAR_TREND;
+    let prevState = lastCandle.PSAR_TREND;
 
     // If prev value doesn't have information, assume last documents are badinput
     if (
@@ -152,7 +157,11 @@ export function sarAlgo(
     let State: "Rising" | "Falling" = "Falling";
     let Dif: number = 0;
 
-    const fulllist = [lastknownCandles[1], lastknownCandles[0], ...candles];
+    const fulllist = [
+      lastknownCandles[lastknownCandles.length - 2],
+      lastCandle,
+      ...candles,
+    ];
 
     for (let x = 2; x < fulllist.length; x++) {
       // remaining psars

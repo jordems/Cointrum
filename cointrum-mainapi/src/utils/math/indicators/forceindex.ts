@@ -1,11 +1,16 @@
 import { IBaseIndicator } from "./IBaseIndicator";
-import ICandle, { ICandleAdapter } from "../../markets/types/ICandle";
+import ICandle, {
+  ICandleAdapter,
+  ArrayICandleAdapter,
+} from "../../markets/types/ICandle";
 import { IPHDSElement } from "../../../models/PHDSElement";
 
 export const forceindex: IBaseIndicator = (candles, lastknownDocuments) => {
   let tcandles = [...candles];
 
-  const forceidx13values = forceindex13Algo(candles, lastknownDocuments);
+  const prevCandles = ArrayICandleAdapter(lastknownDocuments);
+
+  const forceidx13values = forceindex13Algo(candles, prevCandles);
 
   for (let x = 0; x < tcandles.length; x++) {
     tcandles[x].forceindex13 = forceidx13values[x];
@@ -16,17 +21,13 @@ export const forceindex: IBaseIndicator = (candles, lastknownDocuments) => {
 
 export function forceindex13Algo(
   candles: ICandle[],
-  lastknownDocuments?: IPHDSElement[]
+  prevCandles?: ICandle[]
 ): number[] {
   let resultingemaValues: number[] = [];
   // Convert lastknownDocuments to type ICandle
-  let lastknownCandles: ICandle[] = [];
-  if (lastknownDocuments) {
-    for (const phdselement of lastknownDocuments) {
-      lastknownCandles.push(ICandleAdapter(phdselement));
-    }
-  }
-  let fullist = [...[...lastknownCandles].reverse(), ...candles];
+  let lastknownCandles: ICandle[] = prevCandles ? prevCandles : [];
+
+  let fullist = [...lastknownCandles, ...candles];
 
   let idx = 0;
   let prevF13Ema;
@@ -35,7 +36,7 @@ export function forceindex13Algo(
   if (lastknownCandles.length === 0) {
     // Fill first values with invalue ema
     for (idx = 0; idx < 13; idx++) {
-      resultingemaValues.push(NaN);
+      resultingemaValues.push(-1);
     }
     // Generate first forceema13 with sma of f1's
 
@@ -56,10 +57,10 @@ export function forceindex13Algo(
       prevF13Ema = f13ema;
     }
   } else {
-    let tema = lastknownCandles[0].forceindex13;
+    let tema = lastknownCandles[lastknownCandles.length - 1].forceindex13;
 
     if (!tema) {
-      throw new Error("Error Getting prev Values for ForceIdx13");
+      tema = -1;
     }
     idx = lastknownCandles.length - 1;
 

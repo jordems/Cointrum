@@ -1,131 +1,94 @@
 import GenericController from "../../utils/GenericController";
 import PHDSElement, { IPHDSElement } from "../../models/PHDSElement";
-import BinanceAPI from "../../utils/markets/BinanceAPI";
-import {
-  IBaseCurrencies,
-  IAltCurrencies,
-  ICycleDurations,
-  IExchanges,
-} from "../../types/exchange";
+
 import IMarket from "../../utils/markets/IMarket";
 import subtractTime from "../../utils/math/TimeSubtractor";
-import { ema } from "../../utils/math/indicators/ema";
-import { atr } from "../../utils/math/indicators/atr";
-import { bollingerband } from "../../utils/math/indicators/bollingerband";
-import { elderray } from "../../utils/math/indicators/elderray";
-import { forceindex } from "../../utils/math/indicators/forceindex";
-import { macd } from "../../utils/math/indicators/macd";
-import { IBaseIndicator } from "../../utils/math/indicators/IBaseIndicator";
-import { rsi } from "../../utils/math/indicators/rsi";
-import { sar } from "../../utils/math/indicators/sar";
+import { IndicatorDecorator } from "../../utils/math/IndicatorDecorator";
+import ICandle from "../../utils/markets/types/ICandle";
+import APIMarketConsumer from "../../utils/markets/APIMarketConsumer";
+import ICurrencyPair from "../../types/ICurrencyPair";
 
 export default class PHDSController extends GenericController<IPHDSElement> {
-  private exchange: IExchanges;
-  private basecurrency: IBaseCurrencies;
-  private altcurrency: IAltCurrencies;
-  private interval: ICycleDurations;
-  constructor(
-    exchange: IExchanges,
-    basecurrency: IBaseCurrencies,
-    altcurrency: IAltCurrencies,
-    interval: ICycleDurations
-  ) {
-    super(PHDSElement(exchange, basecurrency, altcurrency, interval));
+  private currencyPair: ICurrencyPair;
+  constructor(currencyPair: ICurrencyPair) {
+    super(PHDSElement(currencyPair));
 
-    this.exchange = exchange;
-    this.basecurrency = basecurrency;
-    this.altcurrency = altcurrency;
-    this.interval = interval;
+    this.currencyPair = currencyPair;
   }
 
   async getPHDS(start?: number, end?: number): Promise<IPHDSElement[]> {
     // By default set startTime for last interval (current time - interval)
     const currentTime = new Date().getTime(); // in UTC milliseconds
 
-    let startTime = start ? start : subtractTime(currentTime, this.interval);
+    const startTime = start
+      ? start
+      : subtractTime(currentTime, this.currencyPair.interval);
+
+    const endTime = end ? end : currentTime;
 
     // First check if current Info is in db
-    const results = await this.getExistingDBResults(startTime, end);
+    const results = await this.getExistingDBResults(startTime, endTime);
 
     // Check if there is any missing zones in data
-    let missingZones = this.findMissingZones(
-      results,
-      currentTime,
-      startTime,
-      end
-    );
+    let missingZones = this.findMissingZones(results, startTime, endTime);
 
     if (missingZones.length === 0) {
-      // IF we have no missing zones return
+      console.log("Have all required Results");
       return results;
     } else {
       // ELSE Fill mongo with data upto and including current current query. Then return current query
+      let lastKnownDocuments = await this.queryDocuments({}, { _id: -1 }, 30);
+      lastKnownDocuments = lastKnownDocuments.reverse();
 
-      const lastKnownDocuments = await this.queryDocuments(
-        {},
-        { openTime: -1 },
-        30
+      let marketAPIConsumer = APIMarketConsumer.getInstance(
+        this.currencyPair.exchange
       );
 
-      let marketAPI: IMarket;
-      switch (this.exchange) {
-        case "Binance":
-          marketAPI = new BinanceAPI();
-          break;
-        default:
-          throw new Error("Requesting Exchange that doesn't exist");
-      }
+      try {
+        const candleSections = await marketAPIConsumer.findSectionfromHistoricalData(
+          this.currencyPair,
+          endTime,
+          lastKnownDocuments
+        );
 
-      let freshresults: IPHDSElement[] = [...results];
+        let finalresults: IPHDSElement[] = [...results];
 
-      let candles = await marketAPI.getCandleSticks(
-        this.basecurrency,
-        this.altcurrency,
-        this.interval,
-        start,
-        end,
-        lastKnownDocuments[0]
-      );
+        //let sectionPromises: Promise<IPHDSElement[]>[] = [];
 
-      // Add Indicators to data
-      const indicators = [
-        atr,
-        bollingerband,
-        elderray,
-        ema,
-        forceindex,
-        macd,
-        rsi,
-        sar,
-      ];
-      for (const indicator of indicators) {
-        candles = indicator(candles, lastKnownDocuments);
-      }
+        for (let x = 0; x < candleSections.length; x++) {
+          let phdsSection: IPHDSElement[] = [];
 
-      let docPromises: Promise<IPHDSElement>[] = [];
+          for (const candle of candleSections[x]) {
+            phdsSection.push({
+              _id: candle.openTime,
+              ...candle,
+            } as any);
+          }
+          console.log("inserting batch", x);
+          const section = await this.insertBatch(phdsSection);
 
-      for (const candle of candles) {
-        let phdsdoc = {
-          _id: candle.openTime, // ID of document is openTime
-          ...candle,
-        } as any;
+          if (section[0] && section[0].openTime > startTime) {
+            finalresults = [...finalresults, ...section];
+          }
+        }
 
-        // Add Indicators
+        //const sections = await Promise.all(sectionPromises);
 
-        docPromises.push(this.createDocument(phdsdoc));
-      }
-
-      let tresults = await Promise.all(docPromises);
-      freshresults = [...freshresults, ...tresults];
-
-      // Not with additional zones added, Resort the result array
-      freshresults.sort((a, b) => a._id - b._id);
-
-      if (!start && freshresults.length === 0) {
-        // if binance doesn't have any now, pull an earlier interval
-        return this.getPHDS(subtractTime(startTime, this.interval), end);
-      } else {
-        return freshresults;
+        // Not with additional zones added, Resort the result array
+        //freshresults.sort((a, b) => a._id - b._id);
+        console.log("end");
+        if (!start && finalresults.length === 0) {
+          // if binance doesn't have any now, pull an earlier interval
+          return this.getPHDS(
+            subtractTime(startTime, this.currencyPair.interval),
+            endTime
+          );
+        } else {
+          return finalresults;
+        }
+      } catch (e) {
+        console.log(e);
+        throw new Error(e);
       }
     }
   }
@@ -147,12 +110,11 @@ export default class PHDSController extends GenericController<IPHDSElement> {
 
   findMissingZones(
     phdselements: IPHDSElement[],
-    currentTime: number,
     start: number,
-    end?: number
+    end: number
   ): Array<[number, number]> {
     if (phdselements.length === 0) {
-      return [[start, currentTime]];
+      return [[start, end]];
     }
 
     let untouchedZones: Array<[number, number]> = [];
@@ -160,7 +122,9 @@ export default class PHDSController extends GenericController<IPHDSElement> {
     let currentValue = phdselements[0];
 
     // Check for Missing Zone from Start to first Element
-    if (start < subtractTime(currentValue.openTime, this.interval)) {
+    if (
+      start < subtractTime(currentValue.openTime, this.currencyPair.interval)
+    ) {
       untouchedZones.push([start, currentValue.openTime - 1]);
     }
 
@@ -181,13 +145,8 @@ export default class PHDSController extends GenericController<IPHDSElement> {
 
     // Add Section from after last PHDS Element to `end`
     if (
-      !end &&
-      currentValue.closeTime < subtractTime(currentTime, this.interval)
-    ) {
-      untouchedZones.push([currentValue.closeTime + 1, currentTime - 1]);
-    } else if (
       end &&
-      currentValue.closeTime < subtractTime(end, this.interval)
+      currentValue.closeTime < subtractTime(end, this.currencyPair.interval)
     ) {
       untouchedZones.push([currentValue.closeTime + 1, end - 1]);
     }

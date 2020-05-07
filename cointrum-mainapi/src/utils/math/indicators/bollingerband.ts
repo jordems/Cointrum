@@ -1,33 +1,31 @@
 import { IBaseIndicator } from "./IBaseIndicator";
-import ICandle, { ICandleAdapter } from "../../markets/types/ICandle";
+import ICandle, { ArrayICandleAdapter } from "../../markets/types/ICandle";
 import { smaAlgo } from "./sma";
 import { std } from "../std";
-import { IPHDSElement } from "../../../models/PHDSElement";
 
 export const bollingerband: IBaseIndicator = (candles, lastknownDocuments) => {
   let tcandles = [...candles];
 
-  tcandles = bollingerbandAlgo(tcandles, lastknownDocuments);
+  const prevCandles = ArrayICandleAdapter(lastknownDocuments);
+
+  tcandles = bollingerbandAlgo(tcandles, prevCandles);
 
   return tcandles;
 };
 
 export function bollingerbandAlgo(
   candles: ICandle[],
-  lastknownDocuments?: IPHDSElement[]
+  prevCandles?: ICandle[]
 ): ICandle[] {
-  // Convert lastknownDocuments to type ICandle
-  let lastknownCandles: ICandle[] = [];
-  if (lastknownDocuments) {
-    for (const phdselement of lastknownDocuments) {
-      lastknownCandles.push(ICandleAdapter(phdselement));
-    }
-  }
   // Reverse Candles as it's backwards to start
-  let fullist = [...lastknownCandles.reverse(), ...candles];
+  let fullist = [...candles];
+
+  if (prevCandles) {
+    fullist = [...prevCandles, ...candles];
+  }
 
   let startingidx =
-    lastknownCandles.length === 0 ? 20 : lastknownCandles.length;
+    prevCandles && prevCandles.length > 0 ? prevCandles.length : 20;
 
   for (let x = startingidx; x < fullist.length; x++) {
     const prev20 = fullist.slice(x - 20, x);
@@ -44,5 +42,9 @@ export function bollingerbandAlgo(
     fullist[x].BBupper = sma20 + std(closingPrices) * 2;
   }
 
-  return fullist.slice(lastknownCandles.length);
+  if (prevCandles) {
+    return fullist.slice(prevCandles.length);
+  } else {
+    return fullist;
+  }
 }

@@ -5,8 +5,10 @@ import {
   IAltCurrencies,
   ICycleDurations,
 } from "../types/exchange";
+import ICurrencyPair from "../types/ICurrencyPair";
 
 export interface IPHDSElement extends Document {
+  discriminator: "IPHDSELEMENT";
   openTime: number;
   open: number;
   high: number;
@@ -42,7 +44,7 @@ export interface IPHDSElement extends Document {
   PSAR_EP: number;
   PSAR_ACC: number;
   PSAR_INIT: number;
-  PSAR_TREND: string;
+  PSAR_TREND: "Falling" | "Rising";
   PSAR: number;
 }
 
@@ -154,14 +156,9 @@ const PHDSElementSchema = new Schema({
   },
 });
 
-const PHDSElement = (
-  exchange: IExchanges,
-  basecurrency: IBaseCurrencies,
-  altcurrency: IAltCurrencies,
-  interval: ICycleDurations
-): Model<IPHDSElement> => {
+const PHDSElement = (currencyPair: ICurrencyPair): Model<IPHDSElement> => {
   return model(
-    `${exchange}:${basecurrency}:${altcurrency}:${interval}:`,
+    `${currencyPair.exchange}:${currencyPair.basecurrency}:${currencyPair.altcurrency}:${currencyPair.interval}:`,
     PHDSElementSchema
   );
 };

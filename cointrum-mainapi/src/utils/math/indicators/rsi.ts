@@ -1,27 +1,27 @@
 import { IBaseIndicator } from "./IBaseIndicator";
-import ICandle, { ICandleAdapter } from "../../markets/types/ICandle";
-import { IPHDSElement } from "../../../models/PHDSElement";
+import ICandle, { ArrayICandleAdapter } from "../../markets/types/ICandle";
 
 export const rsi: IBaseIndicator = (candles, lastknownDocuments) => {
   let results = [...candles];
 
-  results = rsiAlgo(candles, lastknownDocuments);
+  const prevCandles = ArrayICandleAdapter(lastknownDocuments);
+
+  results = rsiAlgo(candles, prevCandles);
 
   return results;
 };
 
 export function rsiAlgo(
   candles: ICandle[],
-  lastknownDocuments?: IPHDSElement[]
+  prevCandles?: ICandle[]
 ): ICandle[] {
   // Convert lastknownDocuments to type ICandle
-  let lastknownCandles: ICandle[] = [];
-  if (lastknownDocuments) {
-    for (const phdselement of lastknownDocuments) {
-      lastknownCandles.push(ICandleAdapter(phdselement));
-    }
-  }
+  let lastknownCandles: ICandle[] = prevCandles ? prevCandles : [];
   let results = [...candles];
+
+  if (candles.length === 0) {
+    return [];
+  }
 
   let avggain: number;
   let avgloss: number;
@@ -30,9 +30,9 @@ export function rsiAlgo(
 
   if (lastknownCandles.length === 0) {
     for (let x = 0; x < 13; x++) {
-      results[x].RSI14 = NaN;
-      results[x].RSIGAIN = NaN;
-      results[x].RSILOSS = NaN;
+      results[x].RSI14 = -1;
+      results[x].RSIGAIN = -1;
+      results[x].RSILOSS = -1;
     }
 
     const elements = results.slice(0, 14);
@@ -62,14 +62,16 @@ export function rsiAlgo(
       prevavgloss = avgloss;
     }
   } else {
-    prevavggain = lastknownCandles[0].RSIGAIN ? lastknownCandles[0].RSIGAIN : 0;
-    prevavgloss = lastknownCandles[0].RSILOSS ? lastknownCandles[0].RSILOSS : 0;
+    const lastCandle = lastknownCandles[lastknownCandles.length - 1];
+
+    prevavggain = lastCandle.RSIGAIN ? lastCandle.RSIGAIN : -1;
+    prevavgloss = lastCandle.RSILOSS ? lastCandle.RSILOSS : -1;
 
     let currentGain =
-      parseFloat(candles[0].close) - parseFloat(lastknownCandles[0].close);
+      parseFloat(candles[0].close) - parseFloat(lastCandle.close);
     currentGain = currentGain < 0 ? 0 : currentGain;
     let currentLoss =
-      parseFloat(candles[0].close) - parseFloat(lastknownCandles[0].close);
+      parseFloat(candles[0].close) - parseFloat(lastCandle.close);
     currentLoss = currentLoss > 0 ? 0 : Math.abs(currentLoss);
 
     avggain = (prevavggain * 13 + currentGain) / 14;

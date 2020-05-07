@@ -6,15 +6,15 @@ import {
 } from "../../types/exchange";
 import { ReconnectingWebSocketHandler, Candle } from "binance-api-node";
 import { IPHDSElement } from "../../models/PHDSElement";
+import ICurrencyPair from "../../types/ICurrencyPair";
 
 export default interface IMarket {
+  getMarketName(): string;
+  getRequestsPerMinute(): number;
   getCandleSticks(
-    basecurrency: IBaseCurrencies,
-    altcurrency: IAltCurrencies,
-    interval: ICycleDurations,
+    currencyPair: ICurrencyPair,
     start?: number,
-    end?: number,
-    lastknowndocument?: IPHDSElement
+    end?: number
   ): Promise<ICandle[]>;
   getLiveCandleSocket(
     basecurrency: IBaseCurrencies,
@@ -22,4 +22,7 @@ export default interface IMarket {
     interval: ICycleDurations,
     callback: (ticker: Candle) => void
   ): ReconnectingWebSocketHandler;
+
+  getInitialStartTime(): number;
+  getPaginationInterval(): number;
 }

@@ -1,26 +1,24 @@
 import { IBaseIndicator } from "./IBaseIndicator";
-import ICandle, { ICandleAdapter } from "../../markets/types/ICandle";
+import ICandle, { ArrayICandleAdapter } from "../../markets/types/ICandle";
 import { emaAlgo } from "./ema";
-import { IPHDSElement } from "../../../models/PHDSElement";
 
 export const elderray: IBaseIndicator = (candles, lastknownDocuments) => {
   let tcandles = [...candles];
 
-  tcandles = elderrayAlgo(candles, lastknownDocuments);
+  const prevCandles = ArrayICandleAdapter(lastknownDocuments);
+
+  tcandles = elderrayAlgo(candles, prevCandles);
 
   return tcandles;
 };
 
-function elderrayAlgo(
-  candles: ICandle[],
-  lastknownDocuments?: IPHDSElement[]
-): ICandle[] {
-  let ema13elements = emaAlgo(13, [...candles], lastknownDocuments);
+function elderrayAlgo(candles: ICandle[], prevCandles?: ICandle[]): ICandle[] {
+  let ema13elements = emaAlgo(13, [...candles], prevCandles);
 
   let results = [...candles];
   for (let x = 0; x < candles.length; x++) {
-    if (ema13elements[x] === NaN) {
-      results[x].ElderRay = [NaN, NaN];
+    if (ema13elements[x] === -1) {
+      results[x].ElderRay = [-1, -1];
     } else {
       results[x].ElderRay = [
         parseFloat(results[x].high) - ema13elements[x],

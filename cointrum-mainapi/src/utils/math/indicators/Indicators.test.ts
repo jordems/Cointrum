@@ -26,6 +26,14 @@ describe("Indicator Calculation Tests:", () => {
 
     const resultingElements = atr(lElements);
 
+    // Get atr's for /wlastknown test
+    // for (const lk of lknown.reverse()) {
+    //   const r = resultingElements.filter(
+    //     (ele) => ele.openTime === lk.openTime
+    //   )[0];
+    //   console.log(r.openTime, "\natr14: " + r.atr14 + ",\n");
+    // }
+
     const checkingResults = resultingElements.splice(
       resultingElements.length - 2
     );

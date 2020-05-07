@@ -37,6 +37,16 @@ export default class GenericController<T extends Document> {
     return newDocument.save();
   }
 
+  public insertBatch(documentsData: T[]) {
+    // let docs: T[] = [];
+
+    // for (const tdoc of documentsData) {
+    //   docs.push(new this.model(tdoc));
+    // }
+
+    return this.model.insertMany(documentsData);
+  }
+
   public getDocumentbyId(docid: string) {
     return this.model.findById(docid);
   }

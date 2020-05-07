@@ -1,24 +1,25 @@
 import { IBaseIndicator } from "./IBaseIndicator";
-import ICandle from "../../markets/types/ICandle";
+import ICandle, { ArrayICandleAdapter } from "../../markets/types/ICandle";
 import { emaAlgo } from "./ema";
-import { IPHDSElement } from "../../../models/PHDSElement";
 
 export const macd: IBaseIndicator = (candles, lastknownDocuments) => {
   let tcandles = [...candles];
 
-  tcandles = macdAlgo(candles, lastknownDocuments);
+  const prevCandles = ArrayICandleAdapter(lastknownDocuments);
+
+  tcandles = macdAlgo(candles, prevCandles);
 
   return tcandles;
 };
 
 export function macdAlgo(
   candles: ICandle[],
-  lastknownDocuments?: IPHDSElement[]
+  prevCandles?: ICandle[]
 ): ICandle[] {
   let result = [...candles];
 
-  const ema12s = emaAlgo(12, candles, lastknownDocuments);
-  const ema26s = emaAlgo(26, candles, lastknownDocuments);
+  const ema12s = emaAlgo(12, candles, prevCandles);
+  const ema26s = emaAlgo(26, candles, prevCandles);
 
   for (let x = 0; x < result.length; x++) {
     result[x].MACD = ema12s[x] - ema26s[x];

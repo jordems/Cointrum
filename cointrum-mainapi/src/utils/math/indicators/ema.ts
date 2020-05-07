@@ -1,13 +1,14 @@
 import { IBaseIndicator } from "./IBaseIndicator";
-import ICandle, { ICandleAdapter } from "../../markets/types/ICandle";
+import ICandle, { ArrayICandleAdapter } from "../../markets/types/ICandle";
 import { smaAlgo } from "./sma";
-import { IPHDSElement } from "../../../models/PHDSElement";
 
 export const ema: IBaseIndicator = (candles, lastknownDocuments) => {
   let results = [...candles];
 
-  const ema26s = emaAlgo(26, results, lastknownDocuments);
-  const ema12s = emaAlgo(12, results, lastknownDocuments);
+  const prevCandles = ArrayICandleAdapter(lastknownDocuments);
+
+  const ema26s = emaAlgo(26, results, prevCandles);
+  const ema12s = emaAlgo(12, results, prevCandles);
 
   for (let x = 0; x < results.length; x++) {
     results[x].ema26 = ema26s[x];
@@ -20,18 +21,13 @@ export const ema: IBaseIndicator = (candles, lastknownDocuments) => {
 export function emaAlgo(
   windowSize: 12 | 13 | 26,
   candles: ICandle[],
-  lastknownDocuments?: IPHDSElement[]
+  prevCandles?: ICandle[]
 ): number[] {
   let resultingemaValues: number[] = [];
   // Convert lastknownDocuments to type ICandle
-  let lastknownCandles: ICandle[] = [];
-  if (lastknownDocuments) {
-    for (const phdselement of lastknownDocuments) {
-      lastknownCandles.push(ICandleAdapter(phdselement));
-    }
-  }
-  let fullist = [...[...lastknownCandles].reverse(), ...candles];
+  let lastknownCandles: ICandle[] = prevCandles ? prevCandles : [];
 
+  let fullist = [...lastknownCandles, ...candles];
   let idx = 0;
   let prevEma;
   const k = 2 / (windowSize + 1);
@@ -39,7 +35,7 @@ export function emaAlgo(
   if (lastknownCandles.length === 0) {
     // Fill first values with invalue ema
     for (idx = 0; idx < windowSize - 1; idx++) {
-      resultingemaValues.push(NaN);
+      resultingemaValues.push(-1);
     }
     // Generate first ema with sma
     prevEma = smaAlgo(fullist.slice(0, windowSize));
@@ -54,15 +50,16 @@ export function emaAlgo(
     }
   } else {
     let tema;
+    const lastCandle = lastknownCandles[lastknownCandles.length - 1];
     if (windowSize === 12) {
-      tema = lastknownCandles[0].ema12;
+      tema = lastCandle.ema12;
     } else if (windowSize === 13) {
-      tema = lastknownCandles[0].ema13;
+      tema = lastCandle.ema13;
     } else if (windowSize === 26) {
-      tema = lastknownCandles[0].ema26;
+      tema = lastCandle.ema26;
     }
     if (!tema) {
-      throw new Error("Error Getting prev Values for EMA" + windowSize);
+      tema = -1;
     }
 
     prevEma = parseFloat(fullist[idx].close) * k + tema * (1 - k);
