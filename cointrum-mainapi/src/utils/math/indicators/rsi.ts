@@ -19,6 +19,10 @@ export function rsiAlgo(
   let lastknownCandles: ICandle[] = prevCandles ? prevCandles : [];
   let results = [...candles];
 
+  if (candles.length === 0) {
+    return [];
+  }
+
   let avggain: number;
   let avgloss: number;
   let prevavggain: number;
@@ -60,8 +64,8 @@ export function rsiAlgo(
   } else {
     const lastCandle = lastknownCandles[lastknownCandles.length - 1];
 
-    prevavggain = lastCandle.RSIGAIN ? lastCandle.RSIGAIN : 0;
-    prevavgloss = lastCandle.RSILOSS ? lastCandle.RSILOSS : 0;
+    prevavggain = lastCandle.RSIGAIN ? lastCandle.RSIGAIN : -1;
+    prevavgloss = lastCandle.RSILOSS ? lastCandle.RSILOSS : -1;
 
     let currentGain =
       parseFloat(candles[0].close) - parseFloat(lastCandle.close);

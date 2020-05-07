@@ -59,7 +59,7 @@ export function emaAlgo(
       tema = lastCandle.ema26;
     }
     if (!tema) {
-      throw new Error("Error Getting prev Values for EMA" + windowSize);
+      tema = -1;
     }
 
     prevEma = parseFloat(fullist[idx].close) * k + tema * (1 - k);

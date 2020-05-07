@@ -37,18 +37,15 @@ export default class APIMarketConsumer {
 
   public async findSectionfromHistoricalData(
     currencyPair: ICurrencyPair,
-    startTime: number,
     endTime: number,
-    results: IPHDSElement[],
     lastKnownDocuments: IPHDSElement[]
   ): Promise<ICandle[][]> {
-    let finalresults: IPHDSElement[] = [...results];
-
     const timeofLastCandleLoaded = lastKnownDocuments[
       lastKnownDocuments.length - 1
     ]
       ? lastKnownDocuments[lastKnownDocuments.length - 1].closeTime
       : this.market.getInitialStartTime();
+
     const PAGINATION_LIMIT = this.market.getPaginationInterval();
     const TIME_DIFF = endTime - timeofLastCandleLoaded;
     const NUM_REQUESTS = TIME_DIFF / (60000 * PAGINATION_LIMIT);

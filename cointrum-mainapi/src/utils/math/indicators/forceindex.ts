@@ -60,7 +60,7 @@ export function forceindex13Algo(
     let tema = lastknownCandles[lastknownCandles.length - 1].forceindex13;
 
     if (!tema) {
-      throw new Error("Error Getting prev Values for ForceIdx13");
+      tema = -1;
     }
     idx = lastknownCandles.length - 1;
 

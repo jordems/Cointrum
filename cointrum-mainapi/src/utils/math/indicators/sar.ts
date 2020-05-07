@@ -23,6 +23,10 @@ export function sarAlgo(
   let lastknownCandles: ICandle[] = prevCandles ? prevCandles : [];
   let results = [...candles];
 
+  if (candles.length === 0) {
+    return [];
+  }
+
   if (lastknownCandles.length === 0) {
     results[0].PSAR_EP = -1;
     results[0].PSAR_ACC = -1;

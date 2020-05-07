@@ -24,7 +24,10 @@ export function atrAlgo(
 
   if (!prevCandle) {
     if (candles.length < period + 1) {
-      throw new Error("Not enough values to calculate ATR");
+      for (idx = 0; idx < candles.length; idx++) {
+        result[idx].atr14 = -1;
+      }
+      return result;
     }
 
     let Isum = 0;

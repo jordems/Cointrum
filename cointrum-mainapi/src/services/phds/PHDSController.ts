@@ -33,15 +33,12 @@ export default class PHDSController extends GenericController<IPHDSElement> {
     let missingZones = this.findMissingZones(results, startTime, endTime);
 
     if (missingZones.length === 0) {
+      console.log("Have all required Results");
       return results;
     } else {
       // ELSE Fill mongo with data upto and including current current query. Then return current query
-      let lastKnownDocuments = await this.queryDocuments(
-        {},
-        { openTime: -1 },
-        30
-      );
-      lastKnownDocuments = results.reverse();
+      let lastKnownDocuments = await this.queryDocuments({}, { _id: -1 }, 30);
+      lastKnownDocuments = lastKnownDocuments.reverse();
 
       let marketAPIConsumer = APIMarketConsumer.getInstance(
         this.currencyPair.exchange
@@ -50,13 +47,13 @@ export default class PHDSController extends GenericController<IPHDSElement> {
       try {
         const candleSections = await marketAPIConsumer.findSectionfromHistoricalData(
           this.currencyPair,
-          startTime,
           endTime,
-          results,
           lastKnownDocuments
         );
 
         let finalresults: IPHDSElement[] = [...results];
+
+        //let sectionPromises: Promise<IPHDSElement[]>[] = [];
 
         for (let x = 0; x < candleSections.length; x++) {
           let phdsSection: IPHDSElement[] = [];
@@ -67,12 +64,15 @@ export default class PHDSController extends GenericController<IPHDSElement> {
               ...candle,
             } as any);
           }
+          console.log("inserting batch", x);
           const section = await this.insertBatch(phdsSection);
 
-          if (section[0].openTime > startTime) {
+          if (section[0] && section[0].openTime > startTime) {
             finalresults = [...finalresults, ...section];
           }
         }
+
+        //const sections = await Promise.all(sectionPromises);
 
         // Not with additional zones added, Resort the result array
         //freshresults.sort((a, b) => a._id - b._id);
