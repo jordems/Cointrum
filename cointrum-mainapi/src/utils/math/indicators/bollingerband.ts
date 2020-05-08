@@ -3,10 +3,8 @@ import ICandle, { ArrayICandleAdapter } from "../../markets/types/ICandle";
 import { smaAlgo } from "./sma";
 import { std } from "../std";
 
-export const bollingerband: IBaseIndicator = (candles, lastknownDocuments) => {
+export const bollingerband: IBaseIndicator = (candles, prevCandles) => {
   let tcandles = [...candles];
-
-  const prevCandles = ArrayICandleAdapter(lastknownDocuments);
 
   tcandles = bollingerbandAlgo(tcandles, prevCandles);
 
@@ -15,17 +13,15 @@ export const bollingerband: IBaseIndicator = (candles, lastknownDocuments) => {
 
 export function bollingerbandAlgo(
   candles: ICandle[],
-  prevCandles?: ICandle[]
+  prevCandles: ICandle[]
 ): ICandle[] {
-  // Reverse Candles as it's backwards to start
   let fullist = [...candles];
 
   if (prevCandles) {
     fullist = [...prevCandles, ...candles];
   }
 
-  let startingidx =
-    prevCandles && prevCandles.length > 0 ? prevCandles.length : 20;
+  let startingidx = prevCandles.length > 0 ? prevCandles.length : 20;
 
   for (let x = startingidx; x < fullist.length; x++) {
     const prev20 = fullist.slice(x - 20, x);

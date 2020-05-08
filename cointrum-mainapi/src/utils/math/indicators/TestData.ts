@@ -692,7 +692,7 @@ export const lastknown = [
     PSAR_TREND: "Falling",
     atr14: 0.5463881298373148,
   } as IPHDSElement,
-].reverse();
+];
 
 export const queryeddata = [
   {

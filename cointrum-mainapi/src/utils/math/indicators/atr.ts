@@ -1,10 +1,8 @@
 import { IBaseIndicator } from "./IBaseIndicator";
 import ICandle, { ArrayICandleAdapter } from "../../markets/types/ICandle";
 
-export const atr: IBaseIndicator = (candles, lastknownDocuments) => {
+export const atr: IBaseIndicator = (candles, prevCandles) => {
   let tcandles = [...candles];
-
-  const prevCandles = ArrayICandleAdapter(lastknownDocuments);
 
   let prevCandle = prevCandles.length > 0 ? prevCandles[0] : undefined;
 

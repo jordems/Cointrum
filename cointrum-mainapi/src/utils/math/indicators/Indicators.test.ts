@@ -8,7 +8,7 @@ import {
   rsi,
   sar,
 } from "./";
-import ICandle from "../../markets/types/ICandle";
+import ICandle, { ArrayICandleAdapter } from "../../markets/types/ICandle";
 
 import { libElements, lastknown, queryeddata } from "./TestData";
 import { IPHDSElement } from "../../../models/PHDSElement";
@@ -24,7 +24,7 @@ describe("Indicator Calculation Tests:", () => {
   test("ATR: /wo lastknown", () => {
     const EXPECTEDRESULTS = [1.0224958001779982, 0.939496093487598];
 
-    const resultingElements = atr(lElements);
+    const resultingElements = atr(lElements, []);
 
     // Get atr's for /wlastknown test
     // for (const lk of lknown.reverse()) {
@@ -49,7 +49,7 @@ describe("Indicator Calculation Tests:", () => {
   test("ATR: /w lastknown", () => {
     const EXPECTEDRESULTS = [1.0224958001779982, 0.939496093487598];
 
-    const resultingElements = atr(qdata, lknown);
+    const resultingElements = atr(qdata, ArrayICandleAdapter(lknown));
 
     const checkingResults = resultingElements.splice(
       resultingElements.length - 2
@@ -68,7 +68,7 @@ describe("Indicator Calculation Tests:", () => {
     const EXPECTEDRESULTSMIDDLE = [59.52299159999999, 59.53183370000001];
     const EXPECTEDRESULTSUPPER = [61.28661434569879, 61.31111297793432];
 
-    const resultingElements = bollingerband(lElements);
+    const resultingElements = bollingerband(lElements, []);
 
     const checkingResults = resultingElements.splice(
       resultingElements.length - 2
@@ -93,7 +93,7 @@ describe("Indicator Calculation Tests:", () => {
     const EXPECTEDRESULTSMIDDLE = [59.52299159999999, 59.53183370000001];
     const EXPECTEDRESULTSUPPER = [61.28661434569879, 61.31111297793432];
 
-    const resultingElements = bollingerband(qdata, lknown);
+    const resultingElements = bollingerband(qdata, ArrayICandleAdapter(lknown));
 
     const checkingResults = resultingElements.splice(
       resultingElements.length - 2
@@ -117,7 +117,7 @@ describe("Indicator Calculation Tests:", () => {
     const EXPECTEDRESULTSEMA12 = [59.94476154689214, 60.0347980781395];
     const EXPECTEDRESULTSEMA26 = [59.32482846312225, 59.41410035474283];
 
-    const resultingElements = ema(lElements);
+    const resultingElements = ema(lElements, []);
 
     const checkingResults = resultingElements.splice(
       resultingElements.length - 2
@@ -150,7 +150,7 @@ describe("Indicator Calculation Tests:", () => {
     const EXPECTEDRESULTSEMA12 = [59.94476154689214, 60.0347980781395];
     const EXPECTEDRESULTSEMA26 = [59.32482846312225, 59.41410035474283];
 
-    const resultingElements = ema(qdata, lknown);
+    const resultingElements = ema(qdata, ArrayICandleAdapter(lknown));
 
     const checkingResults = resultingElements.splice(
       resultingElements.length - 2
@@ -173,7 +173,7 @@ describe("Indicator Calculation Tests:", () => {
       [0.5477347422930237, 0.14773674229302713],
     ];
 
-    const resultingElements = elderray(lElements);
+    const resultingElements = elderray(lElements, []);
 
     // Get ema's for /wlastknown test
     // for (const lk of lknown.reverse()) {
@@ -201,7 +201,7 @@ describe("Indicator Calculation Tests:", () => {
       [0.5477347422930237, 0.14773674229302713],
     ];
 
-    const resultingElements = elderray(qdata, lknown);
+    const resultingElements = elderray(qdata, ArrayICandleAdapter(lknown));
 
     const checkingResults = resultingElements.splice(
       resultingElements.length - 2
@@ -218,7 +218,7 @@ describe("Indicator Calculation Tests:", () => {
   test("Force Index: /wo lastknown", () => {
     const EXPECTEDRESULTS = [1697836.648590974, 1610737.1114351158];
 
-    const resultingElements = forceindex(lElements);
+    const resultingElements = forceindex(lElements, []);
 
     // Get f13's for /wlastknown test
     // for (const lk of lknown.reverse()) {
@@ -243,7 +243,7 @@ describe("Indicator Calculation Tests:", () => {
   test("Force Index: /w lastknown", () => {
     const EXPECTEDRESULTS = [1697836.648590974, 1610737.1114351158];
 
-    const resultingElements = forceindex(qdata, lknown);
+    const resultingElements = forceindex(qdata, ArrayICandleAdapter(lknown));
 
     const checkingResults = resultingElements.splice(
       resultingElements.length - 2
@@ -260,7 +260,7 @@ describe("Indicator Calculation Tests:", () => {
   test("MACD: /wo lastknown", () => {
     const EXPECTEDRESULTS = [0.6199330837698867, 0.620697723396674];
 
-    const resultingElements = macd(lElements);
+    const resultingElements = macd(lElements, []);
 
     const checkingResults = resultingElements.splice(
       resultingElements.length - 2
@@ -277,7 +277,7 @@ describe("Indicator Calculation Tests:", () => {
   test("MACD: /w lastknown", () => {
     const EXPECTEDRESULTS = [0.6199330837698867, 0.620697723396674];
 
-    const resultingElements = macd(qdata, lknown);
+    const resultingElements = macd(qdata, ArrayICandleAdapter(lknown));
 
     const checkingResults = resultingElements.splice(
       resultingElements.length - 2
@@ -294,7 +294,7 @@ describe("Indicator Calculation Tests:", () => {
   test("RSI: /wo lastknown", () => {
     const EXPECTEDRESULTS = [57.382247207037715, 58.104745849400366];
 
-    const resultingElements = rsi(lElements);
+    const resultingElements = rsi(lElements, []);
 
     // Get RSI's GAIN/LOSS for /wlastknown test
     // for (const lk of lknown.reverse()) {
@@ -322,7 +322,7 @@ describe("Indicator Calculation Tests:", () => {
   test("RSI: /w lastknown", () => {
     const EXPECTEDRESULTS = [57.382247207037715, 58.104745849400366];
 
-    const resultingElements = rsi(qdata, lknown);
+    const resultingElements = rsi(qdata, ArrayICandleAdapter(lknown));
 
     const checkingResults = resultingElements.splice(
       resultingElements.length - 2
@@ -339,7 +339,7 @@ describe("Indicator Calculation Tests:", () => {
   test("SAR: /wo lastknown", () => {
     const EXPECTEDRESULTS = [57.47029081503744, 57.69767324613519];
 
-    const resultingElements = sar(lElements);
+    const resultingElements = sar(lElements, []);
 
     const checkingResults = resultingElements.splice(
       resultingElements.length - 2
@@ -377,7 +377,7 @@ describe("Indicator Calculation Tests:", () => {
   test("SAR: /w lastknown", () => {
     const EXPECTEDRESULTS = [57.47029081503744, 57.69767324613519];
 
-    const resultingElements = sar(qdata, lknown);
+    const resultingElements = sar(qdata, ArrayICandleAdapter(lknown));
 
     const checkingResults = resultingElements.splice(
       resultingElements.length - 2

@@ -1,34 +1,35 @@
 import { IBaseIndicator } from "./IBaseIndicator";
-import ICandle, { ArrayICandleAdapter } from "../../markets/types/ICandle";
+import ICandle from "../../markets/types/ICandle";
 
-export const rsi: IBaseIndicator = (candles, lastknownDocuments) => {
+export const rsi: IBaseIndicator = (candles, prevCandles) => {
   let results = [...candles];
-
-  const prevCandles = ArrayICandleAdapter(lastknownDocuments);
 
   results = rsiAlgo(candles, prevCandles);
 
   return results;
 };
 
-export function rsiAlgo(
-  candles: ICandle[],
-  prevCandles?: ICandle[]
-): ICandle[] {
-  // Convert lastknownDocuments to type ICandle
-  let lastknownCandles: ICandle[] = prevCandles ? prevCandles : [];
+export function rsiAlgo(candles: ICandle[], prevCandles: ICandle[]): ICandle[] {
   let results = [...candles];
-
-  if (candles.length === 0) {
-    return [];
-  }
 
   let avggain: number;
   let avgloss: number;
   let prevavggain: number;
   let prevavgloss: number;
 
-  if (lastknownCandles.length === 0) {
+  if (candles.length === 0) {
+    return [];
+  }
+
+  if (prevCandles.length === 0) {
+    if (candles.length < 14) {
+      for (let x = 0; x < candles.length; x++) {
+        results[x].RSI14 = -1;
+        results[x].RSIGAIN = -1;
+        results[x].RSILOSS = -1;
+      }
+      return results;
+    }
     for (let x = 0; x < 13; x++) {
       results[x].RSI14 = -1;
       results[x].RSIGAIN = -1;
@@ -62,10 +63,14 @@ export function rsiAlgo(
       prevavgloss = avgloss;
     }
   } else {
-    const lastCandle = lastknownCandles[lastknownCandles.length - 1];
+    const lastCandle = prevCandles[prevCandles.length - 1];
 
     prevavggain = lastCandle.RSIGAIN ? lastCandle.RSIGAIN : -1;
     prevavgloss = lastCandle.RSILOSS ? lastCandle.RSILOSS : -1;
+
+    if (prevavggain === -1 || prevavgloss === -1) {
+      return rsiAlgo(candles, []);
+    }
 
     let currentGain =
       parseFloat(candles[0].close) - parseFloat(lastCandle.close);

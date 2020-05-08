@@ -33,7 +33,6 @@ export default class PHDSController extends GenericController<IPHDSElement> {
     let missingZones = this.findMissingZones(results, startTime, endTime);
 
     if (missingZones.length === 0) {
-      console.log("Have all required Results");
       return results;
     } else {
       // ELSE Fill mongo with data upto and including current current query. Then return current query

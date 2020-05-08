@@ -1,10 +1,4 @@
 import { Schema, Document, model, Model } from "mongoose";
-import {
-  IExchanges,
-  IBaseCurrencies,
-  IAltCurrencies,
-  ICycleDurations,
-} from "../types/exchange";
 import ICurrencyPair from "../types/ICurrencyPair";
 
 export interface IPHDSElement extends Document {

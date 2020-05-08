@@ -2,17 +2,15 @@ import { IBaseIndicator } from "./IBaseIndicator";
 import ICandle, { ArrayICandleAdapter } from "../../markets/types/ICandle";
 import { emaAlgo } from "./ema";
 
-export const elderray: IBaseIndicator = (candles, lastknownDocuments) => {
+export const elderray: IBaseIndicator = (candles, prevCandles) => {
   let tcandles = [...candles];
-
-  const prevCandles = ArrayICandleAdapter(lastknownDocuments);
 
   tcandles = elderrayAlgo(candles, prevCandles);
 
   return tcandles;
 };
 
-function elderrayAlgo(candles: ICandle[], prevCandles?: ICandle[]): ICandle[] {
+function elderrayAlgo(candles: ICandle[], prevCandles: ICandle[]): ICandle[] {
   let ema13elements = emaAlgo(13, [...candles], prevCandles);
 
   let results = [...candles];

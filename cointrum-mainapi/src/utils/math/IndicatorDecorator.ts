@@ -8,7 +8,7 @@ import {
   rsi,
   sar,
 } from "../../utils/math/indicators";
-import ICandle from "../markets/types/ICandle";
+import ICandle, { ArrayICandleAdapter } from "../markets/types/ICandle";
 import { IPHDSElement } from "../../models/PHDSElement";
 
 export function IndicatorDecorator(
@@ -16,6 +16,8 @@ export function IndicatorDecorator(
   lastKnownDocuments?: IPHDSElement[] | ICandle[]
 ) {
   let candles = [...inputCandles];
+
+  const prevCandles = ArrayICandleAdapter(lastKnownDocuments);
 
   const indicators = [
     atr,
@@ -28,7 +30,7 @@ export function IndicatorDecorator(
     sar,
   ];
   for (const indicator of indicators) {
-    candles = indicator(candles, lastKnownDocuments);
+    candles = indicator(candles, prevCandles);
   }
 
   return candles;

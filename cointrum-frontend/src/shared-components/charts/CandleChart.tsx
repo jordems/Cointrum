@@ -28,7 +28,7 @@ import { withDeviceRatio } from "react-financial-charts/lib/utils";
 import { lastVisibleItemBasedZoomAnchor } from "react-financial-charts/lib/utils/zoomBehavior";
 import { IOHLCData } from "./lib/IOHLCData";
 import { IChartClickEvent } from "./lib/ChartClickEvent";
-import { ICreateSeed, ILabel } from "models";
+import { ICreateSeed, ILabel, IPHDSElement } from "models";
 
 interface StockChartProps {
   readonly data: IOHLCData[];
@@ -73,17 +73,19 @@ class StockChart extends React.Component<StockChartProps> {
       })
       .accessor((d: any) => d.ema12);
 
-    const ema26 = ema()
+    const ema26_1 = ema()
       .id(2)
       .options({ windowSize: 26 })
       .merge((d: any, c: any) => {
-        d.ema26 = c;
+        d.ema26_1 = c;
       })
-      .accessor((d: any) => d.ema26);
+      .accessor((d: any) => d.ema26_1);
+
+    const newema26Accessor = (d: IOHLCData) => d.ema26;
 
     const elder = elderRay();
 
-    let calculatedData = elder(ema26(ema12(initialData)));
+    let calculatedData = elder(ema26_1(ema12(initialData)));
 
     const { margin, xScaleProvider } = this;
 
@@ -150,7 +152,11 @@ class StockChart extends React.Component<StockChartProps> {
             gridLinesStroke={ChartStyles.gridLinesStroke}
           />
           <CandlestickSeries />
-          <LineSeries yAccessor={ema26.accessor()} stroke={ema26.stroke()} />
+          <LineSeries yAccessor={newema26Accessor} stroke={ema26_1.stroke()} />
+          {/* <LineSeries
+            yAccessor={ema26_1.accessor()}
+            stroke={ema26_1.stroke()}
+          /> */}
           <LineSeries yAccessor={ema12.accessor()} stroke={ema12.stroke()} />
 
           <MouseCoordinateY
@@ -171,10 +177,10 @@ class StockChart extends React.Component<StockChartProps> {
             origin={[8, 24]}
             options={[
               {
-                yAccessor: ema26.accessor(),
+                yAccessor: newema26Accessor,
                 type: "EMA",
-                stroke: ema26.stroke(),
-                windowSize: ema26.options().windowSize,
+                stroke: ema26_1.stroke(),
+                windowSize: ema26_1.options().windowSize,
               },
               {
                 yAccessor: ema12.accessor(),

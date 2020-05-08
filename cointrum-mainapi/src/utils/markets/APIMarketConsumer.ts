@@ -61,7 +61,7 @@ export default class APIMarketConsumer {
 
       sectionPromises.push(
         this.limiter.schedule(() => {
-          console.log(`$Starting request ${++requestnum}`);
+          console.log(`Starting request ${++requestnum}`);
           return this.market.getCandleSticks(
             currencyPair,
             timeSectionStart,
@@ -78,7 +78,10 @@ export default class APIMarketConsumer {
       throw new Error(e);
     }
 
-    candleSections[0] = IndicatorDecorator(candleSections[0]);
+    candleSections[0] = IndicatorDecorator(
+      candleSections[0],
+      lastKnownDocuments
+    );
     for (let x = 1; x < candleSections.length; x++) {
       console.log(`cycle ${x - 1}: Finished Decorating Indicators`);
       candleSections[x] = IndicatorDecorator(

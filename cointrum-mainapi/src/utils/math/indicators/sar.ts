@@ -15,19 +15,21 @@ export const sar: IBaseIndicator = (candles, lastknownDocuments) => {
   return results;
 };
 
-export function sarAlgo(
-  candles: ICandle[],
-  prevCandles?: ICandle[]
-): ICandle[] {
-  // Convert lastknownDocuments to type ICandle
-  let lastknownCandles: ICandle[] = prevCandles ? prevCandles : [];
+export function sarAlgo(candles: ICandle[], prevCandles: ICandle[]): ICandle[] {
   let results = [...candles];
 
-  if (candles.length === 0) {
-    return [];
+  if (candles.length < 2) {
+    for (let x = 0; x < candles.length; x++) {
+      results[x].PSAR_EP = -1;
+      results[x].PSAR_ACC = -1;
+      results[x].PSAR_INIT = -1;
+      results[x].PSAR_TREND = "Falling";
+      results[x].PSAR = -1;
+    }
+    return results;
   }
 
-  if (lastknownCandles.length === 0) {
+  if (prevCandles.length === 0) {
     results[0].PSAR_EP = -1;
     results[0].PSAR_ACC = -1;
     results[0].PSAR_INIT = -1;
@@ -129,7 +131,7 @@ export function sarAlgo(
 
     return results;
   } else {
-    const lastCandle = lastknownCandles[lastknownCandles.length - 1];
+    const lastCandle = prevCandles[prevCandles.length - 1];
     // initial PSAR
     let prevAF = lastCandle.PSAR_ACC;
 
@@ -140,12 +142,15 @@ export function sarAlgo(
 
     // If prev value doesn't have information, assume last documents are badinput
     if (
+      prevAF === -1 ||
       prevAF === undefined ||
+      prevEP === -1 ||
       prevEP === undefined ||
+      prevSAR === -1 ||
       prevSAR === undefined ||
       prevState === undefined
     ) {
-      return sarAlgo(candles);
+      return sarAlgo(candles, []);
     }
 
     let prevDif = (prevSAR - prevEP) * prevAF;
@@ -158,7 +163,7 @@ export function sarAlgo(
     let Dif: number = 0;
 
     const fulllist = [
-      lastknownCandles[lastknownCandles.length - 2],
+      prevCandles[prevCandles.length - 2],
       lastCandle,
       ...candles,
     ];

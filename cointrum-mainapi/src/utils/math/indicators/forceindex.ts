@@ -1,14 +1,8 @@
 import { IBaseIndicator } from "./IBaseIndicator";
-import ICandle, {
-  ICandleAdapter,
-  ArrayICandleAdapter,
-} from "../../markets/types/ICandle";
-import { IPHDSElement } from "../../../models/PHDSElement";
+import ICandle, { ArrayICandleAdapter } from "../../markets/types/ICandle";
 
-export const forceindex: IBaseIndicator = (candles, lastknownDocuments) => {
+export const forceindex: IBaseIndicator = (candles, prevCandles) => {
   let tcandles = [...candles];
-
-  const prevCandles = ArrayICandleAdapter(lastknownDocuments);
 
   const forceidx13values = forceindex13Algo(candles, prevCandles);
 
@@ -21,19 +15,17 @@ export const forceindex: IBaseIndicator = (candles, lastknownDocuments) => {
 
 export function forceindex13Algo(
   candles: ICandle[],
-  prevCandles?: ICandle[]
+  prevCandles: ICandle[]
 ): number[] {
   let resultingemaValues: number[] = [];
-  // Convert lastknownDocuments to type ICandle
-  let lastknownCandles: ICandle[] = prevCandles ? prevCandles : [];
 
-  let fullist = [...lastknownCandles, ...candles];
+  let fullist = [...prevCandles, ...candles];
 
   let idx = 0;
   let prevF13Ema;
   const k = 2 / (13 + 1);
 
-  if (lastknownCandles.length === 0) {
+  if (prevCandles.length === 0) {
     // Fill first values with invalue ema
     for (idx = 0; idx < 13; idx++) {
       resultingemaValues.push(-1);
@@ -57,12 +49,12 @@ export function forceindex13Algo(
       prevF13Ema = f13ema;
     }
   } else {
-    let tema = lastknownCandles[lastknownCandles.length - 1].forceindex13;
+    let tema = prevCandles[prevCandles.length - 1].forceindex13;
 
-    if (!tema) {
-      tema = -1;
+    if (!tema || tema === -1) {
+      return forceindex13Algo(candles, []);
     }
-    idx = lastknownCandles.length - 1;
+    idx = prevCandles.length - 1;
 
     const fi1 =
       (parseFloat(fullist[idx].close) - parseFloat(fullist[idx - 1].close)) *
