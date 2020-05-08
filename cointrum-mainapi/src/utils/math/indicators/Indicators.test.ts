@@ -22,7 +22,8 @@ describe("Indicator Calculation Tests:", () => {
     qdata: ICandle[] = queryeddata;
 
   test("ATR: /wo lastknown", () => {
-    const EXPECTEDRESULTS = [1.0224958001779982, 0.939496093487598];
+    const EXPECTEDRESULTSSTART = [-1, -1];
+    const EXPECTEDRESULTSEND = [1.0224958001779982, 0.939496093487598];
 
     const resultingElements = atr(lElements, []);
 
@@ -33,93 +34,147 @@ describe("Indicator Calculation Tests:", () => {
     //   )[0];
     //   console.log(r.openTime, "\natr14: " + r.atr14 + ",\n");
     // }
-
-    const checkingResults = resultingElements.splice(
+    const checkingStartResults = resultingElements.slice(0, 2);
+    const checkingEndResults = resultingElements.slice(
       resultingElements.length - 2
     );
 
-    let actualResults: number[] = [];
-    for (const ele of checkingResults) {
-      ele.atr14 && actualResults.push(ele.atr14);
+    let actualStartResults: number[] = [];
+    for (const ele of checkingStartResults) {
+      ele.atr14 && actualStartResults.push(ele.atr14);
     }
 
-    expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
+    let actualEndResults: number[] = [];
+    for (const ele of checkingEndResults) {
+      ele.atr14 && actualEndResults.push(ele.atr14);
+    }
+
+    expect(actualStartResults).toStrictEqual(EXPECTEDRESULTSSTART);
+    expect(actualEndResults).toStrictEqual(EXPECTEDRESULTSEND);
   });
 
   test("ATR: /w lastknown", () => {
-    const EXPECTEDRESULTS = [1.0224958001779982, 0.939496093487598];
+    const EXPECTEDRESULTSSTART = [0.5069200540436852, 0.4971959194055236];
+    const EXPECTEDRESULTSEND = [1.0224958001779982, 0.939496093487598];
 
     const resultingElements = atr(qdata, ArrayICandleAdapter(lknown));
 
-    const checkingResults = resultingElements.splice(
+    const checkingStartResults = resultingElements.slice(0, 2);
+    const checkingEndResults = resultingElements.slice(
       resultingElements.length - 2
     );
 
-    let actualResults: number[] = [];
-    for (const ele of checkingResults) {
-      ele.atr14 && actualResults.push(ele.atr14);
+    let actualStartResults: number[] = [];
+    for (const ele of checkingStartResults) {
+      ele.atr14 && actualStartResults.push(ele.atr14);
     }
 
-    expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
+    let actualEndResults: number[] = [];
+    for (const ele of checkingEndResults) {
+      ele.atr14 && actualEndResults.push(ele.atr14);
+    }
+
+    expect(actualStartResults).toStrictEqual(EXPECTEDRESULTSSTART);
+    expect(actualEndResults).toStrictEqual(EXPECTEDRESULTSEND);
   });
 
   test("BollingerBand: /wo lastknown", () => {
-    const EXPECTEDRESULTSLOWER = [57.759368854301194, 57.75255442206569];
-    const EXPECTEDRESULTSMIDDLE = [59.52299159999999, 59.53183370000001];
-    const EXPECTEDRESULTSUPPER = [61.28661434569879, 61.31111297793432];
+    const EXPECTEDRESULTSSTARTLOWER = [-1, -1];
+    const EXPECTEDRESULTSSTARTMIDDLE = [-1, -1];
+    const EXPECTEDRESULTSSTARTUPPER = [-1, -1];
+
+    const EXPECTEDRESULTSENDLOWER = [57.759368854301194, 57.75255442206569];
+    const EXPECTEDRESULTSENDMIDDLE = [59.52299159999999, 59.53183370000001];
+    const EXPECTEDRESULTSENDUPPER = [61.28661434569879, 61.31111297793432];
 
     const resultingElements = bollingerband(lElements, []);
 
-    const checkingResults = resultingElements.splice(
+    const checkingStartResults = resultingElements.slice(0, 2);
+    const checkingEndResults = resultingElements.slice(
       resultingElements.length - 2
     );
 
-    let actualResultsLower: number[] = [];
-    let actualResultsMiddle: number[] = [];
-    let actualResultsUpper: number[] = [];
-    for (const ele of checkingResults) {
-      ele.BBlower && actualResultsLower.push(ele.BBlower);
-      ele.BBmiddle && actualResultsMiddle.push(ele.BBmiddle);
-      ele.BBupper && actualResultsUpper.push(ele.BBupper);
+    let actualResultsLowerStart: number[] = [];
+    let actualResultsMiddleStart: number[] = [];
+    let actualResultsUpperStart: number[] = [];
+    for (const ele of checkingStartResults) {
+      ele.BBlower && actualResultsLowerStart.push(ele.BBlower);
+      ele.BBmiddle && actualResultsMiddleStart.push(ele.BBmiddle);
+      ele.BBupper && actualResultsUpperStart.push(ele.BBupper);
     }
 
-    expect(actualResultsLower).toStrictEqual(EXPECTEDRESULTSLOWER);
-    expect(actualResultsMiddle).toStrictEqual(EXPECTEDRESULTSMIDDLE);
-    expect(actualResultsUpper).toStrictEqual(EXPECTEDRESULTSUPPER);
+    expect(actualResultsLowerStart).toStrictEqual(EXPECTEDRESULTSSTARTLOWER);
+    expect(actualResultsMiddleStart).toStrictEqual(EXPECTEDRESULTSSTARTMIDDLE);
+    expect(actualResultsUpperStart).toStrictEqual(EXPECTEDRESULTSSTARTUPPER);
+
+    let actualResultsLowerEnd: number[] = [];
+    let actualResultsMiddleEnd: number[] = [];
+    let actualResultsUpperEnd: number[] = [];
+    for (const ele of checkingEndResults) {
+      ele.BBlower && actualResultsLowerEnd.push(ele.BBlower);
+      ele.BBmiddle && actualResultsMiddleEnd.push(ele.BBmiddle);
+      ele.BBupper && actualResultsUpperEnd.push(ele.BBupper);
+    }
+
+    expect(actualResultsLowerEnd).toStrictEqual(EXPECTEDRESULTSENDLOWER);
+    expect(actualResultsMiddleEnd).toStrictEqual(EXPECTEDRESULTSENDMIDDLE);
+    expect(actualResultsUpperEnd).toStrictEqual(EXPECTEDRESULTSENDUPPER);
   });
 
   test("BollingerBand: /w lastknown", () => {
-    const EXPECTEDRESULTSLOWER = [57.759368854301194, 57.75255442206569];
-    const EXPECTEDRESULTSMIDDLE = [59.52299159999999, 59.53183370000001];
-    const EXPECTEDRESULTSUPPER = [61.28661434569879, 61.31111297793432];
+    const EXPECTEDRESULTSSTARTLOWER = [22.369759807628274, 22.53950742695505];
+    const EXPECTEDRESULTSSTARTMIDDLE = [23.928653249999993, 23.829952399999993];
+    const EXPECTEDRESULTSSTARTUPPER = [25.487546692371712, 25.120397373044934];
+
+    const EXPECTEDRESULTSENDLOWER = [57.759368854301194, 57.75255442206569];
+    const EXPECTEDRESULTSENDMIDDLE = [59.52299159999999, 59.53183370000001];
+    const EXPECTEDRESULTSENDUPPER = [61.28661434569879, 61.31111297793432];
 
     const resultingElements = bollingerband(qdata, ArrayICandleAdapter(lknown));
 
-    const checkingResults = resultingElements.splice(
+    const checkingStartResults = resultingElements.slice(0, 2);
+    const checkingEndResults = resultingElements.slice(
       resultingElements.length - 2
     );
 
-    let actualResultsLower: number[] = [];
-    let actualResultsMiddle: number[] = [];
-    let actualResultsUpper: number[] = [];
-    for (const ele of checkingResults) {
-      ele.BBlower && actualResultsLower.push(ele.BBlower);
-      ele.BBmiddle && actualResultsMiddle.push(ele.BBmiddle);
-      ele.BBupper && actualResultsUpper.push(ele.BBupper);
+    let actualResultsLowerStart: number[] = [];
+    let actualResultsMiddleStart: number[] = [];
+    let actualResultsUpperStart: number[] = [];
+    for (const ele of checkingStartResults) {
+      ele.BBlower && actualResultsLowerStart.push(ele.BBlower);
+      ele.BBmiddle && actualResultsMiddleStart.push(ele.BBmiddle);
+      ele.BBupper && actualResultsUpperStart.push(ele.BBupper);
     }
 
-    expect(actualResultsLower).toStrictEqual(EXPECTEDRESULTSLOWER);
-    expect(actualResultsMiddle).toStrictEqual(EXPECTEDRESULTSMIDDLE);
-    expect(actualResultsUpper).toStrictEqual(EXPECTEDRESULTSUPPER);
+    expect(actualResultsLowerStart).toStrictEqual(EXPECTEDRESULTSSTARTLOWER);
+    expect(actualResultsMiddleStart).toStrictEqual(EXPECTEDRESULTSSTARTMIDDLE);
+    expect(actualResultsUpperStart).toStrictEqual(EXPECTEDRESULTSSTARTUPPER);
+
+    let actualResultsLowerEnd: number[] = [];
+    let actualResultsMiddleEnd: number[] = [];
+    let actualResultsUpperEnd: number[] = [];
+    for (const ele of checkingEndResults) {
+      ele.BBlower && actualResultsLowerEnd.push(ele.BBlower);
+      ele.BBmiddle && actualResultsMiddleEnd.push(ele.BBmiddle);
+      ele.BBupper && actualResultsUpperEnd.push(ele.BBupper);
+    }
+
+    expect(actualResultsLowerEnd).toStrictEqual(EXPECTEDRESULTSENDLOWER);
+    expect(actualResultsMiddleEnd).toStrictEqual(EXPECTEDRESULTSENDMIDDLE);
+    expect(actualResultsUpperEnd).toStrictEqual(EXPECTEDRESULTSENDUPPER);
   });
 
   test("EMA: /wo lastknown", () => {
-    const EXPECTEDRESULTSEMA12 = [59.94476154689214, 60.0347980781395];
-    const EXPECTEDRESULTSEMA26 = [59.32482846312225, 59.41410035474283];
+    const EXPECTEDRESULTSEMA12START = [-1, -1];
+    const EXPECTEDRESULTSEMA26START = [-1, -1];
+
+    const EXPECTEDRESULTSEMA12END = [59.94476154689214, 60.0347980781395];
+    const EXPECTEDRESULTSEMA26END = [59.32482846312225, 59.41410035474283];
 
     const resultingElements = ema(lElements, []);
 
-    const checkingResults = resultingElements.splice(
+    const checkingStartResults = resultingElements.slice(0, 2);
+    const checkingEndResults = resultingElements.slice(
       resultingElements.length - 2
     );
 
@@ -135,40 +190,79 @@ describe("Indicator Calculation Tests:", () => {
     //   );
     // }
 
-    let actualResultsEMA12: number[] = [];
-    let actualResultsEMA26: number[] = [];
-    for (const ele of checkingResults) {
-      ele.ema12 && actualResultsEMA12.push(ele.ema12);
-      ele.ema26 && actualResultsEMA26.push(ele.ema26);
+    let actualResultsEMA12Start: number[] = [];
+    let actualResultsEMA26Start: number[] = [];
+    for (const ele of checkingStartResults) {
+      ele.ema12 && actualResultsEMA12Start.push(ele.ema12);
+      ele.ema26 && actualResultsEMA26Start.push(ele.ema26);
     }
 
-    expect(actualResultsEMA12).toStrictEqual(EXPECTEDRESULTSEMA12);
-    expect(actualResultsEMA26).toStrictEqual(EXPECTEDRESULTSEMA26);
+    expect(actualResultsEMA12Start).toStrictEqual(EXPECTEDRESULTSEMA12START);
+    expect(actualResultsEMA26Start).toStrictEqual(EXPECTEDRESULTSEMA26START);
+
+    let actualResultsEMA12End: number[] = [];
+    let actualResultsEMA26End: number[] = [];
+    for (const ele of checkingEndResults) {
+      ele.ema12 && actualResultsEMA12End.push(ele.ema12);
+      ele.ema26 && actualResultsEMA26End.push(ele.ema26);
+    }
+
+    expect(actualResultsEMA12End).toStrictEqual(EXPECTEDRESULTSEMA12END);
+    expect(actualResultsEMA26End).toStrictEqual(EXPECTEDRESULTSEMA26END);
   });
 
   test("EMA: /w lastknown", () => {
-    const EXPECTEDRESULTSEMA12 = [59.94476154689214, 60.0347980781395];
-    const EXPECTEDRESULTSEMA26 = [59.32482846312225, 59.41410035474283];
+    const EXPECTEDRESULTSEMA12START = [23.60726653036974, 23.695094756466702];
+    const EXPECTEDRESULTSEMA26START = [24.244243837338797, 24.239347997535923];
 
+    const EXPECTEDRESULTSEMA12END = [59.94476154689214, 60.0347980781395];
+    const EXPECTEDRESULTSEMA26END = [59.32482846312225, 59.41410035474283];
     const resultingElements = ema(qdata, ArrayICandleAdapter(lknown));
 
-    const checkingResults = resultingElements.splice(
+    const checkingStartResults = resultingElements.slice(0, 2);
+    const checkingEndResults = resultingElements.slice(
       resultingElements.length - 2
     );
 
-    let actualResultsEMA12: number[] = [];
-    let actualResultsEMA26: number[] = [];
-    for (const ele of checkingResults) {
-      ele.ema12 && actualResultsEMA12.push(ele.ema12);
-      ele.ema26 && actualResultsEMA26.push(ele.ema26);
+    // Get ema's for /wlastknown test
+    // for (const lk of lknown.reverse()) {
+    //   const r = resultingElements.filter(
+    //     (ele) => ele.openTime === lk.openTime
+    //   )[0];
+    //   console.log(
+    //     r.openTime,
+    //     "\nema12: " + r.ema12 + ",\n",
+    //     "ema26:" + r.ema26
+    //   );
+    // }
+
+    let actualResultsEMA12Start: number[] = [];
+    let actualResultsEMA26Start: number[] = [];
+    for (const ele of checkingStartResults) {
+      ele.ema12 && actualResultsEMA12Start.push(ele.ema12);
+      ele.ema26 && actualResultsEMA26Start.push(ele.ema26);
     }
 
-    expect(actualResultsEMA12).toStrictEqual(EXPECTEDRESULTSEMA12);
-    expect(actualResultsEMA26).toStrictEqual(EXPECTEDRESULTSEMA26);
+    expect(actualResultsEMA12Start).toStrictEqual(EXPECTEDRESULTSEMA12START);
+    expect(actualResultsEMA26Start).toStrictEqual(EXPECTEDRESULTSEMA26START);
+
+    let actualResultsEMA12End: number[] = [];
+    let actualResultsEMA26End: number[] = [];
+    for (const ele of checkingEndResults) {
+      ele.ema12 && actualResultsEMA12End.push(ele.ema12);
+      ele.ema26 && actualResultsEMA26End.push(ele.ema26);
+    }
+
+    expect(actualResultsEMA12End).toStrictEqual(EXPECTEDRESULTSEMA12END);
+    expect(actualResultsEMA26End).toStrictEqual(EXPECTEDRESULTSEMA26END);
   });
 
   test("ElderRay: /wo lastknown", () => {
-    const EXPECTEDRESULTS = [
+    const EXPECTEDRESULTSSTART = [
+      [-1, -1],
+      [-1, -1],
+    ];
+    const EXPECTEDRESULTSEND = [
       [1.2090228660085316, 0.35902486600853223],
       [0.5477347422930237, 0.14773674229302713],
     ];
@@ -183,40 +277,61 @@ describe("Indicator Calculation Tests:", () => {
     //   console.log(r.openTime, "\nema13: " + r.ema13 + ",\n");
     // }
 
-    const checkingResults = resultingElements.splice(
+    const checkingStartResults = resultingElements.slice(0, 2);
+    const checkingEndResults = resultingElements.slice(
       resultingElements.length - 2
     );
 
-    let actualResults: [number, number][] = [];
-    for (const ele of checkingResults) {
-      ele.ElderRay && actualResults.push(ele.ElderRay);
+    let actualResultsStart: [number, number][] = [];
+    for (const ele of checkingStartResults) {
+      ele.ElderRay && actualResultsStart.push(ele.ElderRay);
     }
 
-    expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
+    expect(actualResultsStart).toStrictEqual(EXPECTEDRESULTSSTART);
+
+    let actualResultsEnd: [number, number][] = [];
+    for (const ele of checkingEndResults) {
+      ele.ElderRay && actualResultsEnd.push(ele.ElderRay);
+    }
+
+    expect(actualResultsEnd).toStrictEqual(EXPECTEDRESULTSEND);
   });
 
   test("ElderRay: /w lastknown", () => {
-    const EXPECTEDRESULTS = [
+    const EXPECTEDRESULTSSTART = [
+      [0.27259808206195046, 0.030567036626660382],
+      [0.5126493924192097, 0.07866034816173695],
+    ];
+    const EXPECTEDRESULTSEND = [
       [1.2090228660085316, 0.35902486600853223],
       [0.5477347422930237, 0.14773674229302713],
     ];
 
     const resultingElements = elderray(qdata, ArrayICandleAdapter(lknown));
 
-    const checkingResults = resultingElements.splice(
+    const checkingStartResults = resultingElements.slice(0, 2);
+    const checkingEndResults = resultingElements.slice(
       resultingElements.length - 2
     );
 
-    let actualResults: [number, number][] = [];
-    for (const ele of checkingResults) {
-      ele.ElderRay && actualResults.push(ele.ElderRay);
+    let actualResultsStart: [number, number][] = [];
+    for (const ele of checkingStartResults) {
+      ele.ElderRay && actualResultsStart.push(ele.ElderRay);
     }
 
-    expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
+    expect(actualResultsStart).toStrictEqual(EXPECTEDRESULTSSTART);
+
+    let actualResultsEnd: [number, number][] = [];
+    for (const ele of checkingEndResults) {
+      ele.ElderRay && actualResultsEnd.push(ele.ElderRay);
+    }
+
+    expect(actualResultsEnd).toStrictEqual(EXPECTEDRESULTSEND);
   });
 
   test("Force Index: /wo lastknown", () => {
-    const EXPECTEDRESULTS = [1697836.648590974, 1610737.1114351158];
+    const EXPECTEDRESULTSSTART = [-1, -1];
+    const EXPECTEDRESULTSEND = [1697836.648590974, 1610737.1114351158];
 
     const resultingElements = forceindex(lElements, []);
 
@@ -228,33 +343,50 @@ describe("Indicator Calculation Tests:", () => {
     //   console.log(r.openTime, "\nforceindex13: " + r.forceindex13 + ",\n");
     // }
 
-    const checkingResults = resultingElements.splice(
+    const checkingStartResults = resultingElements.slice(0, 2);
+    const checkingEndResults = resultingElements.slice(
       resultingElements.length - 2
     );
 
-    let actualResults: number[] = [];
-    for (const ele of checkingResults) {
-      ele.forceindex13 && actualResults.push(ele.forceindex13);
+    let actualResultsStart: number[] = [];
+    for (const ele of checkingStartResults) {
+      ele.forceindex13 && actualResultsStart.push(ele.forceindex13);
     }
 
-    expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
+    expect(actualResultsStart).toStrictEqual(EXPECTEDRESULTSSTART);
+
+    let actualResultsEnd: number[] = [];
+    for (const ele of checkingEndResults) {
+      ele.forceindex13 && actualResultsEnd.push(ele.forceindex13);
+    }
+
+    expect(actualResultsEnd).toStrictEqual(EXPECTEDRESULTSEND);
   });
 
   test("Force Index: /w lastknown", () => {
-    const EXPECTEDRESULTS = [1697836.648590974, 1610737.1114351158];
+    const EXPECTEDRESULTSSTART = [-1815854.3641402952, 385228.3582368896];
+    const EXPECTEDRESULTSEND = [1697836.648590974, 1610737.1114351158];
 
     const resultingElements = forceindex(qdata, ArrayICandleAdapter(lknown));
 
-    const checkingResults = resultingElements.splice(
+    const checkingStartResults = resultingElements.slice(0, 2);
+    const checkingEndResults = resultingElements.slice(
       resultingElements.length - 2
     );
 
-    let actualResults: number[] = [];
-    for (const ele of checkingResults) {
-      ele.forceindex13 && actualResults.push(ele.forceindex13);
+    let actualResultsStart: number[] = [];
+    for (const ele of checkingStartResults) {
+      ele.forceindex13 && actualResultsStart.push(ele.forceindex13);
     }
 
-    expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
+    expect(actualResultsStart).toStrictEqual(EXPECTEDRESULTSSTART);
+
+    let actualResultsEnd: number[] = [];
+    for (const ele of checkingEndResults) {
+      ele.forceindex13 && actualResultsEnd.push(ele.forceindex13);
+    }
+
+    expect(actualResultsEnd).toStrictEqual(EXPECTEDRESULTSEND);
   });
 
   test("MACD: /wo lastknown", () => {
@@ -292,7 +424,8 @@ describe("Indicator Calculation Tests:", () => {
   });
 
   test("RSI: /wo lastknown", () => {
-    const EXPECTEDRESULTS = [57.382247207037715, 58.104745849400366];
+    const EXPECTEDRESULTSSTART = [-1, -1];
+    const EXPECTEDRESULTSEND = [57.382247207037715, 58.104745849400366];
 
     const resultingElements = rsi(lElements, []);
 
@@ -307,41 +440,60 @@ describe("Indicator Calculation Tests:", () => {
     //   );
     // }
 
-    const checkingResults = resultingElements.splice(
+    const checkingStartResults = resultingElements.slice(0, 2);
+    const checkingEndResults = resultingElements.slice(
       resultingElements.length - 2
     );
 
-    let actualResults: number[] = [];
-    for (const ele of checkingResults) {
-      ele.RSI14 && actualResults.push(ele.RSI14);
+    let actualResultsStart: number[] = [];
+    for (const ele of checkingStartResults) {
+      ele.RSI14 && actualResultsStart.push(ele.RSI14);
     }
 
-    expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
+    expect(actualResultsStart).toStrictEqual(EXPECTEDRESULTSSTART);
+
+    let actualResultsEnd: number[] = [];
+    for (const ele of checkingEndResults) {
+      ele.RSI14 && actualResultsEnd.push(ele.RSI14);
+    }
+
+    expect(actualResultsEnd).toStrictEqual(EXPECTEDRESULTSEND);
   });
 
   test("RSI: /w lastknown", () => {
-    const EXPECTEDRESULTS = [57.382247207037715, 58.104745849400366];
+    const EXPECTEDRESULTSSTART = [45.83756412420888, 50.52104751106972];
+    const EXPECTEDRESULTSEND = [57.382247207037715, 58.104745849400366];
 
     const resultingElements = rsi(qdata, ArrayICandleAdapter(lknown));
 
-    const checkingResults = resultingElements.splice(
+    const checkingStartResults = resultingElements.slice(0, 2);
+    const checkingEndResults = resultingElements.slice(
       resultingElements.length - 2
     );
 
-    let actualResults: number[] = [];
-    for (const ele of checkingResults) {
-      ele.RSI14 && actualResults.push(ele.RSI14);
+    let actualResultsStart: number[] = [];
+    for (const ele of checkingStartResults) {
+      ele.RSI14 && actualResultsStart.push(ele.RSI14);
     }
 
-    expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
+    expect(actualResultsStart).toStrictEqual(EXPECTEDRESULTSSTART);
+
+    let actualResultsEnd: number[] = [];
+    for (const ele of checkingEndResults) {
+      ele.RSI14 && actualResultsEnd.push(ele.RSI14);
+    }
+
+    expect(actualResultsEnd).toStrictEqual(EXPECTEDRESULTSEND);
   });
 
   test("SAR: /wo lastknown", () => {
-    const EXPECTEDRESULTS = [57.47029081503744, 57.69767324613519];
+    const EXPECTEDRESULTSSTART = [-1, 25.83502196495549];
+    const EXPECTEDRESULTSEND = [57.47029081503744, 57.69767324613519];
 
     const resultingElements = sar(lElements, []);
 
-    const checkingResults = resultingElements.splice(
+    const checkingStartResults = resultingElements.slice(0, 2);
+    const checkingEndResults = resultingElements.slice(
       resultingElements.length - 2
     );
 
@@ -366,28 +518,44 @@ describe("Indicator Calculation Tests:", () => {
     //   );
     // }
 
-    let actualResults: number[] = [];
-    for (const ele of checkingResults) {
-      ele.PSAR && actualResults.push(ele.PSAR);
+    let actualResultsStart: number[] = [];
+    for (const ele of checkingStartResults) {
+      ele.PSAR && actualResultsStart.push(ele.PSAR);
     }
 
-    expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
+    expect(actualResultsStart).toStrictEqual(EXPECTEDRESULTSSTART);
+
+    let actualResultsEnd: number[] = [];
+    for (const ele of checkingEndResults) {
+      ele.PSAR && actualResultsEnd.push(ele.PSAR);
+    }
+
+    expect(actualResultsEnd).toStrictEqual(EXPECTEDRESULTSEND);
   });
 
   test("SAR: /w lastknown", () => {
-    const EXPECTEDRESULTS = [57.47029081503744, 57.69767324613519];
+    const EXPECTEDRESULTSSTART = [24.011176633919604, 22.90262235438972];
+    const EXPECTEDRESULTSEND = [57.47029081503744, 57.69767324613519];
 
     const resultingElements = sar(qdata, ArrayICandleAdapter(lknown));
 
-    const checkingResults = resultingElements.splice(
+    const checkingStartResults = resultingElements.slice(0, 2);
+    const checkingEndResults = resultingElements.slice(
       resultingElements.length - 2
     );
 
-    let actualResults: number[] = [];
-    for (const ele of checkingResults) {
-      ele.PSAR && actualResults.push(ele.PSAR);
+    let actualResultsStart: number[] = [];
+    for (const ele of checkingStartResults) {
+      ele.PSAR && actualResultsStart.push(ele.PSAR);
     }
 
-    expect(actualResults).toStrictEqual(EXPECTEDRESULTS);
+    expect(actualResultsStart).toStrictEqual(EXPECTEDRESULTSSTART);
+
+    let actualResultsEnd: number[] = [];
+    for (const ele of checkingEndResults) {
+      ele.PSAR && actualResultsEnd.push(ele.PSAR);
+    }
+
+    expect(actualResultsEnd).toStrictEqual(EXPECTEDRESULTSEND);
   });
 });

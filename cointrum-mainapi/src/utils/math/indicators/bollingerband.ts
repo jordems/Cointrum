@@ -23,6 +23,12 @@ export function bollingerbandAlgo(
 
   let startingidx = prevCandles.length > 0 ? prevCandles.length : 20;
 
+  for (let x = 0; x < startingidx; x++) {
+    fullist[x].BBlower = -1;
+    fullist[x].BBmiddle = -1;
+    fullist[x].BBupper = -1;
+  }
+
   for (let x = startingidx; x < fullist.length; x++) {
     const prev20 = fullist.slice(x - 20, x);
     const sma20 = smaAlgo(prev20);

@@ -17,7 +17,7 @@ export function forceindex13Algo(
   candles: ICandle[],
   prevCandles: ICandle[]
 ): number[] {
-  let resultingemaValues: number[] = [];
+  let resultingf13Values: number[] = [];
 
   let fullist = [...prevCandles, ...candles];
 
@@ -28,13 +28,13 @@ export function forceindex13Algo(
   if (prevCandles.length === 0) {
     // Fill first values with invalue ema
     for (idx = 0; idx < 13; idx++) {
-      resultingemaValues.push(-1);
+      resultingf13Values.push(-1);
     }
     // Generate first forceema13 with sma of f1's
 
     prevF13Ema = smaofF1(fullist.slice(0, 14));
 
-    resultingemaValues.push(prevF13Ema);
+    resultingf13Values.push(prevF13Ema);
 
     let f13ema = 0;
 
@@ -45,7 +45,7 @@ export function forceindex13Algo(
 
       f13ema = fi1 * k + prevF13Ema * (1 - k);
 
-      resultingemaValues.push(f13ema);
+      resultingf13Values.push(f13ema);
       prevF13Ema = f13ema;
     }
   } else {
@@ -54,14 +54,14 @@ export function forceindex13Algo(
     if (!tema || tema === -1) {
       return forceindex13Algo(candles, []);
     }
-    idx = prevCandles.length - 1;
 
-    const fi1 =
-      (parseFloat(fullist[idx].close) - parseFloat(fullist[idx - 1].close)) *
-      parseFloat(fullist[idx].volume);
+    const tfi1 =
+      (parseFloat(candles[0].close) -
+        parseFloat(prevCandles[prevCandles.length - 1].close)) *
+      parseFloat(candles[0].volume);
 
-    prevF13Ema = fi1 * k + tema * (1 - k);
-    resultingemaValues.push(prevF13Ema);
+    prevF13Ema = tfi1 * k + tema * (1 - k);
+    resultingf13Values.push(prevF13Ema);
 
     let f13ema = 0;
 
@@ -70,12 +70,12 @@ export function forceindex13Algo(
         (parseFloat(candles[x].close) - parseFloat(candles[x - 1].close)) *
         parseFloat(candles[x].volume);
       f13ema = fi1 * k + prevF13Ema * (1 - k);
-      resultingemaValues.push(f13ema);
+      resultingf13Values.push(f13ema);
       prevF13Ema = f13ema;
     }
   }
 
-  return resultingemaValues;
+  return resultingf13Values;
 }
 
 function smaofF1(candles: ICandle[]): number {

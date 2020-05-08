@@ -133,10 +133,11 @@ export function sarAlgo(candles: ICandle[], prevCandles: ICandle[]): ICandle[] {
   } else {
     const lastCandle = prevCandles[prevCandles.length - 1];
     // initial PSAR
+
     let prevAF = lastCandle.PSAR_ACC;
 
     let prevEP = lastCandle.PSAR_EP;
-    let prevSAR = lastCandle.PSAR_ACC;
+    let prevSAR = lastCandle.PSAR;
 
     let prevState = lastCandle.PSAR_TREND;
 

@@ -4,7 +4,8 @@ import ICandle, { ArrayICandleAdapter } from "../../markets/types/ICandle";
 export const atr: IBaseIndicator = (candles, prevCandles) => {
   let tcandles = [...candles];
 
-  let prevCandle = prevCandles.length > 0 ? prevCandles[0] : undefined;
+  let prevCandle =
+    prevCandles.length > 0 ? prevCandles[prevCandles.length - 1] : undefined;
 
   tcandles = atrAlgo(14, tcandles, prevCandle);
 

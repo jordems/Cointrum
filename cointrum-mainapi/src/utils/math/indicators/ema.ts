@@ -47,7 +47,9 @@ export function emaAlgo(
     }
   } else {
     let tema;
+
     const lastCandle = prevCandles[prevCandles.length - 1];
+    //console.log(lastCandle);
     if (windowSize === 12) {
       tema = lastCandle.ema12;
     } else if (windowSize === 13) {
@@ -60,7 +62,7 @@ export function emaAlgo(
       return emaAlgo(windowSize, candles, []);
     }
 
-    prevEma = parseFloat(fullist[idx].close) * k + tema * (1 - k);
+    prevEma = parseFloat(candles[0].close) * k + tema * (1 - k);
     resultingemaValues.push(prevEma);
 
     let ema = 0;
