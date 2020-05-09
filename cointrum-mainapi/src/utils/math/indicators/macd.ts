@@ -2,10 +2,8 @@ import { IBaseIndicator } from "./IBaseIndicator";
 import ICandle, { ArrayICandleAdapter } from "../../markets/types/ICandle";
 import { emaAlgo } from "./ema";
 
-export const macd: IBaseIndicator = (candles, lastknownDocuments) => {
+export const macd: IBaseIndicator = (candles, prevCandles) => {
   let tcandles = [...candles];
-
-  const prevCandles = ArrayICandleAdapter(lastknownDocuments);
 
   tcandles = macdAlgo(candles, prevCandles);
 
@@ -14,7 +12,7 @@ export const macd: IBaseIndicator = (candles, lastknownDocuments) => {
 
 export function macdAlgo(
   candles: ICandle[],
-  prevCandles?: ICandle[]
+  prevCandles: ICandle[]
 ): ICandle[] {
   let result = [...candles];
 
@@ -22,7 +20,11 @@ export function macdAlgo(
   const ema26s = emaAlgo(26, candles, prevCandles);
 
   for (let x = 0; x < result.length; x++) {
-    result[x].MACD = ema12s[x] - ema26s[x];
+    if (ema12s[x] === -1 || ema26s[x] === -1) {
+      result[x].MACD = -1;
+    } else {
+      result[x].MACD = ema12s[x] - ema26s[x];
+    }
   }
   return result;
 }

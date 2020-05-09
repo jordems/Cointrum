@@ -1,29 +1,15 @@
-export interface IChartTuple {
-  close: number;
-  date: Date;
-  elderRay: {
-    bearPower: number;
-    bullPower: number;
-  };
-  ema12: number;
-  ema26: number;
-  high: number;
-  idx: { index: number; level: number; date: Date; format: any };
-  low: number;
-  open: number;
-  volume: number;
-}
+import { IOHLCData } from "./IOHLCData";
 
 export interface IChartClickEvent {
   chartConfig: any;
   chartId: string | number;
   currentCharts: Array<string | number>;
-  currentItem: IChartTuple;
+  currentItem: IOHLCData;
   displayXAccessor: any;
-  fullData: Array<IChartTuple>;
+  fullData: Array<IOHLCData>;
   hovering: boolean;
   mouseXY: [number, number];
-  plotData: Array<IChartTuple>;
+  plotData: Array<IOHLCData>;
   prevMouseXY: [number, number];
   show: boolean;
   height: number;

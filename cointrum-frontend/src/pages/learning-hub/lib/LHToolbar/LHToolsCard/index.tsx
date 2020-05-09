@@ -12,12 +12,14 @@ import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 
 import ColorizeOutlinedIcon from "@material-ui/icons/ColorizeOutlined";
 import VisibilityIcon from "@material-ui/icons/Visibility";
+import ImportExportOutlined from "@material-ui/icons/ImportExportOutlined";
 
 import { ConnectedProps } from "react-redux";
 
 import { connector } from "./redux";
 
 import { styles, wrapStyles } from "./styles";
+import { LearningHubTools } from "store/learninghub/types/tools.types";
 
 type LHToolsCardProps = WithStyles<typeof styles> &
   ConnectedProps<typeof connector>;
@@ -37,19 +39,16 @@ const LHToolsCard: React.FunctionComponent<LHToolsCardProps> = ({
 
   const handleToolChange = (
     _e: React.MouseEvent<HTMLElement, MouseEvent>,
-    value: "SEEDSELECT" | "VIEW" | "TEST"
+    value: LearningHubTools
   ) => {
-    console.log(value);
-    if (value) {
-      changeSeedTool(value);
-    }
+    changeSeedTool(value);
   };
 
   return (
     <Card className={classes.root}>
       <CardContent className={classes.cardContent}>
         <Typography color="textSecondary" className={classes.descTexts}>
-          Seed Selection Tools
+          Tools
         </Typography>
         <ToggleButtonGroup
           size="medium"
@@ -57,7 +56,10 @@ const LHToolsCard: React.FunctionComponent<LHToolsCardProps> = ({
           onChange={handleToolChange}
           exclusive
         >
-          <ToggleButton key={1} value="SEEDSELECT">
+          <ToggleButton key={1} value="BUYSELL">
+            <ImportExportOutlined />
+          </ToggleButton>
+          <ToggleButton key={2} value="SEEDSELECT">
             <ColorizeOutlinedIcon />
           </ToggleButton>
           {/* <ToggleButton key={2} value="VIEW">

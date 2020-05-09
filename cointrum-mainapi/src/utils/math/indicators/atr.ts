@@ -1,12 +1,11 @@
 import { IBaseIndicator } from "./IBaseIndicator";
 import ICandle, { ArrayICandleAdapter } from "../../markets/types/ICandle";
 
-export const atr: IBaseIndicator = (candles, lastknownDocuments) => {
+export const atr: IBaseIndicator = (candles, prevCandles) => {
   let tcandles = [...candles];
 
-  const prevCandles = ArrayICandleAdapter(lastknownDocuments);
-
-  let prevCandle = prevCandles.length > 0 ? prevCandles[0] : undefined;
+  let prevCandle =
+    prevCandles.length > 0 ? prevCandles[prevCandles.length - 1] : undefined;
 
   tcandles = atrAlgo(14, tcandles, prevCandle);
 
@@ -21,6 +20,10 @@ export function atrAlgo(
   let result = [...candles];
   let prevATR;
   let idx = 0;
+
+  if (candles.length === 0) {
+    return [];
+  }
 
   if (!prevCandle) {
     if (candles.length < period + 1) {
@@ -81,9 +84,9 @@ export function atrAlgo(
     const a = 2 / (period + 1);
 
     let ptr = Math.max(
-      parseFloat(candles[idx].high) - parseFloat(candles[idx].low),
-      parseFloat(candles[idx].high) - parseFloat(prevCandle.close),
-      parseFloat(prevCandle.close) - parseFloat(candles[idx].low)
+      parseFloat(candles[0].high) - parseFloat(candles[0].low),
+      parseFloat(candles[0].high) - parseFloat(prevCandle.close),
+      parseFloat(prevCandle.close) - parseFloat(candles[0].low)
     );
 
     let patr = a * ptr + (1 - a) * prevATR;
@@ -92,7 +95,7 @@ export function atrAlgo(
     let tr = 0;
     let atr = 0;
 
-    for (let x = idx + 1; x < candles.length; x++) {
+    for (let x = 1; x < candles.length; x++) {
       tr = Math.max(
         parseFloat(candles[x].high) - parseFloat(candles[x].low),
         parseFloat(candles[x].high) - parseFloat(candles[x - 1].close),

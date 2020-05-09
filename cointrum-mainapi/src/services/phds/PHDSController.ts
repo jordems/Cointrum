@@ -33,7 +33,6 @@ export default class PHDSController extends GenericController<IPHDSElement> {
     let missingZones = this.findMissingZones(results, startTime, endTime);
 
     if (missingZones.length === 0) {
-      console.log("Have all required Results");
       return results;
     } else {
       // ELSE Fill mongo with data upto and including current current query. Then return current query
@@ -53,24 +52,33 @@ export default class PHDSController extends GenericController<IPHDSElement> {
 
         let finalresults: IPHDSElement[] = [...results];
 
-        //let sectionPromises: Promise<IPHDSElement[]>[] = [];
+        let batches: IPHDSElement[][] = [];
 
-        for (let x = 0; x < candleSections.length; x++) {
-          let phdsSection: IPHDSElement[] = [];
-
-          for (const candle of candleSections[x]) {
-            phdsSection.push({
+        for (const section of candleSections) {
+          let batch: any[] = [];
+          for (const candle of section) {
+            batch.push({
               _id: candle.openTime,
               ...candle,
-            } as any);
+            });
           }
-          console.log("inserting batch", x);
-          const section = await this.insertBatch(phdsSection);
-
-          if (section[0] && section[0].openTime > startTime) {
-            finalresults = [...finalresults, ...section];
-          }
+          batches.push(batch);
         }
+
+        const condition = (section: IPHDSElement[]): boolean => {
+          if (section[0] && section[0].openTime > startTime) {
+            return true;
+          } else {
+            return false;
+          }
+        };
+
+        const batchresults = await this.insertMultipleBatches(
+          batches,
+          condition
+        );
+
+        finalresults = [...finalresults, ...batchresults];
 
         //const sections = await Promise.all(sectionPromises);
 

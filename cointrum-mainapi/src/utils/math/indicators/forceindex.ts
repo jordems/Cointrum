@@ -1,14 +1,8 @@
 import { IBaseIndicator } from "./IBaseIndicator";
-import ICandle, {
-  ICandleAdapter,
-  ArrayICandleAdapter,
-} from "../../markets/types/ICandle";
-import { IPHDSElement } from "../../../models/PHDSElement";
+import ICandle, { ArrayICandleAdapter } from "../../markets/types/ICandle";
 
-export const forceindex: IBaseIndicator = (candles, lastknownDocuments) => {
+export const forceindex: IBaseIndicator = (candles, prevCandles) => {
   let tcandles = [...candles];
-
-  const prevCandles = ArrayICandleAdapter(lastknownDocuments);
 
   const forceidx13values = forceindex13Algo(candles, prevCandles);
 
@@ -21,28 +15,30 @@ export const forceindex: IBaseIndicator = (candles, lastknownDocuments) => {
 
 export function forceindex13Algo(
   candles: ICandle[],
-  prevCandles?: ICandle[]
+  prevCandles: ICandle[]
 ): number[] {
-  let resultingemaValues: number[] = [];
-  // Convert lastknownDocuments to type ICandle
-  let lastknownCandles: ICandle[] = prevCandles ? prevCandles : [];
+  if (candles.length === 0) {
+    return [];
+  }
 
-  let fullist = [...lastknownCandles, ...candles];
+  let resultingf13Values: number[] = [];
+
+  let fullist = [...prevCandles, ...candles];
 
   let idx = 0;
   let prevF13Ema;
   const k = 2 / (13 + 1);
 
-  if (lastknownCandles.length === 0) {
+  if (prevCandles.length === 0) {
     // Fill first values with invalue ema
     for (idx = 0; idx < 13; idx++) {
-      resultingemaValues.push(-1);
+      resultingf13Values.push(-1);
     }
     // Generate first forceema13 with sma of f1's
 
     prevF13Ema = smaofF1(fullist.slice(0, 14));
 
-    resultingemaValues.push(prevF13Ema);
+    resultingf13Values.push(prevF13Ema);
 
     let f13ema = 0;
 
@@ -53,23 +49,23 @@ export function forceindex13Algo(
 
       f13ema = fi1 * k + prevF13Ema * (1 - k);
 
-      resultingemaValues.push(f13ema);
+      resultingf13Values.push(f13ema);
       prevF13Ema = f13ema;
     }
   } else {
-    let tema = lastknownCandles[lastknownCandles.length - 1].forceindex13;
+    let tema = prevCandles[prevCandles.length - 1].forceindex13;
 
-    if (!tema) {
-      tema = -1;
+    if (!tema || tema === -1) {
+      return forceindex13Algo(candles, []);
     }
-    idx = lastknownCandles.length - 1;
 
-    const fi1 =
-      (parseFloat(fullist[idx].close) - parseFloat(fullist[idx - 1].close)) *
-      parseFloat(fullist[idx].volume);
+    const tfi1 =
+      (parseFloat(candles[0].close) -
+        parseFloat(prevCandles[prevCandles.length - 1].close)) *
+      parseFloat(candles[0].volume);
 
-    prevF13Ema = fi1 * k + tema * (1 - k);
-    resultingemaValues.push(prevF13Ema);
+    prevF13Ema = tfi1 * k + tema * (1 - k);
+    resultingf13Values.push(prevF13Ema);
 
     let f13ema = 0;
 
@@ -78,12 +74,12 @@ export function forceindex13Algo(
         (parseFloat(candles[x].close) - parseFloat(candles[x - 1].close)) *
         parseFloat(candles[x].volume);
       f13ema = fi1 * k + prevF13Ema * (1 - k);
-      resultingemaValues.push(f13ema);
+      resultingf13Values.push(f13ema);
       prevF13Ema = f13ema;
     }
   }
 
-  return resultingemaValues;
+  return resultingf13Values;
 }
 
 function smaofF1(candles: ICandle[]): number {

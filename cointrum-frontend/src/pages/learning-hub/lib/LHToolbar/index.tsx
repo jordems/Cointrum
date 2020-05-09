@@ -2,19 +2,20 @@ import React from "react";
 import { WithStyles, Drawer } from "@material-ui/core";
 
 import LHToolsCard from "./LHToolsCard";
-import LHLabelsCard from "./LHLabelsCard";
-import LHLabelDialog from "./LHLabelDialog";
-import LHLabelNew from "./LHLabelNew";
 
 import { styles, wrapStyles } from "./styles";
 import { ConnectedProps } from "react-redux";
 
 import { connector } from "./redux";
+import LHSeedSelect from "./LHSeedSelect";
 
 type LHToolbarProps = WithStyles<typeof styles> &
   ConnectedProps<typeof connector>;
 
-const LHToolbar: React.FunctionComponent<LHToolbarProps> = ({ classes }) => {
+const LHToolbar: React.FunctionComponent<LHToolbarProps> = ({
+  classes,
+  seedtool,
+}) => {
   return (
     <Drawer
       className={classes.drawer}
@@ -26,10 +27,9 @@ const LHToolbar: React.FunctionComponent<LHToolbarProps> = ({ classes }) => {
     >
       <LHToolsCard />
 
-      <LHLabelsCard />
+      {/*TODO ADD a LHBuySellCard (for selecting seeds for buy/sell) */}
 
-      <LHLabelDialog />
-      <LHLabelNew />
+      {seedtool === "SEEDSELECT" && <LHSeedSelect />}
     </Drawer>
   );
 };

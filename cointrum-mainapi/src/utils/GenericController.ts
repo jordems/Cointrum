@@ -1,4 +1,5 @@
-import { Model, Document } from "mongoose";
+import { Model, Document, DocumentQuery } from "mongoose";
+import Bottleneck from "bottleneck";
 /**
  * @class GenericController
  * Generic REST Controller for MongoDB Documents
@@ -11,7 +12,7 @@ export default class GenericController<T extends Document> {
     this.model = model;
   }
 
-  public getAllDocuments() {
+  public getAllDocuments(): DocumentQuery<T[], T, {}> {
     return this.model.find({});
   }
 
@@ -19,7 +20,7 @@ export default class GenericController<T extends Document> {
     queryconditions: object,
     sortconditions?: object,
     limit?: number
-  ) {
+  ): DocumentQuery<T[], T, {}> {
     if (sortconditions && limit) {
       return this.model.find(queryconditions).sort(sortconditions).limit(limit);
     } else if (limit) {
@@ -31,30 +32,45 @@ export default class GenericController<T extends Document> {
     }
   }
 
-  public createDocument(documentData: T) {
+  public createDocument(documentData: T): Promise<T> {
     const newDocument: T = new this.model(documentData);
 
     return newDocument.save();
   }
 
-  public insertBatch(documentsData: T[]) {
-    // let docs: T[] = [];
-
-    // for (const tdoc of documentsData) {
-    //   docs.push(new this.model(tdoc));
-    // }
-
-    return this.model.insertMany(documentsData);
+  public insertBatch(batch: T[]): Promise<T[]> {
+    return this.model.insertMany(batch);
   }
 
-  public getDocumentbyId(docid: string) {
+  public async insertMultipleBatches(
+    batches: T[][],
+    condition?: any
+  ): Promise<T[]> {
+    let results: T[] = [];
+
+    for (const batch of batches) {
+      const section = await this.insertBatch(batch);
+      console.log("loaded Batch", section[0] && section[0]._id);
+      if (condition && condition(section)) {
+        console.log("Adding to Results");
+        results = [...results, ...section];
+      }
+    }
+
+    return results;
+  }
+
+  public getDocumentbyId(docid: string): DocumentQuery<T | null, T, {}> {
     return this.model.findById(docid);
   }
-  public editDocument(docid: string, docData: T) {
+  public editDocument(
+    docid: string,
+    docData: T
+  ): DocumentQuery<T | null, T, {}> {
     return this.model.findByIdAndUpdate(docid, docData, { new: true });
   }
 
-  public removeDocument(docid: string) {
+  public removeDocument(docid: string): DocumentQuery<T | null, T, {}> {
     return this.model.findByIdAndRemove(docid);
   }
 }

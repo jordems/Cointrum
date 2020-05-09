@@ -2,10 +2,8 @@ import { IBaseIndicator } from "./IBaseIndicator";
 import ICandle, { ArrayICandleAdapter } from "../../markets/types/ICandle";
 import { smaAlgo } from "./sma";
 
-export const ema: IBaseIndicator = (candles, lastknownDocuments) => {
+export const ema: IBaseIndicator = (candles, prevCandles) => {
   let results = [...candles];
-
-  const prevCandles = ArrayICandleAdapter(lastknownDocuments);
 
   const ema26s = emaAlgo(26, results, prevCandles);
   const ema12s = emaAlgo(12, results, prevCandles);
@@ -21,18 +19,21 @@ export const ema: IBaseIndicator = (candles, lastknownDocuments) => {
 export function emaAlgo(
   windowSize: 12 | 13 | 26,
   candles: ICandle[],
-  prevCandles?: ICandle[]
+  prevCandles: ICandle[]
 ): number[] {
+  if (candles.length === 0) {
+    return [];
+  }
+
   let resultingemaValues: number[] = [];
   // Convert lastknownDocuments to type ICandle
-  let lastknownCandles: ICandle[] = prevCandles ? prevCandles : [];
 
-  let fullist = [...lastknownCandles, ...candles];
+  let fullist = [...prevCandles, ...candles];
   let idx = 0;
   let prevEma;
   const k = 2 / (windowSize + 1);
 
-  if (lastknownCandles.length === 0) {
+  if (prevCandles.length === 0) {
     // Fill first values with invalue ema
     for (idx = 0; idx < windowSize - 1; idx++) {
       resultingemaValues.push(-1);
@@ -50,7 +51,9 @@ export function emaAlgo(
     }
   } else {
     let tema;
-    const lastCandle = lastknownCandles[lastknownCandles.length - 1];
+
+    const lastCandle = prevCandles[prevCandles.length - 1];
+    //console.log(lastCandle);
     if (windowSize === 12) {
       tema = lastCandle.ema12;
     } else if (windowSize === 13) {
@@ -58,11 +61,12 @@ export function emaAlgo(
     } else if (windowSize === 26) {
       tema = lastCandle.ema26;
     }
-    if (!tema) {
-      tema = -1;
+    if (!tema || tema === -1) {
+      console.log("WHAT", lastCandle);
+      return emaAlgo(windowSize, candles, []);
     }
 
-    prevEma = parseFloat(fullist[idx].close) * k + tema * (1 - k);
+    prevEma = parseFloat(candles[0].close) * k + tema * (1 - k);
     resultingemaValues.push(prevEma);
 
     let ema = 0;

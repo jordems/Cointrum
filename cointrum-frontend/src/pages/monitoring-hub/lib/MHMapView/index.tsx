@@ -15,7 +15,7 @@ type MHMapViewProps = WithStyles<typeof styles> &
 
 class MHMapView extends React.Component<MHMapViewProps> {
   componentDidMount() {
-    this.props.fetchInitialPHDS(5000);
+    this.props.fetchPHDSRange(1587657944046, 1587687944046);
   }
 
   render() {

@@ -91,6 +91,7 @@ export const fetchPHDSRange = (
           type: PHDSLibraryTypes.PHDSLIBRARY_FETCH_ELEMENTS_SUCCESS,
           payload: phdselements,
         });
+
         resolve();
       })
       .catch((err) => {
