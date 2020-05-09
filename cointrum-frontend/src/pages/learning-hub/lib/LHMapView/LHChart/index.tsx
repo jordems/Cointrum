@@ -17,7 +17,18 @@ type LHChartProps = WithStyles<typeof styles> &
 
 class LHChart extends React.Component<LHChartProps> {
   handleChartClick = (event: IChartClickEvent) => {
-    this.props.handleSelection(event.currentItem);
+    const { seedtool } = this.props;
+
+    switch (seedtool) {
+      case "BUYSELL":
+        console.log("Selected BuySell Area", event.currentItem.openTime);
+        break;
+      case "SEEDSELECT":
+        this.props.handleSelection(event.currentItem);
+        break;
+      case "TEST":
+        break;
+    }
   };
 
   handleLoadMore = (start: number, _end: number): Promise<boolean> => {

@@ -9,11 +9,6 @@ export interface State {
   };
   error?: IError;
   learning: boolean;
-  seedtool: "SEEDSELECT" | "VIEW" | "TEST";
-  selection: {
-    start?: IOHLCData;
-    end?: IOHLCData;
-  };
 }
 
 export const SEEDEDITOR_ADD_SEED_TO_LABEL = "SEEDEDITOR_ADD_SEED_TO_LABEL";
@@ -25,11 +20,6 @@ export const SEEDEDITOR_CLEAR_SEEDS = "SEEDEDITOR_CLEAR_SEEDS";
 export const SEEDEDITOR_LEARN_ATTEMPT = "SEEDEDITOR_LEARN_ATTEMPT";
 export const SEEDEDITOR_LEARN_SUCCESS = "SEEDEDITOR_LEARN_SUCCESS";
 export const SEEDEDITOR_LEARN_FAIL = "SEEDEDITOR_LEARN_FAIL";
-
-export const SEEDEDITOR_CHANGE_SEEDTOOL = "SEEDEDITOR_CHANGE_SEEDTOOL";
-
-export const SEEDEDITOR_CHANGE_SELECTION = "SEEDEDITOR_CHANGE_SELECTION";
-export const SEEDEDITOR_CLEAR_SELECTION = "SEEDEDITOR_CLEAR_SELECTION";
 
 interface SeedEditorAddSeedToLabel {
   type: typeof SEEDEDITOR_ADD_SEED_TO_LABEL;
@@ -68,22 +58,6 @@ interface SeedEditorLearnFail {
   payload: IError;
 }
 
-interface SeedEditorChangeSeedTool {
-  type: typeof SEEDEDITOR_CHANGE_SEEDTOOL;
-  payload: "SEEDSELECT" | "VIEW" | "TEST";
-}
-
-interface SeedEditorChangeSelection {
-  type: typeof SEEDEDITOR_CHANGE_SELECTION;
-  payload: {
-    frame: "start" | "end";
-    data: IOHLCData;
-  };
-}
-interface SeedEditorClearSelection {
-  type: typeof SEEDEDITOR_CLEAR_SELECTION;
-}
-
 export type Actions =
   | SeedEditorAddSeedToLabel
   | SeedEditorEditSeed
@@ -91,7 +65,4 @@ export type Actions =
   | SeedEditorClearSeeds
   | SeedEditorLearnAttempt
   | SeedEditorLearnSuccess
-  | SeedEditorLearnFail
-  | SeedEditorChangeSeedTool
-  | SeedEditorChangeSelection
-  | SeedEditorClearSelection;
+  | SeedEditorLearnFail;

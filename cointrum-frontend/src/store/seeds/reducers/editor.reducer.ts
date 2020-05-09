@@ -6,8 +6,6 @@ const initialState: SeedEditorTypes.State = {
   ulseedsbyLabel: {},
   learning: false,
   error: undefined,
-  seedtool: "SEEDSELECT",
-  selection: {},
 };
 
 export function editorReducer(
@@ -71,24 +69,6 @@ export function editorReducer(
         ...state,
         learning: false,
         error: action.payload,
-      };
-    case SeedEditorTypes.SEEDEDITOR_CHANGE_SEEDTOOL:
-      return {
-        ...state,
-        seedtool: action.payload,
-      };
-    case SeedEditorTypes.SEEDEDITOR_CHANGE_SELECTION:
-      return {
-        ...state,
-        selection: {
-          ...state.selection,
-          [action.payload.frame]: action.payload.data,
-        },
-      };
-    case SeedEditorTypes.SEEDEDITOR_CLEAR_SELECTION:
-      return {
-        ...state,
-        selection: {},
       };
     default:
       return state;
