@@ -26,12 +26,12 @@ export function libraryReducer(
         error: action.payload,
         loading: false,
       };
-    case BuySellLibraryTypes.BUYSELLLIBRARY_ADD_TUPLE:
+    case BuySellLibraryTypes.BUYSELLLIBRARY_ADD_TUPLES:
       return {
         ...state,
         buysell: {
           ...state.buysell,
-          [action.payload._id]: action.payload,
+          ...action.payload,
         },
       };
     case BuySellLibraryTypes.BUYSELLLIBRARY_EDIT_TUPLE:

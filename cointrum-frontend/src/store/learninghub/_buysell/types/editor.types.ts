@@ -1,10 +1,9 @@
 import { IError } from "services/api/ErrorTypes";
-
-type IBuySell = any; // TODO: Create ICreateBuySell
+import { ICreateBuySell } from "models";
 
 export interface State {
   ulbuysell: {
-    [tempbuysellid: string]: IBuySell; // TODO: Create ICreateBuySell
+    [tempbuysellid: string]: ICreateBuySell;
   };
   error?: IError;
   learning: boolean;
@@ -21,15 +20,15 @@ export const BUYSELLEDITOR_LEARN_FAIL = "BUYSELLEDITOR_LEARN_FAIL";
 
 interface BuySellEditorAddTuple {
   type: typeof BUYSELLEDITOR_ADD_TUPLE;
-  payload: IBuySell;
+  payload: ICreateBuySell;
 }
 interface BuySellEditorEditTuple {
   type: typeof BUYSELLEDITOR_EDIT_TUPLE;
-  payload: IBuySell;
+  payload: ICreateBuySell;
 }
 interface BuySellEditorRemoveTuple {
   type: typeof BUYSELLEDITOR_REMOVE_TUPLE;
-  payload: IBuySell;
+  payload: ICreateBuySell;
 }
 
 interface BuySellEditorClearTuples {

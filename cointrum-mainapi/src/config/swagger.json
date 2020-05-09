@@ -324,6 +324,173 @@
         ]
       }
     },
+
+    "/tradingmap/{tradingmapid}/buysell": {
+      "get": {
+        "tags": ["Learning Hub"],
+        "summary": "Gets all buysell tuples linked to trading map",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "parameters": [
+          {
+            "name": "tradingmapid",
+            "in": "path",
+            "description": "id of trading map",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Learning Hub"],
+        "summary": "Create a new buysell tuple on trading map.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "requestBody": {
+          "description": "JSON object Containing new Labels Details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/buysell"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tradingmapid",
+            "in": "path",
+            "description": "id of trading map",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ]
+      }
+    },
+    "/tradingmap/{tradingmapid}/buysell/{buysellid}": {
+      "get": {
+        "tags": ["Learning Hub"],
+        "summary": "Gets single buysell tuple from tradingmap",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "parameters": [
+          {
+            "name": "tradingmapid",
+            "in": "path",
+            "description": "id of trading map",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "buysellid",
+            "in": "path",
+            "description": "id of buysell tuple",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ]
+      },
+      "put": {
+        "tags": ["Learning Hub"],
+        "summary": "Edit details of buysell tuple linked to trading map.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "requestBody": {
+          "description": "JSON object Containing new Labels Details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/buysell"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tradingmapid",
+            "in": "path",
+            "description": "id of trading map",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "buysellid",
+            "in": "path",
+            "description": "id of buysell tuple",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Learning Hub"],
+        "summary": "Remove buysell tuple from trading map",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "parameters": [
+          {
+            "name": "tradingmapid",
+            "in": "path",
+            "description": "id of trading map",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "buysellid",
+            "in": "path",
+            "description": "id of buysell tuple",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ]
+      }
+    },
+
     "/tradingmap/{tradingmapid}/label/{labelid}/seed": {
       "get": {
         "tags": ["Learning Hub"],
@@ -804,6 +971,18 @@
       "properties": {
         "data": {
           "type": "object"
+        }
+      }
+    },
+    "buysell": {
+      "type": "object",
+      "required": ["openTime", "type"],
+      "properties": {
+        "openTime": {
+          "type": "number"
+        },
+        "type": {
+          "type": "string"
         }
       }
     },

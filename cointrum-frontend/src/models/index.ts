@@ -8,3 +8,6 @@ export * from "./ICreateSeed";
 export * from "./ISeed";
 
 export * from "./IPHDSElement";
+
+export * from "./ICreateBuySell";
+export * from "./IBuySell";

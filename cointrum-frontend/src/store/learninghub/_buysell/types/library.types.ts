@@ -1,6 +1,5 @@
 import { IError } from "services/api/ErrorTypes";
-
-type IBuySell = any; // TODO: Create ICreateBuySell
+import { IBuySell } from "models";
 
 export interface State {
   buysell: {
@@ -15,7 +14,7 @@ export const BUYSELLLIBRARY_FETCH_TUPLES_SUCCESS =
 export const BUYSELLLIBRARY_FETCH_TUPLES_FAIL =
   "BUYSELLLIBRARY_FETCH_TUPLES_FAIL";
 
-export const BUYSELLLIBRARY_ADD_TUPLE = "BUYSELLLIBRARY_ADD_TUPLE";
+export const BUYSELLLIBRARY_ADD_TUPLES = "BUYSELLLIBRARY_ADD_TUPLES";
 export const BUYSELLLIBRARY_EDIT_TUPLE = "BUYSELLLIBRARY_EDIT_TUPLE";
 export const BUYSELLLIBRARY_REMOVE_TUPLE = "BUYSELLLIBRARY_REMOVE_TUPLE";
 
@@ -31,9 +30,9 @@ interface BuySellLibraryFetchTuplesFail {
   payload: IError;
 }
 
-interface BuySellLibraryAddTuple {
-  type: typeof BUYSELLLIBRARY_ADD_TUPLE;
-  payload: IBuySell;
+interface BuySellLibraryAddTuples {
+  type: typeof BUYSELLLIBRARY_ADD_TUPLES;
+  payload: { [_id: string]: IBuySell };
 }
 interface BuySellLibraryEditTuple {
   type: typeof BUYSELLLIBRARY_EDIT_TUPLE;
@@ -47,6 +46,6 @@ interface BuySellLibraryRemoveTuple {
 export type Actions =
   | BuySellLibraryFetchTuplesSuccess
   | BuySellLibraryFetchTuplesFail
-  | BuySellLibraryAddTuple
+  | BuySellLibraryAddTuples
   | BuySellLibraryEditTuple
   | BuySellLibraryRemoveTuple;

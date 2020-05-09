@@ -54,6 +54,18 @@ export const checkLearningHubLabelsParams = (
   }
 };
 
+export const checkLearningHubBuySellParams = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (!req.params.tradingmapid) {
+    throw new HTTP400Error("Missing tradingmapid path parameter");
+  } else {
+    next();
+  }
+};
+
 export const checkTradingHubParams = (
   req: Request,
   res: Response,

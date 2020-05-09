@@ -5,11 +5,9 @@ import { AppState } from "store";
 import GenericRestfulAPIConsumer from "services/api/GenericRestfulAPIConsumer";
 import * as BuySellLibraryTypes from "./../types/library.types";
 import * as BuySellCurrentTypes from "./../types/current.types";
+import { IBuySell, ICreateBuySell } from "models";
 
 type MyThunkResult<R> = ThunkAction<R, AppState, undefined, Action>;
-
-type ICreateBuySell = any;
-type IBuySell = any;
 
 const buysellConsumer = new GenericRestfulAPIConsumer<IBuySell, ICreateBuySell>(
   `/tradingmap/$temp/buysell`
@@ -48,37 +46,6 @@ export const fetchBuySellLibrary = (): MyThunkResult<Promise<IBuySell[]>> => (
           type: BuySellLibraryTypes.BUYSELLLIBRARY_FETCH_TUPLES_FAIL,
           payload: err,
         });
-        reject();
-      });
-  });
-};
-
-export const addTupletoLibrary = (
-  buysell: ICreateBuySell
-): MyThunkResult<Promise<boolean>> => (
-  dispatch: (e: BuySellLibraryTypes.Actions) => void,
-  getState
-): Promise<boolean> => {
-  const currentTradingMap = getState().maps.current.map;
-
-  if (currentTradingMap === null) {
-    return Promise.reject("Current map Not Selected");
-  }
-
-  buysellConsumer.setPath(`/tradingmap/${currentTradingMap._id}/buysell`);
-
-  return new Promise((resolve, reject) => {
-    buysellConsumer
-      .createDocument({ tradingmapid: currentTradingMap._id, ...buysell })
-      .then((buysell) => {
-        dispatch({
-          type: BuySellLibraryTypes.BUYSELLLIBRARY_ADD_TUPLE,
-          payload: buysell,
-        });
-        resolve();
-      })
-      .catch((err) => {
-        alert(err);
         reject();
       });
   });

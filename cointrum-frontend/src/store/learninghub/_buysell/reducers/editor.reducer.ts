@@ -18,7 +18,7 @@ export function editorReducer(
         ...state,
         ulbuysell: {
           ...state.ulbuysell,
-          [action.payload._id]: action.payload,
+          [action.payload.tempid]: action.payload,
         },
       };
     case BuySellTypes.BUYSELLEDITOR_EDIT_TUPLE:
@@ -26,13 +26,13 @@ export function editorReducer(
         ...state,
         ulbuysell: {
           ...state.ulbuysell,
-          [action.payload._id]: action.payload,
+          [action.payload.tempid]: action.payload,
         },
       };
     case BuySellTypes.BUYSELLEDITOR_REMOVE_TUPLE:
       return {
         ...state,
-        ulbuysell: { ...omit(state.ulbuysell, action.payload._id) },
+        ulbuysell: { ...omit(state.ulbuysell, action.payload.tempid) },
       };
     case BuySellTypes.BUYSELLEDITOR_CLEAR_TUPLES:
       return {

@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { checkCreationHubParams } from "../../middleware/checks";
 import classifierRoutes from "./classifier";
 import labelRoutes from "./label";
+import buysellRoutes from "./buysell";
 import GenericController from "../../utils/GenericController";
 import { ITradingMap } from "../../models/TradingMap";
 import TradingMap from "../../models/TradingMap";
@@ -17,6 +18,7 @@ const tradingMapController = new GenericController<ITradingMap>(TradingMap);
 export default [
   ...classifierRoutes,
   ...labelRoutes,
+  ...buysellRoutes,
   {
     path: "/api/v1/tradingmap",
     method: "get",
