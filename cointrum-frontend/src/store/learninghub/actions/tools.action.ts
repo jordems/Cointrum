@@ -7,7 +7,7 @@ import { ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 
 import { IOHLCData } from "shared-components/charts/lib/IOHLCData";
-import { addSeedtoLabelUL } from "store/seeds/actions/editor.action";
+import { addSeedtoLabelUL } from "store/learninghub/_seeds/actions/editor.action";
 
 type MyThunkResult<R> = ThunkAction<R, AppState, undefined, Action>;
 

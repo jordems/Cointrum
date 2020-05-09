@@ -12,7 +12,7 @@ export const addSeedtoLabelUL = (seed: ICreateSeed) => (
   dispatch: (e: SeedEditorTypes.Actions) => void,
   getState: () => AppState
 ): void => {
-  const selectedLabelID = getState().labels.current.label?._id;
+  const selectedLabelID = getState().learninghub.labels.current.label?._id;
   console.log("AddseedtoUL", selectedLabelID, seed);
   if (!selectedLabelID) {
     alert("Must select a label first");
@@ -68,7 +68,7 @@ export const learnSeeds = (): MyThunkResult<Promise<boolean>> => (
     type: SeedEditorTypes.SEEDEDITOR_LEARN_ATTEMPT,
   });
   const ctradingMap = getState().maps.current.map;
-  const editorSeeds = getState().seeds.editor.ulseedsbyLabel;
+  const editorSeeds = getState().learninghub.seeds.editor.ulseedsbyLabel;
   const seedConsumer = new GenericRestfulAPIConsumer<ISeed, ICreateSeed>(
     `/tradingmap/$temp/label/$temp/seed`
   );

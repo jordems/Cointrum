@@ -147,7 +147,7 @@ export const removeLabelfromLibrary = (
 
   labelConsumer.setPath(`/tradingmap/${currentTradingMap._id}/label`);
 
-  const currentLabel = getState().labels.current.label;
+  const currentLabel = getState().learninghub.labels.current.label;
 
   return new Promise((resolve, reject) => {
     labelConsumer
