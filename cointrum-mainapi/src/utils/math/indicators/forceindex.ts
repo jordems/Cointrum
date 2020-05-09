@@ -17,6 +17,10 @@ export function forceindex13Algo(
   candles: ICandle[],
   prevCandles: ICandle[]
 ): number[] {
+  if (candles.length === 0) {
+    return [];
+  }
+
   let resultingf13Values: number[] = [];
 
   let fullist = [...prevCandles, ...candles];

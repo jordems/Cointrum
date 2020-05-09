@@ -21,6 +21,10 @@ export function emaAlgo(
   candles: ICandle[],
   prevCandles: ICandle[]
 ): number[] {
+  if (candles.length === 0) {
+    return [];
+  }
+
   let resultingemaValues: number[] = [];
   // Convert lastknownDocuments to type ICandle
 

@@ -15,18 +15,24 @@ export function bollingerbandAlgo(
   candles: ICandle[],
   prevCandles: ICandle[]
 ): ICandle[] {
-  let fullist = [...candles];
+  let fullist = [...prevCandles, ...candles];
 
-  if (prevCandles) {
-    fullist = [...prevCandles, ...candles];
-  }
+  let startingidx = prevCandles.length !== 0 ? prevCandles.length : 20;
 
-  let startingidx = prevCandles.length > 0 ? prevCandles.length : 20;
-
-  for (let x = 0; x < startingidx; x++) {
-    fullist[x].BBlower = -1;
-    fullist[x].BBmiddle = -1;
-    fullist[x].BBupper = -1;
+  if (prevCandles.length === 0) {
+    if (candles.length < 20) {
+      for (let x = 0; x < candles.length; x++) {
+        fullist[x].BBlower = -1;
+        fullist[x].BBmiddle = -1;
+        fullist[x].BBupper = -1;
+      }
+    } else {
+      for (let x = 0; x < 20; x++) {
+        fullist[x].BBlower = -1;
+        fullist[x].BBmiddle = -1;
+        fullist[x].BBupper = -1;
+      }
+    }
   }
 
   for (let x = startingidx; x < fullist.length; x++) {

@@ -93,10 +93,6 @@ export default class APIMarketConsumer {
     return candleSections;
   }
 
-  private generateRequests() {}
-
-  private consumerRequest() {}
-
   public static getInstance(market: IExchanges): APIMarketConsumer {
     switch (market) {
       case "Binance":
