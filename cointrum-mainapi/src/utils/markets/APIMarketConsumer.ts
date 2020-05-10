@@ -4,6 +4,7 @@ import {
   IAltCurrencies,
   ICycleDurations,
   IExchanges,
+  intervalToMS,
 } from "../../types/exchange";
 import ICandle from "./types/ICandle";
 import { IPHDSElement } from "../../models/PHDSElement";
@@ -46,18 +47,21 @@ export default class APIMarketConsumer {
       ? lastKnownDocuments[lastKnownDocuments.length - 1].closeTime
       : this.market.getInitialStartTime();
 
+    const INTERVAL_IN_MS = intervalToMS(currencyPair.interval);
     const PAGINATION_LIMIT = this.market.getPaginationInterval();
     const TIME_DIFF = endTime - timeofLastCandleLoaded;
-    const NUM_REQUESTS = TIME_DIFF / (60000 * PAGINATION_LIMIT);
+    const NUM_REQUESTS = TIME_DIFF / (INTERVAL_IN_MS * PAGINATION_LIMIT);
 
     let sectionPromises: Promise<ICandle[]>[] = [];
     let requestnum = 0;
     // Get all Results from market API
     for (let x = 0; x < NUM_REQUESTS; x++) {
       const timeSectionStart =
-        timeofLastCandleLoaded + x * 60000 * PAGINATION_LIMIT;
+        timeofLastCandleLoaded + x * INTERVAL_IN_MS * PAGINATION_LIMIT;
       const timeSectionEnd =
-        timeofLastCandleLoaded + (x + 1) * 60000 * PAGINATION_LIMIT - 1;
+        timeofLastCandleLoaded +
+        (x + 1) * INTERVAL_IN_MS * PAGINATION_LIMIT -
+        1;
 
       sectionPromises.push(
         this.limiter.schedule(() => {
@@ -76,6 +80,10 @@ export default class APIMarketConsumer {
       candleSections = await Promise.all(sectionPromises);
     } catch (e) {
       throw new Error(e);
+    }
+
+    if (candleSections.length === 0) {
+      return [];
     }
 
     candleSections[0] = IndicatorDecorator(

@@ -6,19 +6,19 @@ import {
   closeLabelDialog,
   updateLabelName,
   updateLabelDesc,
-  updateLabelColour
-} from "store/labels/actions/create.action";
+  updateLabelColour,
+} from "store/learninghub/_labels/actions/create.action";
 
 import {
   addLabeltoLibrary,
-  editLabelinLibrary
-} from "store/labels/actions/library.action";
+  editLabelinLibrary,
+} from "store/learninghub/_labels/actions/library.action";
 
 const mapStateToProps = (state: AppState) => ({
-  dialogOpen: state.labels.create.dialogOpen,
-  form: state.labels.create.form,
-  error: state.labels.create.error,
-  editingLabel: state.labels.create.editing
+  dialogOpen: state.learninghub.labels.create.dialogOpen,
+  form: state.learninghub.labels.create.form,
+  error: state.learninghub.labels.create.error,
+  editingLabel: state.learninghub.labels.create.editing,
 });
 
 export const connector = connect(mapStateToProps, {
@@ -27,5 +27,5 @@ export const connector = connect(mapStateToProps, {
   updateLabelDesc,
   updateLabelColour,
   addLabeltoLibrary,
-  editLabelinLibrary
+  editLabelinLibrary,
 });

@@ -103,3 +103,9 @@ export const fetchPHDSRange = (
       });
   });
 };
+
+export function clearPHDS(): PHDSLibraryTypes.Actions {
+  return {
+    type: PHDSLibraryTypes.PHDSLIBRARY_CLEAR_ELEMENTS,
+  };
+}

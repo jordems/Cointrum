@@ -32,6 +32,13 @@ export function libraryReducer(
         error: action.payload,
         loading: false,
       };
+    case PHDSLibraryTypes.PHDSLIBRARY_CLEAR_ELEMENTS:
+      return {
+        ...state,
+        phdselements: {},
+        error: undefined,
+        loading: false,
+      };
     default:
       return state;
   }

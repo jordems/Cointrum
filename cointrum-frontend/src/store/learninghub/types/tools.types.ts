@@ -3,7 +3,7 @@ import { IOHLCData } from "shared-components/charts/lib/IOHLCData";
 export type LearningHubTools = "BUYSELL" | "SEEDSELECT" | "TEST";
 
 export interface State {
-  seedtool: LearningHubTools;
+  currenttool: LearningHubTools;
   selection: {
     start?: IOHLCData;
     end?: IOHLCData;

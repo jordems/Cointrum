@@ -28,9 +28,9 @@ const LHToolsCard: React.FunctionComponent<LHToolsCardProps> = ({
   classes,
   ulseedsbyLabel,
   learning,
-  seedtool,
+  currenttool,
   learnSeeds,
-  changeSeedTool,
+  changeTool,
 }) => {
   let selectedSeeds = 0;
   Object.keys(ulseedsbyLabel).forEach((labelID) => {
@@ -41,7 +41,7 @@ const LHToolsCard: React.FunctionComponent<LHToolsCardProps> = ({
     _e: React.MouseEvent<HTMLElement, MouseEvent>,
     value: LearningHubTools
   ) => {
-    changeSeedTool(value);
+    changeTool(value);
   };
 
   return (
@@ -52,7 +52,7 @@ const LHToolsCard: React.FunctionComponent<LHToolsCardProps> = ({
         </Typography>
         <ToggleButtonGroup
           size="medium"
-          value={seedtool}
+          value={currenttool}
           onChange={handleToolChange}
           exclusive
         >
@@ -62,9 +62,6 @@ const LHToolsCard: React.FunctionComponent<LHToolsCardProps> = ({
           <ToggleButton key={2} value="SEEDSELECT">
             <ColorizeOutlinedIcon />
           </ToggleButton>
-          {/* <ToggleButton key={2} value="VIEW">
-            <PanToolIcon />
-          </ToggleButton> */}
           <ToggleButton key={3} value="TEST">
             <VisibilityIcon />
           </ToggleButton>

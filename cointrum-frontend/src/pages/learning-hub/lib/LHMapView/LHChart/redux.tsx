@@ -9,10 +9,10 @@ const mapStateToProps = (state: AppState) => ({
   phds: state.phds.library.phdselements,
   error: state.phds.library.error,
   loading: state.phds.library.loading,
-  labels: state.labels.library.labels,
-  ulseedsbyLabel: state.seeds.editor.ulseedsbyLabel,
+  labels: state.learninghub.labels.library.labels,
+  ulseedsbyLabel: state.learninghub.seeds.editor.ulseedsbyLabel,
   cycleduration: state.maps.current.map?.cycleduration,
-  seedtool: state.learninghub.tools.seedtool,
+  currenttool: state.learninghub.tools.currenttool,
 });
 
 export const connector = connect(mapStateToProps, {

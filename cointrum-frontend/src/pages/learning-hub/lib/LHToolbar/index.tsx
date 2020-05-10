@@ -8,13 +8,14 @@ import { ConnectedProps } from "react-redux";
 
 import { connector } from "./redux";
 import LHSeedSelect from "./LHSeedSelect";
+import LHBuySellSelect from "./LHBuySellSelect";
 
 type LHToolbarProps = WithStyles<typeof styles> &
   ConnectedProps<typeof connector>;
 
 const LHToolbar: React.FunctionComponent<LHToolbarProps> = ({
   classes,
-  seedtool,
+  currenttool,
 }) => {
   return (
     <Drawer
@@ -27,9 +28,8 @@ const LHToolbar: React.FunctionComponent<LHToolbarProps> = ({
     >
       <LHToolsCard />
 
-      {/*TODO ADD a LHBuySellCard (for selecting seeds for buy/sell) */}
-
-      {seedtool === "SEEDSELECT" && <LHSeedSelect />}
+      {currenttool === "SEEDSELECT" && <LHSeedSelect />}
+      {currenttool === "BUYSELL" && <LHBuySellSelect />}
     </Drawer>
   );
 };

@@ -2,16 +2,16 @@ import { connect } from "react-redux";
 
 import { AppState } from "store";
 
-import { learnSeeds } from "store/seeds/actions/editor.action";
-import { changeSeedTool } from "store/learninghub/actions/tools.action";
+import { learnSeeds } from "store/learninghub/_seeds/actions/editor.action";
+import { changeTool } from "store/learninghub/actions/tools.action";
 
 const mapStateToProps = (state: AppState) => ({
-  ulseedsbyLabel: state.seeds.editor.ulseedsbyLabel,
-  learning: state.seeds.editor.learning,
-  seedtool: state.learninghub.tools.seedtool,
+  ulseedsbyLabel: state.learninghub.seeds.editor.ulseedsbyLabel,
+  learning: state.learninghub.seeds.editor.learning,
+  currenttool: state.learninghub.tools.currenttool,
 });
 
 export const connector = connect(mapStateToProps, {
   learnSeeds,
-  changeSeedTool,
+  changeTool,
 });

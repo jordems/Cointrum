@@ -1,7 +1,7 @@
 import * as LHToolsTypes from "../types/tools.types";
 
 const initialState: LHToolsTypes.State = {
-  seedtool: "SEEDSELECT",
+  currenttool: "SEEDSELECT",
   selection: {},
 };
 
@@ -13,7 +13,7 @@ export function toolsReducer(
     case LHToolsTypes.LEARNINGHUB_CHANGE_SEEDTOOL:
       return {
         ...state,
-        seedtool: action.payload,
+        currenttool: action.payload,
       };
     case LHToolsTypes.LEARNINGHUB_CHANGE_SELECTION:
       return {

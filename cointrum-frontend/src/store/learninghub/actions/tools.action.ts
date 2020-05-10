@@ -11,12 +11,12 @@ import { addSeedtoLabelUL } from "store/learninghub/_seeds/actions/editor.action
 
 type MyThunkResult<R> = ThunkAction<R, AppState, undefined, Action>;
 
-export const changeSeedTool = (seedtool: LHToolsTypes.LearningHubTools) => (
+export const changeTool = (tool: LHToolsTypes.LearningHubTools) => (
   dispatch: (e: LHToolsTypes.Actions) => void
 ): void => {
   dispatch({
     type: LHToolsTypes.LEARNINGHUB_CHANGE_SEEDTOOL,
-    payload: seedtool,
+    payload: tool,
   });
 };
 

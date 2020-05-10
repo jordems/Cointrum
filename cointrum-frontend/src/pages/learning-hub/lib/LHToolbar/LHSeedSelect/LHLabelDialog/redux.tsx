@@ -2,12 +2,12 @@ import { connect } from "react-redux";
 
 import { AppState } from "store";
 
-import { closeLabelDialog } from "store/labels/actions/editor.action";
+import { closeLabelDialog } from "store/learninghub/_labels/actions/editor.action";
 
 const mapStateToProps = (state: AppState) => ({
-  dialogOpen: state.labels.editor.dialogOpen
+  dialogOpen: state.learninghub.labels.editor.dialogOpen,
 });
 
 export const connector = connect(mapStateToProps, {
-  closeLabelDialog
+  closeLabelDialog,
 });

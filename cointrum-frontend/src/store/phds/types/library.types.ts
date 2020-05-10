@@ -16,6 +16,8 @@ export const PHDSLIBRARY_FETCH_ELEMENTS_SUCCESS =
 export const PHDSLIBRARY_FETCH_ELEMENTS_FAIL =
   "PHDSLIBRARY_FETCH_ELEMENTS_FAIL";
 
+export const PHDSLIBRARY_CLEAR_ELEMENTS = "PHDSLIBRARY_CLEAR_ELEMENTS";
+
 interface PHDSLibraryFetchElementsRequest {
   type: typeof PHDSLIBRARY_FETCH_ELEMENTS_REQUEST;
 }
@@ -30,7 +32,12 @@ interface PHDSLibraryFetchElementsFail {
   payload: IError;
 }
 
+interface PHDSLibraryClearElements {
+  type: typeof PHDSLIBRARY_CLEAR_ELEMENTS;
+}
+
 export type Actions =
   | PHDSLibraryFetchElementsRequest
   | PHDSLibraryFetchElementsSuccess
-  | PHDSLibraryFetchElementsFail;
+  | PHDSLibraryFetchElementsFail
+  | PHDSLibraryClearElements;
