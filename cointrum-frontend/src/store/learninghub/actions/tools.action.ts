@@ -1,13 +1,20 @@
 import { uuid } from "uuidv4";
 
 import * as LHToolsTypes from "../types/tools.types";
-import { ICreateSeed, IPHDSElement } from "models";
+import { ICreateSeed, IPHDSElement, ICreateBuySell } from "models";
 import { AppState } from "store";
 import { ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 
 import { IOHLCData } from "shared-components/charts/lib/IOHLCData";
-import { addSeedtoLabelUL } from "store/learninghub/_seeds/actions/editor.action";
+import {
+  addSeedtoLabelUL,
+  learnSeeds,
+} from "store/learninghub/_seeds/actions/editor.action";
+import {
+  addBuySellUL,
+  learnTuples,
+} from "store/learninghub/_buysell/actions/editor.action";
 
 type MyThunkResult<R> = ThunkAction<R, AppState, undefined, Action>;
 
@@ -20,7 +27,41 @@ export const changeTool = (tool: LHToolsTypes.LearningHubTools) => (
   });
 };
 
-export const handleSelection = (data: IOHLCData) => (
+export const handleChartSelection = (data: IOHLCData) => (
+  dispatch: (e: LHToolsTypes.Actions | MyThunkResult<void>) => void,
+  getState: () => AppState
+): void => {
+  const { currenttool } = getState().learninghub.tools;
+
+  switch (currenttool) {
+    case "BUYSELL":
+      dispatch(handleBuySellSelection(data));
+      break;
+    case "SEEDSELECT":
+      dispatch(handleSeedSelection(data));
+      break;
+    case "TEST":
+      alert("Unimplmented Feature");
+      break;
+  }
+};
+
+export const handleBuySellSelection = (data: IOHLCData) => (
+  dispatch: (e: LHToolsTypes.Actions | MyThunkResult<void>) => void,
+  getState: () => AppState
+): void => {
+  const { selection } = getState().learninghub.buysell.current;
+
+  const newTuple: ICreateBuySell = {
+    tempid: uuid(),
+    type: selection,
+    openTime: data.openTime,
+  };
+
+  dispatch(addBuySellUL(newTuple));
+};
+
+export const handleSeedSelection = (data: IOHLCData) => (
   dispatch: (e: LHToolsTypes.Actions | MyThunkResult<void>) => void,
   getState: () => AppState
 ): void => {
@@ -71,4 +112,12 @@ export const handleSelection = (data: IOHLCData) => (
       type: LHToolsTypes.LEARNINGHUB_CLEAR_SELECTION,
     });
   }
+};
+
+export const handleLearn = () => (
+  dispatch: (e: LHToolsTypes.Actions | MyThunkResult<void>) => void,
+  getState: () => AppState
+): void => {
+  dispatch(learnTuples());
+  dispatch(learnSeeds());
 };

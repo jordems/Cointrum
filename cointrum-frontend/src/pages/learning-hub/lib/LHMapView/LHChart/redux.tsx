@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 
 import { AppState } from "store";
 
-import { handleSelection } from "store/learninghub/actions/tools.action";
+import { handleChartSelection } from "store/learninghub/actions/tools.action";
 import { fetchPHDSRange } from "store/phds/actions/library.action";
 
 const mapStateToProps = (state: AppState) => ({
@@ -16,6 +16,6 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 export const connector = connect(mapStateToProps, {
-  handleSelection,
+  handleChartSelection,
   fetchPHDSRange,
 });

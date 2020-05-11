@@ -27,15 +27,14 @@ type LHToolsCardProps = WithStyles<typeof styles> &
 const LHToolsCard: React.FunctionComponent<LHToolsCardProps> = ({
   classes,
   ulseedsbyLabel,
+  ulbuysell,
   learning,
   currenttool,
-  learnSeeds,
+  handleLearn,
   changeTool,
 }) => {
-  let selectedSeeds = 0;
-  Object.keys(ulseedsbyLabel).forEach((labelID) => {
-    selectedSeeds += Object.keys(ulseedsbyLabel[labelID]).length;
-  });
+  const canLearn =
+    Object.keys(ulseedsbyLabel).length > 0 || Object.keys(ulbuysell).length > 0;
 
   const handleToolChange = (
     _e: React.MouseEvent<HTMLElement, MouseEvent>,
@@ -71,19 +70,14 @@ const LHToolsCard: React.FunctionComponent<LHToolsCardProps> = ({
         <Button
           variant="contained"
           color={"primary"}
-          disabled={selectedSeeds === 0}
-          onClick={learnSeeds}
+          disabled={!canLearn}
+          onClick={handleLearn}
           className={classes.learnButton}
         >
           {learning ? (
-            <CircularProgress />
+            <CircularProgress color="secondary" />
           ) : (
-            <>
-              Learn
-              <Typography variant="caption">
-                ({selectedSeeds && selectedSeeds} seeds)
-              </Typography>
-            </>
+            <span>Learn</span>
           )}
         </Button>
       </CardActions>
