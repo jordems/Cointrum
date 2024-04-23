@@ -49,7 +49,7 @@
     "dotenv": "^8.2.0",
     "express": "^5.0.0-alpha.7",
     "mockingoose": "^2.13.2",
-    "mongoose": "^5.9.2",
+    "mongoose": "^5.13.20",
     "pm2": "^4.3.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
